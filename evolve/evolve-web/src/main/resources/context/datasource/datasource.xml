@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+	<context:component-scan base-package="com.tfc.evolve.service" />
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="evolveDataSource" />
+	</bean>
+
+	<bean name="ossSessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="evolveDataSource"></property>
+		<property name="packagesToScan" value="com.tfc.evolve.model" />
+		<property name="namingStrategy" ref="namingStrategy" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="namingStrategy" class="org.hibernate.cfg.ImprovedNamingStrategy" />
+
+	<bean id="evolveDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${datasource.driverClass}" />
+		<property name="url" value="${datasource.url}" />
+		<property name="username" value="${datasource.username}" />
+		<property name="password" value="${datasource.password}" />
+		<property name="initialSize" value="${datasource.initialSize}" />
+		<property name="maxActive" value="${datasource.maxActive}" />
+		<property name="maxIdle" value="${datasource.maxIdle}" />
+		<property name="maxWait" value="${datasource.maxWait}" />
+		<property name="poolPreparedStatements" value="${datasource.poolPreparedStatements}" />
+		<property name="defaultAutoCommit" value="${datasource.defaultAutoCommit}" />
+	</bean>
+	<!-- 注解驱动 -->
+	<context:annotation-config />
+	<!-- 声明式事务定义 -->
+	<bean id="annotationTransactionAspect" factory-method="aspectOf"
+		class="org.springframework.transaction.aspectj.AnnotationTransactionAspect">
+		<property name="transactionManager" ref="transactionManager"></property>
+	</bean>
+</beans>

@@ -1,0 +1,25 @@
+
+<div class="chatArea">
+	<div class="chatBody" style="height: 340px;">
+		<ul style="height: 340px;">
+			#foreach($r in $alternateResult.history)
+			<li><div>
+					<a href="javascript:void(0);"><span
+						class="visitor">[$!date.format("yyyy-MM-dd HH:mm:ss",
+							$date.getDate())] </span></a>
+					<p>$!r</p>
+				</div></li> #end
+			<li class="chatTips"><b></b><em>温馨提示：我叫evolve，我是刚出生的小婴儿，所以很多事情它不知道的。</em></li>
+		</ul>
+	</div>
+	<form action="/evolution/talk" method="post">
+		<div class="chatInput">
+			<div>
+				<textarea></textarea>
+			</div>
+		</div>
+	</form>
+	<div class="buttonArea">
+		<span title="点击发送消息">发送</span>
+	</div>
+</div>
