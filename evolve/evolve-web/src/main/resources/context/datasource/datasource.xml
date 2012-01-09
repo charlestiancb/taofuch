@@ -46,6 +46,7 @@
 	</bean>
 	<!-- 注解驱动 -->
 	<context:annotation-config />
+	<context:spring-configured/>
 	<!-- 声明式事务定义 -->
 	<bean id="annotationTransactionAspect" factory-method="aspectOf"
 		class="org.springframework.transaction.aspectj.AnnotationTransactionAspect">
