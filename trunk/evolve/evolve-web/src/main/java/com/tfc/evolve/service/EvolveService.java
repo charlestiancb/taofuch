@@ -3,7 +3,7 @@ package com.tfc.evolve.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tfc.evolve.model.AlternateResult;
+import com.tfc.evolve.entity.AlternateResult;
 
 @Service
 @Transactional(readOnly = true)

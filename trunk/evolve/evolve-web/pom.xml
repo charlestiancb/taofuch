@@ -39,7 +39,7 @@
 				<artifactId>maven-hibernate-plugin</artifactId>
 				<version>1.0.0</version>
 				<goals>
-					<goal>compile</goal>
+					<goal>db2entity</goal>
 				</goals>
 				<configuration>
 					<connUsername>root</connUsername>
