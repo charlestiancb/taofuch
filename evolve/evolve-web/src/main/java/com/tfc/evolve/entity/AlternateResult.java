@@ -1,4 +1,4 @@
-package com.tfc.evolve.model;
+package com.tfc.evolve.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
