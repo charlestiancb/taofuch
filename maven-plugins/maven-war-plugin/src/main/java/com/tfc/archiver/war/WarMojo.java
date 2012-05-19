@@ -98,9 +98,8 @@ public class WarMojo extends AbstractWarMojo {
 	/**
 	 * The WAR archiver.
 	 * 
-	 * @component role="org.codehaus.plexus.archiver.Archiver" roleHint="war"
 	 */
-	private WarArchiver warArchiver;
+	private WarArchiver warArchiver = new WarArchiver();
 
 	/**
 	 * @component
@@ -163,6 +162,12 @@ public class WarMojo extends AbstractWarMojo {
 	 * @since 2.1-alpha-2
 	 */
 	private String classesClassifier = "classes";
+	/**
+	 * the encoding for building war!
+	 * 
+	 * @parameter default-value="GBK"
+	 */
+	private String encoding;
 
 	// ----------------------------------------------------------------------
 	// Implementation
@@ -208,8 +213,12 @@ public class WarMojo extends AbstractWarMojo {
 	 * @throws MojoFailureException
 	 *             if a fatal exception occurred
 	 */
-	private void performPackaging(File warFile) throws IOException, ArchiverException, ManifestException,
-			DependencyResolutionRequiredException, MojoExecutionException, MojoFailureException {
+	private void performPackaging(File warFile)	throws IOException,
+												ArchiverException,
+												ManifestException,
+												DependencyResolutionRequiredException,
+												MojoExecutionException,
+												MojoFailureException {
 		getLog().info("Packaging webapp");
 
 		buildExplodedWebapp(getWebappDirectory());
@@ -217,6 +226,8 @@ public class WarMojo extends AbstractWarMojo {
 		MavenArchiver archiver = new MavenArchiver();
 
 		archiver.setArchiver(warArchiver);
+
+		warArchiver.setEncoding(getEncoding());
 
 		archiver.setOutputFile(warFile);
 
@@ -251,8 +262,12 @@ public class WarMojo extends AbstractWarMojo {
 				final File classesDirectory = packager.getClassesDirectory(getWebappDirectory());
 				if (classesDirectory.exists()) {
 					getLog().info("Packaging classes");
-					packager.packageClasses(classesDirectory, getTargetClassesFile(), getJarArchiver(), getSession(),
-							getProject(), getArchive());
+					packager.packageClasses(classesDirectory,
+											getTargetClassesFile(),
+											getJarArchiver(),
+											getSession(),
+											getProject(),
+											getArchive());
 					projectHelper.attachArtifact(getProject(), "jar", getClassesClassifier(), getTargetClassesFile());
 				}
 			}
@@ -386,5 +401,13 @@ public class WarMojo extends AbstractWarMojo {
 
 	public void setFailOnMissingWebXml(boolean failOnMissingWebXml) {
 		this.failOnMissingWebXml = failOnMissingWebXml;
+	}
+
+	public void setEncoding(String encoding) {
+		this.encoding = encoding;
+	}
+
+	public String getEncoding() {
+		return StringUtils.isBlank(encoding) ? "GBK" : encoding;
 	}
 }
