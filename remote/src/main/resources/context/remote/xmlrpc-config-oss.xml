@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-3.0.xsd
+         http://www.springframework.org/schema/aspect
+         http://www.springframework.org/schema/context/spring-aspect-3.0.xsd
+         http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/context/spring-aop-3.0.xsd">
+	<!-- 与各系统间xmlrpc间的远程调用配置 -->
+  <!-- 获取采购前台的信息 -->
+  <bean id="abizXmlRpcService"
+    class="com.focustech.remote.xmlrpc.impl.AbizXmlRpcServiceImpl" init-method="init">
+    <property name="url" value="${abiz.xmlrpc.url}" />
+    <property name="cfgProps">
+      <map>
+        <entry key="basicUserName" value="${abiz.xmlrpc.userName}" />
+        <entry key="basicPassword" value="${abiz.xmlrpc.password}" />
+      </map>
+    </property>
+  </bean>
+</beans>
