@@ -66,7 +66,7 @@ public class WarArchiver extends JarArchiver {
 
 	public WarArchiver() {
 		super();
-		setEncoding("UTF-8");
+		setEncoding("GBK");
 		archiveType = "war";
 	}
 
@@ -128,8 +128,7 @@ public class WarArchiver extends JarArchiver {
 	protected void initZipOutputStream(ZipOutputStream zOut) throws IOException, ArchiverException {
 		// If no webxml file is specified, it's an error.
 		if (ignoreWebxml && deploymentDescriptor == null && !isInUpdateMode()) {
-			throw new ArchiverException(
-					"webxml attribute is required (or pre-existing WEB-INF/web.xml if executing in update mode)");
+			throw new ArchiverException("webxml attribute is required (or pre-existing WEB-INF/web.xml if executing in update mode)");
 		}
 		super.initZipOutputStream(zOut);
 	}
@@ -137,20 +136,20 @@ public class WarArchiver extends JarArchiver {
 	/**
 	 * Overridden from ZipArchiver class to deal with web.xml
 	 */
-	protected void zipFile(ArchiveEntry entry, ZipOutputStream zOut, String vPath) throws IOException,
-			ArchiverException {
+	protected void zipFile(ArchiveEntry entry, ZipOutputStream zOut, String vPath)	throws IOException,
+																					ArchiverException {
 		// If the file being added is WEB-INF/web.xml, we warn if it's
 		// not the one specified in the "webxml" attribute - or if
 		// it's being added twice, meaning the same file is specified
 		// by the "webxml" attribute and in a <fileset> element.
 		if (vPath.equalsIgnoreCase("WEB-INF/web.xml")) {
 			if (descriptorAdded
-					|| (ignoreWebxml && (deploymentDescriptor == null || !ResourceUtils.isCanonicalizedSame(
-							entry.getResource(), deploymentDescriptor)))) {
-				getLogger().warn(
-						"Warning: selected " + archiveType + " files include a WEB-INF/web.xml which will be ignored "
-								+ "\n(webxml attribute is missing from " + archiveType
-								+ " task, or ignoreWebxml attribute is specified as 'true')");
+					|| (ignoreWebxml && (deploymentDescriptor == null || !ResourceUtils.isCanonicalizedSame(entry.getResource(),
+																											deploymentDescriptor)))) {
+				getLogger().warn("Warning: selected " + archiveType
+						+ " files include a WEB-INF/web.xml which will be ignored "
+						+ "\n(webxml attribute is missing from " + archiveType
+						+ " task, or ignoreWebxml attribute is specified as 'true')");
 			} else {
 				super.zipFile(entry, zOut, vPath);
 				descriptorAdded = true;
