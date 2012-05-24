@@ -5,7 +5,7 @@ import java.util.List;
 import com.tfc.participle.partition.entry.WordElement;
 
 /**
- * 一句话的分词结果。
+ * 一句话的分词结果。其中包含一句话中所有的词以及不能分词的字
  * 
  * @author taofucheng
  * 
