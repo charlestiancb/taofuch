@@ -1,5 +1,7 @@
 package com.tfc.participle.partition.entry;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * 分出来的每个词
  * 
@@ -15,6 +17,20 @@ public class WordElement {
 	private String text;
 	/** 词性 */
 	private String cixing;
+	/** 开始位置 */
+	private int startPos;
+
+	public int getStartPos() {
+		return startPos;
+	}
+
+	public void setStartPos(int startPos) {
+		this.startPos = startPos;
+	}
+
+	public int getEndPos() {
+		return startPos + getText().length();
+	}
 
 	public WordElement() {
 	}
@@ -25,7 +41,7 @@ public class WordElement {
 	}
 
 	public String getText() {
-		return text;
+		return StringUtils.isEmpty(text) ? "" : text;
 	}
 
 	public void setText(String text) {

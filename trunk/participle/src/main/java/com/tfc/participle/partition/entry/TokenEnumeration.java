@@ -22,7 +22,7 @@ public class TokenEnumeration {
 	}
 
 	/**
-	 * 取出下一个句子。
+	 * 取出下一个整句。
 	 * 
 	 * @return
 	 */
