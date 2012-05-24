@@ -12,8 +12,16 @@ import com.tfc.analysis.process.Processor;
 import com.tfc.analysis.utils.AnalysisUtils;
 import com.tfc.participle.partition.entry.WordElement;
 
+/**
+ * 分词操作
+ * 
+ * @author taofucheng
+ * 
+ */
 public class Split2WordProcessor implements Processor {
-
+	/**
+	 * 将指定的文本分成尽可能多的“词”！
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List<WordElement> process(Map<String, Map> wordsTree, String text, AbstractFragment fragment, int minLen) {
 		if (StringUtils.isBlank(text)) {
