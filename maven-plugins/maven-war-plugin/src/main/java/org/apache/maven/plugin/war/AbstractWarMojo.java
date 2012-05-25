@@ -1,4 +1,4 @@
-package com.tfc.archiver.war;
+package org.apache.maven.plugin.war;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -35,7 +35,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.war.Overlay;
 import org.apache.maven.plugin.war.overlay.OverlayManager;
 import org.apache.maven.plugin.war.packaging.DependenciesAnalysisPackagingTask;
 import org.apache.maven.plugin.war.packaging.OverlayPackagingTask;
