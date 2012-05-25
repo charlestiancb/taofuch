@@ -1,4 +1,4 @@
-package com.tfc.archiver.war;
+package org.apache.maven.plugin.war;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -34,6 +34,8 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.ManifestException;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
+
+import com.tfc.archiver.war.WarArchiver;
 
 /**
  * Build a WAR file.
