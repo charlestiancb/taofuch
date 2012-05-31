@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<beans>
+	<bean id="demo" class="com.tfc.simulate.xmlrpc.data.XmlrpcRequest">
+		<method value="AbizAPI.RecvFpgApplyData" />
+		<resultData ref="data" />
+	</bean>
+	
+	<bean id="data" class="java.util.HashMap">
+		<rfno value="99911"/>
+		<account value="VfoUeXAyLmKI"/>
+		<status value="Y"/>
+		<message value=""/>
+	</bean>
+	
+	<bean id="date" class="java.util.Date"/>
+</beans>
+

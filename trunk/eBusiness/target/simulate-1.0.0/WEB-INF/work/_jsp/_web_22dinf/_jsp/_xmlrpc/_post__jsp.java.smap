@@ -1,0 +1,11 @@
+SMAP
+_post__jsp.java
+JSP
+*S JSP
+*F
++ 1 post.jsp
+WEB-INF/jsp/xmlrpc/post.jsp
+*L
+2#1:27
+15#1:28
+*E
