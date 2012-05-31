@@ -12,6 +12,7 @@
 	<http pattern="/admin/login" security="none" />
 	<http pattern="/logout" security="none" />
 	<http use-expressions="true">
+		<anonymous enabled="false"/>
 		<form-login login-page="/admin/login"
 			always-use-default-target="false" login-processing-url="/admin/logon" />
 		<logout logout-url="/logout" />
