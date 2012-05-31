@@ -17,4 +17,4 @@ td {
 <title>${q} <c:if test="${!empty q}">-</c:if> 易商，让您的商业变得简单！</title>
 </head>
 <body>
-<%if(AuthUtils.isLogin()){ %><span id="user" style="right: inherit;"></span><%}%>
+<%if(AuthUtils.isLogin()){ %><span id="user" style="right: inherit;"><a href="/logout">退出</a></span><%}%>
