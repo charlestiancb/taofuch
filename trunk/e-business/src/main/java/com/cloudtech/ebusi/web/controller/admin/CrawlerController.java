@@ -15,7 +15,7 @@ import com.cloudtech.ebusi.web.controller.BaseController;
 @Controller
 @RequestMapping("/admin")
 public class CrawlerController extends BaseController {
-	@RequestMapping(value = "/config", method = RequestMethod.GET)
+	@RequestMapping(value = "/crawler/config", method = RequestMethod.GET)
 	public void config() {
 
 	}
