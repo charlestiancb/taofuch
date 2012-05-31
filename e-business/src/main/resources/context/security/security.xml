@@ -11,40 +11,29 @@
 	<http pattern="/html/**" security="none" />
 	<http pattern="/admin/login" security="none" />
 	<http use-expressions="true">
-
 		<form-login login-page="/admin/login"
 			always-use-default-target="false" login-processing-url="/admin/logon" />
 		<logout />
 		<!-- 实现免登陆验证 -->
-		<remember-me />
-		<custom-filter ref="myFilter" before="FILTER_SECURITY_INTERCEPTOR" />
+		<remember-me services-ref="myRememberMeServices" />
 	</http>
-	<!-- 配置过滤器 -->
-	<beans:bean id="myFilter"
-		class="com.cloudtech.ebusi.service.security.MySecurityFilter">
-		<!-- 用户拥有的权限 -->
-		<beans:property name="authenticationManager" ref="myAuthenticationManager" />
-		<!-- 用户是否拥有所请求资源的权限 -->
-		<beans:property name="accessDecisionManager" ref="myAccessDecisionManager" />
-		<!-- 资源与权限对应关系 -->
-		<beans:property name="securityMetadataSource" ref="mySecurityMetadataSource" />
-	</beans:bean>
-	<!-- 实现了UserDetailsService的Bean -->
-	<authentication-manager alias="myAuthenticationManager">
-		<authentication-provider user-service-ref="myUserDetailService" />
+	<authentication-manager>
+		<authentication-provider user-service-ref="myUserDetailService">
+			<password-encoder ref="myPasswordEncoder" />
+		</authentication-provider>
 	</authentication-manager>
 
-	<beans:bean id="myAccessDecisionManager"
-		class="com.cloudtech.ebusi.service.security.MyAccessDecisionManager" />
-
-	<beans:bean id="mySecurityMetadataSource"
-		class="com.cloudtech.ebusi.service.security.MySecurityMetadataSource">
-		<beans:property name="resourceDao" ref="resourceDao" />
+	<beans:bean id="myRememberMeServices"
+		class="com.cloudtech.ebusi.service.security.MyRememberMeServices">
+		<beans:property name="userDetailsService" ref="myUserDetailService" />
+		<beans:property name="alwaysRemember" value="true" />
+		<beans:property name="key" value="e-business-key" />
 	</beans:bean>
-	
+
 	<beans:bean id="myUserDetailService"
 		class="com.cloudtech.ebusi.service.security.MyUserDetailService">
-		<beans:property name="userDao" ref="userDao" />
 	</beans:bean>
+	
+	<beans:bean id="myPasswordEncoder" class="com.cloudtech.ebusi.service.security.SHAPasswordEncoder"/>
 
 </beans:beans>
