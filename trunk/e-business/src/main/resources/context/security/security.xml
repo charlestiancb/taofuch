@@ -10,10 +10,11 @@
 	<http pattern="/style/**" security="none" />
 	<http pattern="/html/**" security="none" />
 	<http pattern="/admin/login" security="none" />
+	<http pattern="/logout" security="none" />
 	<http use-expressions="true">
 		<form-login login-page="/admin/login"
 			always-use-default-target="false" login-processing-url="/admin/logon" />
-		<logout />
+		<logout logout-url="/logout" />
 		<!-- 实现免登陆验证 -->
 		<remember-me services-ref="myRememberMeServices" />
 	</http>
@@ -31,9 +32,9 @@
 	</beans:bean>
 
 	<beans:bean id="myUserDetailService"
-		class="com.cloudtech.ebusi.service.security.MyUserDetailService">
-	</beans:bean>
-	
-	<beans:bean id="myPasswordEncoder" class="com.cloudtech.ebusi.service.security.SHAPasswordEncoder"/>
+		class="com.cloudtech.ebusi.service.security.MyUserDetailService" />
+
+	<beans:bean id="myPasswordEncoder"
+		class="com.cloudtech.ebusi.service.security.SHAPasswordEncoder" />
 
 </beans:beans>
