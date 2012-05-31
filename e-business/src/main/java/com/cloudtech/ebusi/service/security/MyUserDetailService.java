@@ -1,5 +1,6 @@
 package com.cloudtech.ebusi.service.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -8,7 +9,7 @@ import com.cloudtech.ebusi.dao.UserDao;
 import com.cloudtech.ebusi.entity.User;
 
 public class MyUserDetailService implements UserDetailsService {
-
+	@Autowired
 	private UserDao userDao;
 
 	public UserDao getUserDao() {
@@ -26,6 +27,5 @@ public class MyUserDetailService implements UserDetailsService {
 			throw new UsernameNotFoundException(username);
 		}
 		return user;
-
 	}
 }
