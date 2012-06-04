@@ -97,6 +97,11 @@
 			<artifactId>spring-security-config</artifactId>
 			<version>3.1.0.RELEASE</version>
 		</dependency>
+		<dependency>
+			<groupId>net.vidageek</groupId>
+			<artifactId>crawler</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
