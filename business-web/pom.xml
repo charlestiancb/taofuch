@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cloudtech</groupId>
-	<artifactId>e-business</artifactId>
+	<artifactId>business-web</artifactId>
 	<version>1.0.0</version>
 	<packaging>war</packaging>
 	<name>模拟系统</name>
@@ -13,11 +13,6 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>com.tfc</groupId>
-			<artifactId>util</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 		<!-- unit test -->
 		<dependency>
 			<groupId>junit</groupId>
