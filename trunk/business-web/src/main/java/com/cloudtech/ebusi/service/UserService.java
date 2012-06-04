@@ -1,13 +1,12 @@
 package com.cloudtech.ebusi.service;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cloudtech.ebusi.dao.UserDao;
 import com.cloudtech.ebusi.entity.User;
-import com.tfc.digest.DigestUtils;
-import com.tfc.digest.DigestUtils.Type;
 
 @Service
 public class UserService {
@@ -19,7 +18,7 @@ public class UserService {
 			return false;
 		}
 		User user = userDao.selectByName(j_username);
-		if (user == null || !DigestUtils.digest(j_password, Type.SHA256).equals(user.getPassword())) {
+		if (user == null || !DigestUtils.shaHex(j_password).equals(user.getPassword())) {
 			return false;
 		}
 		return true;
