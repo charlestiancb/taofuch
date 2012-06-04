@@ -36,7 +36,7 @@ public class WebListVisitor implements PageVisitor {
 	}
 
 	public void onError(final Url url, final Status statusError) {
-		// TODO 错误时的处理方式
+		// TODO 错误时的处理方式，记录已经瓟取过的页面！
 	}
 
 	public void visit(final Page page) {
