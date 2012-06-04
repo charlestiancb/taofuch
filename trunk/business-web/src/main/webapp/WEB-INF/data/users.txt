@@ -1,3 +1,3 @@
 //logName,password,displayName,roleName
 --密码：tao123
-taofucheng,265A0C9DED9EDA44986EEA638377CA3E41552ED6,陶富成,ADMIN
+taofucheng,265a0c9ded9eda44986eea638377ca3e41552ed6,陶富成,ADMIN
