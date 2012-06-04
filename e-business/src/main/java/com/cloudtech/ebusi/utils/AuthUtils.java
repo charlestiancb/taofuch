@@ -24,7 +24,10 @@ public class AuthUtils {
 		User curUser = null;
 		SecurityContext context = SecurityContextHolder.getContext();
 		if (context != null && context.getAuthentication() != null) {
-			curUser = (User) context.getAuthentication().getPrincipal();
+			Object obj = context.getAuthentication().getPrincipal();
+			if (obj instanceof User) {
+				curUser = (User) obj;
+			}
 		}
 		return curUser;
 	}

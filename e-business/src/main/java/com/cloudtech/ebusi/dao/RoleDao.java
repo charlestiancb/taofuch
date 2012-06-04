@@ -23,11 +23,13 @@ public class RoleDao extends BaseDao {
 		if (StringUtils.isBlank(roleName)) {
 			return auths;
 		}
-		if (roles.get(roleName) != null) {
-			auths.add(new SimpleGrantedAuthority(roleName));
-		} else {
-			if (selectByName(roleName) != null) {
-				auths.add(new SimpleGrantedAuthority(roleName));
+		Role r = roles.get(roleName);
+		if (r == null) {
+			r = selectByName(roleName);
+		}
+		if (r != null && StringUtils.isNotBlank(r.getRules())) {
+			for (String rule : r.getRules().split(";")) {
+				auths.add(new SimpleGrantedAuthority(rule));
 			}
 		}
 		return auths;
