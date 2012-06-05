@@ -8,6 +8,7 @@
 	<modules>
 		<module>business-web</module>
 		<module>business-crawler</module>
+		<module>business-search</module>
 	</modules>
 	<build>
 		<plugins>
