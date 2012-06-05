@@ -12,6 +12,11 @@
 	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
+			<groupId>com.cloudtech</groupId>
+			<artifactId>business-crawler</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-core</artifactId>
 			<version>3.6.0</version>
