@@ -17,7 +17,7 @@ import com.tfc.analysis.fragment.HTMLFragment;
 import com.tfc.analysis.process.DataInit;
 import com.tfc.analysis.process.Highlight;
 import com.tfc.analysis.process.Processor;
-import com.tfc.analysis.process.WordCutter;
+import com.tfc.analysis.process.WordFinder;
 
 /**
  * 关键词快速查找，即：从指定的文本中快速查找出包含有指定词库中的词。<br>
@@ -157,8 +157,8 @@ public class KWSeeker {
 	 *            传入需要处理的字符串。
 	 * @return 返回处理后的结果。
 	 */
-	public String analysis(String text) {
-		return analysis(text, new HTMLFragment("<font color='red'>", "</font>"));
+	public String highlight(String text) {
+		return highlight(text, new HTMLFragment("<font color='red'>", "</font>"));
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class KWSeeker {
 	 *            指定的高亮方式
 	 * @return 返回处理后的结果。
 	 */
-	public String analysis(String text, AbstractFragment fragment) {
+	public String highlight(String text, AbstractFragment fragment) {
 		return new Highlight().process(wordsTree, text, fragment, wordLeastLen);
 	}
 
@@ -184,8 +184,8 @@ public class KWSeeker {
 	 *            指定使用的词库
 	 * @return 返回其中所有关键词。如果没有，则返回null。
 	 */
-	public Set<String> analysis2Words(String text) {
-		return new WordCutter().process(wordsTree, text, null, wordLeastLen);
+	public Set<String> findWords(String text) {
+		return new WordFinder().process(wordsTree, text, null, wordLeastLen);
 	}
 
 	/**

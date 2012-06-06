@@ -19,7 +19,7 @@ import com.tfc.analysis.utils.AnalysisUtils;
  * @author taofucheng
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class WordCutter implements Processor {
+public class WordFinder implements Processor {
 	/**
 	 * 将文本中的关键词提取出来。
 	 * 
