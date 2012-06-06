@@ -14,7 +14,7 @@ public class Demo {
 		kw1.highlight("这是tes1,要注意哦！", new HTMLFragment("<b>", "</b>"));
 		// 找出文本中所有含有上面词库中的词！
 		kw1.findWords("这是tes1,要注意哦！");
-		// 使用WordCutter找出文本中所有含有上面词库中的词！
+		// 使用WordFinder找出文本中所有含有上面词库中的词！
 		kw1.process(new WordFinder(), "这是tes1,要注意哦！", null);
 	}
 }
