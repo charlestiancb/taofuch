@@ -52,6 +52,17 @@ public class KWSeeker {
 	}
 
 	/**
+	 * 获取一个实例
+	 * 
+	 * @return
+	 */
+	public static KWSeeker getInstance(Keyword... newWords) {
+		KWSeeker sw = new KWSeeker();
+		sw.addWord(newWords);
+		return sw;
+	}
+
+	/**
 	 * 初始化关键词的一些预处理的操作。
 	 */
 	private void initWords() {
