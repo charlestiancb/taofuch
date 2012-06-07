@@ -18,6 +18,12 @@
 	</properties>
 
 	<dependencies>
+		<!-- 便于与搜索进行交互！ -->
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-solrj</artifactId>
+			<version>3.6.0</version>
+		</dependency>
 		<!-- unit test -->
 		<dependency>
 			<groupId>junit</groupId>
