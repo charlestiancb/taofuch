@@ -36,7 +36,7 @@
 	</beans:bean>
 
 	<beans:bean id="myRememberMeServices"
-		class="com.cloudtech.ebusi.service.security.MyRememberMeServices">
+		class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
 		<beans:property name="userDetailsService" ref="myUserDetailService" />
 		<beans:property name="alwaysRemember" value="true" />
 		<beans:property name="key" value="e-business-key" />
