@@ -9,7 +9,7 @@
 	<groupId>com.cloudtech</groupId>
 	<artifactId>business-search</artifactId>
 	<version>1.0.0</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>com.cloudtech</groupId>
