@@ -22,6 +22,16 @@
 			<version>3.6.0</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-facet</artifactId>
+			<version>3.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-demos</artifactId>
+			<version>3.0.3</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.geronimo.specs</groupId>
 			<artifactId>geronimo-stax-api_1.0_spec</artifactId>
 			<version>1.0.1</version>
