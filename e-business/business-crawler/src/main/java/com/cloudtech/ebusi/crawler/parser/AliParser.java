@@ -1,5 +1,7 @@
 package com.cloudtech.ebusi.crawler.parser;
 
+import java.util.List;
+
 import net.vidageek.crawler.Page;
 import net.vidageek.crawler.Url;
 
@@ -14,7 +16,16 @@ public class AliParser extends Parser {
 	@Override
 	public void doParse(Page page) {
 		// 得到所有的链接，然后得到所有的链接内容，然后解析每个详细页面中的内容！
-		System.err.println(page);
+		List<String> links = page.getLinks();
+		if (links != null && !links.isEmpty()) {
+			for (String link : links) {
+				if (link.startsWith("http://detail.china.alibaba.com/buyer/offerdetail")) {
+					// 这个页面是每个公司的主页信息。其中包含许多其它信息！
+					// TODO
+					System.err.println(link);
+				}
+			}
+		}
 	}
 
 }
