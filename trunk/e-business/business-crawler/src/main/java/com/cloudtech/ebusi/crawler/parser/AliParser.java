@@ -13,7 +13,7 @@ public class AliParser extends Parser {
 
 	@Override
 	public void doParse(Page page) {
-		// TODO Auto-generated method stub
+		// 得到所有的链接，然后得到所有的链接内容，然后解析每个详细页面中的内容！
 		System.err.println(page);
 	}
 
