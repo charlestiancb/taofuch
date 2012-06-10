@@ -5,6 +5,12 @@ import java.util.List;
 import net.vidageek.crawler.Page;
 import net.vidageek.crawler.Url;
 
+/**
+ * 解析阿里的公司信息的数据，并将其分字段进行建立相应的索引。
+ * 
+ * @author taofucheng
+ * 
+ */
 public class AliParser extends Parser {
 
 	@Override
