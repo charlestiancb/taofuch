@@ -9,11 +9,17 @@
 	<groupId>com.cloudtech</groupId>
 	<artifactId>business-crawler</artifactId>
 	<version>1.0.0</version>
+	
 	<dependencies>
 		<dependency>
 			<groupId>net.vidageek</groupId>
 			<artifactId>crawler</artifactId>
 			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.htmlparser</groupId>
+			<artifactId>htmlparser</artifactId>
+			<version>2.1</version>
 		</dependency>
 	</dependencies>
 </project>
