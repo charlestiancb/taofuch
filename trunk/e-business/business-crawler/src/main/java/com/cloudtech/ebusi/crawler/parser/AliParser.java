@@ -8,13 +8,13 @@ public class AliParser extends Parser {
 	@Override
 	public boolean followUrl(Url url) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public void doParse(Page page) {
 		// TODO Auto-generated method stub
-
+		System.err.println(page);
 	}
 
 }
