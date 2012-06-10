@@ -8,6 +8,8 @@ import net.vidageek.crawler.PageVisitor;
 import net.vidageek.crawler.Status;
 import net.vidageek.crawler.Url;
 
+import com.cloudtech.ebusi.crawler.parser.Parser;
+
 /**
  * 网站列表搜索器
  * 
@@ -16,8 +18,9 @@ import net.vidageek.crawler.Url;
  */
 public class WebListVisitor implements PageVisitor {
 	private final String domain;
+	private final Parser parse;
 
-	public WebListVisitor(String baseUrl) {
+	public WebListVisitor(String baseUrl, Parser parse) {
 		if ((baseUrl == null) || (baseUrl.trim().length() == 0)) {
 			throw new IllegalArgumentException("baseUrl cannot be null or empty");
 		}
@@ -26,21 +29,24 @@ public class WebListVisitor implements PageVisitor {
 			throw new IllegalArgumentException("baseUrl must match http://[^/]+");
 		}
 		domain = matcher.group(1) + "/";
+		this.parse = parse;
+		if (this.parse == null) {
+			throw new IllegalArgumentException("parse must not be null!!");
+		}
 	}
 
 	public boolean followUrl(final Url url) {
 		if (url == null) {
 			return false;
 		}
-		return url.link().startsWith(domain);
+		return url.link().startsWith(domain) && parse.followUrl(url);
 	}
 
 	public void onError(final Url url, final Status statusError) {
-		// TODO 错误时的处理方式，记录已经瓟取过的页面！
+		parse.parseError(url, statusError);
 	}
 
 	public void visit(final Page page) {
-		// 成功读取页面时的操作。
-		// TODO 将内容解析、建索引、记录已经瓟取过的页面！
+		parse.doParse(page);
 	}
 }
