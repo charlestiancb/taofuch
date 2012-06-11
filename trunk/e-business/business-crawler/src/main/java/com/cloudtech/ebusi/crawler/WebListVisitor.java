@@ -8,7 +8,7 @@ import net.vidageek.crawler.PageVisitor;
 import net.vidageek.crawler.Status;
 import net.vidageek.crawler.Url;
 
-import com.cloudtech.ebusi.crawler.parser.Parser;
+import com.cloudtech.ebusi.crawler.parser.AbstractParser;
 
 /**
  * 网站列表搜索器
@@ -18,9 +18,9 @@ import com.cloudtech.ebusi.crawler.parser.Parser;
  */
 public class WebListVisitor implements PageVisitor {
 	private final String domain;
-	private final Parser parse;
+	private final AbstractParser parse;
 
-	public WebListVisitor(String baseUrl, Parser parse) {
+	public WebListVisitor(String baseUrl, AbstractParser parse) {
 		if ((baseUrl == null) || (baseUrl.trim().length() == 0)) {
 			throw new IllegalArgumentException("baseUrl cannot be null or empty");
 		}

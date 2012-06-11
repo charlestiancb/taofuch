@@ -10,7 +10,7 @@ import net.vidageek.crawler.Url;
  * @author taofucheng
  * 
  */
-public abstract class Parser {
+public abstract class AbstractParser {
 	/**
 	 * 判断这个URL链接是否是应该进行操作的内容。
 	 * 
