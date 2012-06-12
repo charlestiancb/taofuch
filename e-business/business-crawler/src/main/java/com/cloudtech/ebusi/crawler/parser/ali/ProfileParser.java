@@ -9,6 +9,7 @@ import org.htmlparser.util.NodeList;
  * 
  */
 public class ProfileParser {
+
 	/**
 	 * 解析用户信息，并将这些信息进行索引！
 	 * 
@@ -16,7 +17,6 @@ public class ProfileParser {
 	 */
 	public static void indexComInfo(NodeList nl) {
 		// TODO Auto-generated method stub
-
 	}
 
 }
