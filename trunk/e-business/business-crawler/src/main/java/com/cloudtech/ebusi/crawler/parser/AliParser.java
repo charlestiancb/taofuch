@@ -40,7 +40,7 @@ public class AliParser extends AbstractParser {
 						Parser parser = new Parser(link);
 						NodeList nl = parser.parse(new HasAttributeFilter("data-page-type"));
 						if (CredibilityParser.accept(getBulletLink(nl.elementAt(2)))) {// 判断这个用户的信用档案是否合格
-							ProfileParser.indexComInfo(nl);
+							ProfileParser.indexComInfo(nl);// nl是所有的链接Tab信息。
 						}
 					} catch (ParserException e) {
 						e.printStackTrace();
