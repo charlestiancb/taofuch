@@ -24,6 +24,7 @@ public class ProfileParser {
 	public static CompanyInfo indexComInfo(NodeList nl) {
 		CompanyInfo com = new CompanyInfo();
 		parseCred(nl, com);
+		// 下面的内容解析都是在同一个页面中！如：http://gykaida.cn.alibaba.com/athena/companyprofile/gykaida.html
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -53,5 +54,35 @@ public class ProfileParser {
 		} catch (Exception e) {
 			System.err.println("判断的解析失败：" + link + "  " + ExceptionUtils.getFullStackTrace(e));
 		}
+	}
+
+	/**
+	 * 解析公司主体信息，如：公司简介、注册信息等
+	 * 
+	 * @param nl
+	 * @param com
+	 */
+	private static void parseComMain(NodeList nl, CompanyInfo com) {
+		// TODO
+	}
+
+	/**
+	 * 解析公司行业信息。
+	 * 
+	 * @param nl
+	 * @param com
+	 */
+	private static void parseComIndustry(NodeList nl, CompanyInfo com) {
+		// TODO
+	}
+
+	/**
+	 * 解析公司的其它信息！
+	 * 
+	 * @param nl
+	 * @param com
+	 */
+	private static void parseComDetails(NodeList nl, CompanyInfo com) {
+		// TODO
 	}
 }
