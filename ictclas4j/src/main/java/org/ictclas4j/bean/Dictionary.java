@@ -1,18 +1,14 @@
 package org.ictclas4j.bean;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 
-import org.apache.commons.io.IOUtils;
 import org.ictclas4j.utility.GFCommon;
 import org.ictclas4j.utility.GFString;
 import org.ictclas4j.utility.Utility;
@@ -69,9 +65,7 @@ public class Dictionary {
 
 		try {
 			delModified();
-			Reader reader = new InputStreamReader(Dictionary.class.getResourceAsStream(filename), "UTF-8");
-			ByteArrayInputStream bais = new ByteArrayInputStream(IOUtils.toByteArray(reader));
-			DataInputStream in = new DataInputStream(new BufferedInputStream(bais));
+			DataInputStream in = new DataInputStream(new BufferedInputStream(Dictionary.class.getResourceAsStream(filename)));
 			for (int i = 0; i < Utility.CC_NUM; i++) {
 				// logger.debug("块" + i);
 				// 词典库在写二进制数据时采用低位优先(小头在前)方式,需要转换一下
@@ -86,23 +80,13 @@ public class Dictionary {
 					nBuffer[0] = GFCommon.bytes2int(Utility.readBytes(in, 4), false);
 					nBuffer[1] = GFCommon.bytes2int(Utility.readBytes(in, 4), false);
 					nBuffer[2] = GFCommon.bytes2int(Utility.readBytes(in, 4), false);
-
-					// String print = " wordLen:" + nBuffer[1] + " frequency:" +
-					// nBuffer[0] + " handle:" + nBuffer[2];
-
 					WordItem ti = new WordItem();
 					if (nBuffer[1] > 0)// String length is more than 0
 					{
 						byte[] word = Utility.readBytes(in, nBuffer[1]);
 						ti.setWord(new String(word, "GBK"));
-
 					} else
 						ti.setWord("");
-
-					// print += " word:(" + Utility.getGB(i) + ")" +
-					// ti.getWord();
-					// logger.debug(print);
-
 					if (isReset)// Reset the frequency
 						ti.setFreq(0);
 					else
