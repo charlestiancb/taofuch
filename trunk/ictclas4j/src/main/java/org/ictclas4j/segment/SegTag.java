@@ -1,4 +1,4 @@
-ï»¿package org.ictclas4j.segment;
+package org.ictclas4j.segment;
 
 import java.util.ArrayList;
 
@@ -20,18 +20,18 @@ public class SegTag {
 	private PosTagger placeTagger;
 	private PosTagger lexTagger;
 
-	private int segPathCount = 1;// åˆ†è¯è·¯å¾„çš„æ•°ç›®
-	private boolean mark = true;// æ˜¯å¦è¦æ ‡æ³¨è¯æ€§ç­‰ä¿¡æ¯
-	private boolean wrap = true;// æ˜¯å¦è¦å°†æ¯ä¸ªè¯è¿›è¡Œæ¢è¡Œ
+	private int segPathCount = 1;// ·Ö´ÊÂ·¾¶µÄÊıÄ¿
+	private boolean mark = true;// ÊÇ·ñÒª±ê×¢´ÊĞÔµÈĞÅÏ¢
+	private boolean wrap = true;// ÊÇ·ñÒª½«Ã¿¸ö´Ê½øĞĞ»»ĞĞ
 
 	/**
-	 * æ„é€ å‡½æ•°
+	 * ¹¹Ôìº¯Êı
 	 * 
 	 * @param segPathCount
 	 * @param mark
-	 *            æ˜¯å¦æ ‡å¿—è¯æ€§
+	 *            ÊÇ·ñ±êÖ¾´ÊĞÔ
 	 * @param wrap
-	 *            æ˜¯å¦æ¯ä¸ªè¯å•ç‹¬ä¸€è¡Œæ˜¾ç¤º
+	 *            ÊÇ·ñÃ¿¸ö´Êµ¥¶ÀÒ»ĞĞÏÔÊ¾
 	 */
 	public SegTag(int segPathCount, boolean mark, boolean wrap) {
 		this(segPathCount);
@@ -51,7 +51,7 @@ public class SegTag {
 	}
 
 	public SegResult split(String src) {
-		SegResult sr = new SegResult(src);// åˆ†è¯ç»“æœ
+		SegResult sr = new SegResult(src);// ·Ö´Ê½á¹û
 		String finalResult = null;
 
 		if (src != null) {
@@ -67,7 +67,7 @@ public class SegTag {
 				mr.setIndex(index++);
 				mr.setSource(sen.getContent());
 				if (sen.isSeg()) {
-					// åŸå­åˆ†è¯
+					// Ô­×Ó·Ö´Ê
 					long start = System.currentTimeMillis();
 					AtomSeg as = new AtomSeg(sen.getContent());
 					ArrayList<Atom> atoms = as.getAtoms();
@@ -75,16 +75,16 @@ public class SegTag {
 					println2Err("[atom time]:" + (System.currentTimeMillis() - start));
 					start = System.currentTimeMillis();
 
-					// ç”Ÿæˆåˆ†è¯å›¾è¡¨,å…ˆè¿›è¡Œåˆæ­¥åˆ†è¯ï¼Œç„¶åè¿›è¡Œä¼˜åŒ–ï¼Œæœ€åè¿›è¡Œè¯æ€§æ ‡è®°
+					// Éú³É·Ö´ÊÍ¼±í,ÏÈ½øĞĞ³õ²½·Ö´Ê£¬È»ºó½øĞĞÓÅ»¯£¬×îºó½øĞĞ´ÊĞÔ±ê¼Ç
 					SegGraph segGraph = GraphGenerate.generate(atoms, coreDict);
 					mr.setSegGraph(segGraph.getSnList());
-					// ç”ŸæˆäºŒå‰åˆ†è¯å›¾è¡¨
+					// Éú³É¶ş²æ·Ö´ÊÍ¼±í
 					SegGraph biSegGraph = GraphGenerate.biGenerate(segGraph, coreDict, bigramDict);
 					mr.setBiSegGraph(biSegGraph.getSnList());
 					println2Err("[graph time]:" + (System.currentTimeMillis() - start));
 					start = System.currentTimeMillis();
 
-					// æ±‚Næœ€çŸ­è·¯å¾„
+					// ÇóN×î¶ÌÂ·¾¶
 					NShortPath nsp = new NShortPath(biSegGraph, segPathCount);
 					ArrayList<ArrayList<Integer>> bipath = nsp.getPaths();
 					mr.setBipath(bipath);
@@ -92,7 +92,7 @@ public class SegTag {
 					start = System.currentTimeMillis();
 
 					for (ArrayList<Integer> onePath : bipath) {
-						// å¾—åˆ°åˆæ¬¡åˆ†è¯è·¯å¾„
+						// µÃµ½³õ´Î·Ö´ÊÂ·¾¶
 						ArrayList<SegNode> segPath = getSegPath(segGraph, onePath);
 						ArrayList<SegNode> firstPath = AdjustSeg.firstAdjust(segPath);
 						String firstResult = outputResult(firstPath);
@@ -100,7 +100,7 @@ public class SegTag {
 						println2Err("[first time]:" + (System.currentTimeMillis() - start));
 						start = System.currentTimeMillis();
 
-						// å¤„ç†æœªç™»é™†è¯ï¼Œè¿›å¯¹åˆæ¬¡åˆ†è¯ç»“æœè¿›è¡Œä¼˜åŒ–
+						// ´¦ÀíÎ´µÇÂ½´Ê£¬½ø¶Ô³õ´Î·Ö´Ê½á¹û½øĞĞÓÅ»¯
 						SegGraph optSegGraph = new SegGraph(firstPath);
 						ArrayList<SegNode> sns = clone(firstPath);
 						personTagger.recognition(optSegGraph, sns);
@@ -110,16 +110,16 @@ public class SegTag {
 						println2Err("[unknown time]:" + (System.currentTimeMillis() - start));
 						start = System.currentTimeMillis();
 
-						// æ ¹æ®ä¼˜åŒ–åçš„ç»“æœï¼Œé‡æ–°è¿›è¡Œç”ŸæˆäºŒå‰åˆ†è¯å›¾è¡¨
+						// ¸ù¾İÓÅ»¯ºóµÄ½á¹û£¬ÖØĞÂ½øĞĞÉú³É¶ş²æ·Ö´ÊÍ¼±í
 						SegGraph optBiSegGraph = GraphGenerate.biGenerate(optSegGraph, coreDict, bigramDict);
 						mr.setOptBiSegGraph(optBiSegGraph.getSnList());
 
-						// é‡æ–°æ±‚å–Nï¼æœ€çŸ­è·¯å¾„
+						// ÖØĞÂÇóÈ¡N£­×î¶ÌÂ·¾¶
 						NShortPath optNsp = new NShortPath(optBiSegGraph, segPathCount);
 						ArrayList<ArrayList<Integer>> optBipath = optNsp.getPaths();
 						mr.setOptBipath(optBipath);
 
-						// ç”Ÿæˆä¼˜åŒ–åçš„åˆ†è¯ç»“æœï¼Œå¹¶å¯¹ç»“æœè¿›è¡Œè¯æ€§æ ‡è®°å’Œæœ€åçš„ä¼˜åŒ–è°ƒæ•´å¤„ç†
+						// Éú³ÉÓÅ»¯ºóµÄ·Ö´Ê½á¹û£¬²¢¶Ô½á¹û½øĞĞ´ÊĞÔ±ê¼ÇºÍ×îºóµÄÓÅ»¯µ÷Õû´¦Àí
 						ArrayList<SegNode> adjResult = null;
 						for (ArrayList<Integer> optOnePath : optBipath) {
 							ArrayList<SegNode> optSegPath = getSegPath(optSegGraph, optOnePath);
@@ -169,7 +169,7 @@ public class SegTag {
 		return result;
 	}
 
-	// æ ¹æ®äºŒå‰åˆ†è¯è·¯å¾„ç”Ÿæˆåˆ†è¯è·¯å¾„
+	// ¸ù¾İ¶ş²æ·Ö´ÊÂ·¾¶Éú³É·Ö´ÊÂ·¾¶
 	private ArrayList<SegNode> getSegPath(SegGraph sg, ArrayList<Integer> bipath) {
 		ArrayList<SegNode> path = null;
 
@@ -183,7 +183,7 @@ public class SegTag {
 		return path;
 	}
 
-	// æ ¹æ®åˆ†è¯è·¯å¾„ç”Ÿæˆåˆ†è¯ç»“æœ
+	// ¸ù¾İ·Ö´ÊÂ·¾¶Éú³É·Ö´Ê½á¹û
 	private String outputResult(ArrayList<SegNode> wrList) {
 		StringBuilder result = null;
 		String temp = null;

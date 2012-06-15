@@ -1,18 +1,18 @@
-ï»¿package org.ictclas4j.bean;
+package org.ictclas4j.bean;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
- * é˜Ÿåˆ—èŠ‚ç‚¹
+ * ¶ÓÁĞ½Úµã
  * @author sinboy
  *
  */
 public class QueueNode {
-	private int parent;//çˆ¶èŠ‚ç‚¹çš„ä½ç½®
+	private int parent;//¸¸½ÚµãµÄÎ»ÖÃ
 
-	private int index;//åˆ†è¯è·¯å¾„çš„ç¼–å·,å³ç¬¬å‡ æ¡åˆ†è¯è·¯å¾„
+	private int index;//·Ö´ÊÂ·¾¶µÄ±àºÅ,¼´µÚ¼¸Ìõ·Ö´ÊÂ·¾¶
 
-	private double weight;//æƒé‡
+	private double weight;//È¨ÖØ
 
 	public QueueNode() {
 

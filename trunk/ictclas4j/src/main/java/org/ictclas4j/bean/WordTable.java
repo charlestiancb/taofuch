@@ -1,4 +1,4 @@
-ï»¿package org.ictclas4j.bean;
+package org.ictclas4j.bean;
 
 import java.util.ArrayList;
 
@@ -6,13 +6,13 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 
 /**
- * ç›¸åŒå¼€å¤´çš„è¯ç»„è¡¨.
+ * ÏàÍ¬¿ªÍ·µÄ´Ê×é±í.
  * 
  * @author sinboy
  * 
  */
 public class WordTable {
-	// è¯ç»„é›†çš„æ•°ç›®
+	// ´Ê×é¼¯µÄÊıÄ¿
 	private int count;
 
 	private ArrayList<WordItem> words;

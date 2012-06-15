@@ -1,4 +1,4 @@
-﻿package org.ictclas4j.utility;
+package org.ictclas4j.utility;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -46,18 +46,18 @@ public class Utility {
 
 	public static final int MAX_SEGMENT_NUM = 10;
 
-	public static final String POSTFIX_SINGLE = "坝邦堡杯城池村单岛道堤店洞渡队法峰府冈港阁宫沟国海号河湖环集江奖礁角街井郡坑口矿里岭楼路门盟庙弄牌派坡铺旗桥区渠泉人山省市水寺塔台滩坛堂厅亭屯湾文屋溪峡县线乡巷型洋窑营屿语园苑院闸寨站镇州庄族陂庵町";
+	public static final String POSTFIX_SINGLE = "�Ӱ���ǳش嵥�����̵궴�ɶӷ��帮�Ը۸󹬹������źӺ������������ǽ־����ӿڿ�����¥·������Ū����������������Ȫ��ɽʡ��ˮ����̨̲̳����ͤ��������ϪϿ������������ҤӪ����԰ԷԺբկվ����ׯ�������";
 
-	public static final String[] POSTFIX_MUTIPLE = { "半岛", "草原", "城市", "大堤", "大公国", "大桥", "地区", "帝国", "渡槽", "港口",
-			"高速公路", "高原", "公路", "公园", "共和国", "谷地", "广场", "国道", "海峡", "胡同", "机场", "集镇", "教区", "街道", "口岸", "码头", "煤矿",
-			"牧场", "农场", "盆地", "平原", "丘陵", "群岛", "沙漠", "沙洲", "山脉", "山丘", "水库", "隧道", "特区", "铁路", "新村", "雪峰", "盐场", "盐湖",
-			"渔场", "直辖市", "自治区", "自治县", "自治州", "" };
+	public static final String[] POSTFIX_MUTIPLE = { "�뵺", "��ԭ", "����", "���", "�󹫹�", "����", "����", "�۹�", "�ɲ�", "�ۿ�",
+			"���ٹ�·", "��ԭ", "��·", "��԰", "���͹�", "�ȵ�", "�㳡", "����", "��Ͽ", "��ͬ", "����", "����", "����", "�ֵ�", "�ڰ�", "��ͷ", "ú��",
+			"����", "ũ��", "���", "ƽԭ", "����", "Ⱥ��", "ɳĮ", "ɳ��", "ɽ��", "ɽ��", "ˮ��", "����", "����", "��·", "�´�", "ѩ��", "�γ�", "�κ�",
+			"�泡", "ֱϽ��", "������", "������", "������", "" };
 
-	public static final String TRANS_ENGLISH = "·—阿埃艾爱安昂敖奥澳笆芭巴白拜班邦保堡鲍北贝本比毕彼别波玻博勃伯泊卜布才采仓查差柴彻川茨慈次达大戴代丹旦但当道德得的登迪狄蒂帝丁东杜敦多额俄厄鄂恩尔伐法范菲芬费佛夫福弗甫噶盖干冈哥戈革葛格各根古瓜哈海罕翰汗汉豪合河赫亨侯呼胡华霍基吉及加贾坚简杰金京久居君喀卡凯坎康考柯科可克肯库奎拉喇莱来兰郎朗劳勒雷累楞黎理李里莉丽历利立力连廉良列烈林隆卢虏鲁路伦仑罗洛玛马买麦迈曼茅茂梅门蒙盟米蜜密敏明摩莫墨默姆木穆那娜纳乃奈南内尼年涅宁纽努诺欧帕潘畔庞培佩彭皮平泼普其契恰强乔切钦沁泉让热荣肉儒瑞若萨塞赛桑瑟森莎沙山善绍舍圣施诗石什史士守斯司丝苏素索塔泰坦汤唐陶特提汀图土吐托陀瓦万王旺威韦维魏温文翁沃乌吾武伍西锡希喜夏相香歇谢辛新牙雅亚彦尧叶依伊衣宜义因音英雍尤于约宰泽增詹珍治中仲朱诸卓孜祖佐伽娅尕腓滕济嘉津赖莲琳律略慕妮聂裴浦奇齐琴茹珊卫欣逊札哲智兹芙汶迦珀琪梵斐胥黛";
+	public static final String TRANS_ENGLISH = "�������������������°İʰŰͰװݰ������������ȱϱ˱𲨲��������������Ųɲֲ��񳹴��Ĵȴδ����������������µõĵǵϵҵٵ۶����Ŷض�����������������Ʒҷѷ�򸣸������ǸɸԸ���������ŹϹ��������������ϺӺպ����������������Ӽּ��ܽ𾩾þӾ��������������¿ƿɿ˿Ͽ����������������������������������������������������������¡¬²³·��������������������éï÷����������������ĦĪīĬķľ������������������������ŦŬŵŷ��������������Ƥƽ��������ǡǿ��������Ȫ��������������������ɣɪɭɯɳɽ������ʥʩʫʯʲʷʿ��˹˾˿��������̩̹����������͡ͼ������������������Τάκ��������������������ϣϲ������Ъл������������ҢҶ��������������ӢӺ����Լ������ղ������������׿������٤��������üν�����������Ľ����������������ɺ����ѷ��������ܽ���������������";
 
-	public static final String TRANS_RUSSIAN = "·阿安奥巴比彼波布察茨大德得丁杜尔法夫伏甫盖格哈基加坚捷金卡科可克库拉莱兰勒雷里历利连列卢鲁罗洛马梅蒙米姆娜涅宁诺帕泼普奇齐乔切日萨色山申什斯索塔坦特托娃维文乌西希谢亚耶叶依伊以扎佐柴达登蒂戈果海赫华霍吉季津柯理琳玛曼穆纳尼契钦丘桑沙舍泰图瓦万雅卓兹";
+	public static final String TRANS_RUSSIAN = "�������°ͱȱ˲�����Ĵ�µö��Ŷ���������Ǹ�����Ӽ�ݽ𿨿ƿɿ˿���������������������¬³������÷����ķ������ŵ������������������ɫɽ��ʲ˹����̹������ά������ϣл��ҮҶ�������������ǵٸ�����ջ������������������������������ɣɳ��̩ͼ������׿��";
 
-	public static final String TRANS_JAPANESE = "安奥八白百邦保北倍本比滨博步部彩菜仓昌长朝池赤川船淳次村大代岛稻道德地典渡尔繁饭风福冈高工宫古谷关广桂贵好浩和合河黑横恒宏后户荒绘吉纪佳加见健江介金今进井静敬靖久酒菊俊康可克口梨理里礼栗丽利立凉良林玲铃柳隆鹿麻玛美萌弥敏木纳南男内鸟宁朋片平崎齐千前浅桥琴青清庆秋丘曲泉仁忍日荣若三森纱杉山善上伸神圣石实矢世市室水顺司松泰桃藤天田土万望尾未文武五舞西细夏宪相小孝新星行雄秀雅亚岩杨洋阳遥野也叶一伊衣逸义益樱永由有佑宇羽郁渊元垣原远月悦早造则泽增扎宅章昭沼真政枝知之植智治中忠仲竹助椎子佐阪坂堀荻菅薰浜濑鸠筱";
+	public static final String TRANS_JAPANESE = "���°˰װٰ�������ȱ��������ʲ˲ֲ������سന�����δ����������µص�ɶ������縣�Ը߹����Źȹع���úƺͺϺӺں���󻧻Ļ漪�ͼѼӼ�������������������þƾտ����ɿ˿�����������������������������¡¹������������ľ��������������Ƭƽ����ǧǰǳ����������������Ȫ������������ɭɴɼɽ��������ʥʯʵʸ������ˮ˳˾��̩��������������βδ����������ϸ������СТ����������������������ңҰҲҶһ����������ӣ��������������ԨԪԫԭԶ����������������լ����������ֲ֦֪֮��������������׵��������ܥݶ��޹������";
 
 	// Translation type
 	public static final int TT_ENGLISH = 0;
@@ -67,20 +67,20 @@ public class Utility {
 	public static final int TT_JAPANESE = 2;
 
 	// Seperator type
-	public static final String SEPERATOR_C_SENTENCE = "。！？：；…";
+	public static final String SEPERATOR_C_SENTENCE = "������������";
 
-	public static final String SEPERATOR_C_SUB_SENTENCE = "、，（）“”‘’";
+	public static final String SEPERATOR_C_SUB_SENTENCE = "����������������";
 
 	public static final String SEPERATOR_E_SENTENCE = "!?:;";
 
 	public static final String SEPERATOR_E_SUB_SENTENCE = ",()\"'";
 
-	public static final String SEPERATOR_LINK = "\n\r 　";
+	public static final String SEPERATOR_LINK = "\n\r ��";
 
 	// Sentence begin and ending string
-	public static final String SENTENCE_BEGIN = "始##始";
+	public static final String SENTENCE_BEGIN = "ʼ##ʼ";
 
-	public static final String SENTENCE_END = "末##末";
+	public static final String SENTENCE_END = "ĩ##ĩ";
 
 	// Seperator between two words
 	public static final String WORD_SEGMENTER = "@";
@@ -105,18 +105,18 @@ public class Utility {
 
 	public static final double INFINITE_VALUE = 10000.00;
 
-	// 平滑参数
+	// ƽ������
 	public static final double SMOOTH_PARAM = 0.1;
 
-	public static final String UNKNOWN_PERSON = "未##人";
+	public static final String UNKNOWN_PERSON = "δ##��";
 
-	public static final String UNKNOWN_SPACE = "未##地";
+	public static final String UNKNOWN_SPACE = "δ##��";
 
-	public static final String UNKNOWN_NUM = "未##数";
+	public static final String UNKNOWN_NUM = "δ##��";
 
-	public static final String UNKNOWN_TIME = "未##时";
+	public static final String UNKNOWN_TIME = "δ##ʱ";
 
-	public static final String UNKNOWN_LETTER = "未##串";
+	public static final String UNKNOWN_LETTER = "δ##��";
 
 	public static boolean gbGenerate(String fileName) {
 		File file;
@@ -355,19 +355,19 @@ public class Utility {
 		if (str != null) {
 			int i = 0;
 			String temp = str + " ";
-			// 判断开头是否是+-之类的符号
-			if ("±+—-＋".indexOf(temp.substring(0, 1)) != -1)
+			// �жϿ�ͷ�Ƿ���+-֮��ķ���
+			if ("��+��-��".indexOf(temp.substring(0, 1)) != -1)
 				i++;
-			/** 如果是全角的０１２３４５６７８９ 字符* */
-			while (i < str.length() && "０１２３４５６７８９".indexOf(str.substring(i, i + 1)) != -1)
+			/** �����ȫ�ǵģ������������������� �ַ�* */
+			while (i < str.length() && "��������������������".indexOf(str.substring(i, i + 1)) != -1)
 				i++;
 
 			// Get middle delimiter such as .
 			if (i < str.length()) {
 				String s = str.substring(i, i + 1);
-				if ("∶·．／".indexOf(s) != -1 || ".".equals(s) || "/".equals(s)) {// 98．1％
+				if ("�á�����".indexOf(s) != -1 || ".".equals(s) || "/".equals(s)) {// 98��1��
 					i++;
-					while (i + 1 < str.length() && "０１２３４５６７８９".indexOf(str.substring(i + 1, i + 2)) != -1)
+					while (i + 1 < str.length() && "��������������������".indexOf(str.substring(i + 1, i + 2)) != -1)
 
 						i++;
 				}
@@ -382,7 +382,7 @@ public class Utility {
 			// Get middle delimiter such as .
 			if (i < str.length()) {
 				String s = str.substring(i, i + 1);
-				if ("∶·．／".indexOf(s) != -1 || ".".equals(s) || "/".equals(s)) {// 98．1％
+				if ("�á�����".indexOf(s) != -1 || ".".equals(s) || "/".equals(s)) {// 98��1��
 					i++;
 					while (i + 1 < str.length() && "0123456789".indexOf(str.substring(i + 1, i + 2)) != -1)
 						i++;
@@ -391,7 +391,7 @@ public class Utility {
 
 			if (i < str.length()) {
 
-				if ("百千万亿佰仟％‰".indexOf(str.substring(i, i + 1)) == -1 && !"%".equals(str.substring(i, i + 1)))
+				if ("��ǧ���ڰ�Ǫ����".indexOf(str.substring(i, i + 1)) == -1 && !"%".equals(str.substring(i, i + 1)))
 					i--;
 			}
 			if (i >= str.length())
@@ -574,16 +574,16 @@ public class Utility {
 	 * Returns : the index value Author : Kevin Zhang History : 1.create
 	 * 2002-1-26
 	 **************************************************************************/
-	public static boolean isAllChineseNum(String word) {// 百分之五点六的人早上八点十八分起床
+	public static boolean isAllChineseNum(String word) {// �ٷ�֮������������ϰ˵�ʮ�˷���
 
-		String chineseNum = "零○一二两三四五六七八九十廿百千万亿壹贰叁肆伍陆柒捌玖拾佰仟∶·．／点";//
-		String prefix = "几数第上成";
+		String chineseNum = "���һ�������������߰˾�ʮإ��ǧ����Ҽ��������½��ƾ�ʰ��Ǫ�á�������";//
+		String prefix = "�������ϳ�";
 
 		if (word != null) {
 			String temp = word + " ";
 			for (int i = 0; i < word.length(); i++) {
 
-				if (temp.indexOf("分之", i) != -1)// 百分之五
+				if (temp.indexOf("��֮", i) != -1)// �ٷ�֮��
 				{
 					i += 2;
 					continue;
@@ -626,7 +626,7 @@ public class Utility {
 	}
 
 	/**
-	 * 得到字符集的字符在字符串中出现的次数
+	 * �õ��ַ������ַ����ַ����г��ֵĴ���
 	 * 
 	 * @param charSet
 	 * @param word
@@ -736,11 +736,11 @@ public class Utility {
 	}
 
 	/**
-	 * 比较第二个字节数组是否在第一个中出现
+	 * �Ƚϵڶ����ֽ������Ƿ��ڵ�һ���г���
 	 * 
 	 * @param b1
 	 * @param b2
-	 * @return 返回第一次出现在位置。如果没有出现，则返回－1
+	 * @return ���ص�һ�γ�����λ�á����û�г��֣��򷵻أ�1
 	 */
 	public static int strstr(byte[] b1, byte[] b2) {
 		boolean flag = true;
@@ -781,7 +781,7 @@ public class Utility {
 	}
 
 	/**
-	 * 比较两个字节数组前len个字节是否相等
+	 * �Ƚ������ֽ�����ǰlen���ֽ��Ƿ����
 	 * 
 	 * @param b1
 	 * @param b2
@@ -818,7 +818,7 @@ public class Utility {
 	}
 
 	/**
-	 * 汉字在6768区位表中对应的ID号
+	 * ������6768��λ���ж�Ӧ��ID��
 	 */
 	public static int CC_ID(String str) {
 		int result = -1;
@@ -883,7 +883,7 @@ public class Utility {
 	}
 
 	/**
-	 * 根据ID号得到对应的GB汉字
+	 * ����ID�ŵõ���Ӧ��GB����
 	 * 
 	 * @param id
 	 *            0--6767
@@ -932,7 +932,7 @@ public class Utility {
 	}
 
 	/**
-	 * 判断字符串是否是年份
+	 * �ж��ַ����Ƿ������
 	 * 
 	 * @param str
 	 * @return
@@ -942,32 +942,32 @@ public class Utility {
 			int len = snum.length();
 			String first = snum.substring(0, 1);
 
-			// 1992年, 98年,06年
+			// 1992��, 98��,06��
 			if (isAllSingleByte(snum)
 					&& (len == 4 || len == 2 && (GFString.cint(first) > 4 || GFString.cint(first) == 0)))
 				return true;
-			if (isAllNum(snum) && (len >= 6 || len == 4 && "０５６７８９".indexOf(first) != -1))
+			if (isAllNum(snum) && (len >= 6 || len == 4 && "������������".indexOf(first) != -1))
 				return true;
-			if (getCharCount("零○一二三四五六七八九壹贰叁肆伍陆柒捌玖", snum) == len && len >= 2)
+			if (getCharCount("���һ�����������߰˾�Ҽ��������½��ƾ�", snum) == len && len >= 2)
 				return true;
-			if (len == 4 && getCharCount("千仟零○", snum) == 2)// 二仟零二年
+			if (len == 4 && getCharCount("ǧǪ���", snum) == 2)// ��Ǫ�����
 				return true;
-			if (len == 1 && getCharCount("千仟", snum) == 1)
+			if (len == 1 && getCharCount("ǧǪ", snum) == 1)
 				return true;
-			if (len == 2 && getCharCount("甲乙丙丁戊己庚辛壬癸", snum) == 1
-					&& getCharCount("子丑寅卯辰巳午未申酉戌亥", snum.substring(1)) == 1)
+			if (len == 2 && getCharCount("���ұ����켺�����ɹ�", snum) == 1
+					&& getCharCount("�ӳ���î������δ�����纥", snum.substring(1)) == 1)
 				return true;
 		}
 		return false;
 	}
 
 	/**
-	 * 判断一个字符串的所有字符是否在另一个字符串集合中
+	 * �ж�һ���ַ����������ַ��Ƿ�����һ���ַ���������
 	 * 
 	 * @param aggr
-	 *            字符串集合
+	 *            �ַ�������
 	 * @param str
-	 *            需要判断的字符串
+	 *            ��Ҫ�жϵ��ַ���
 	 * @return
 	 */
 	public static boolean isInAggregate(String aggr, String str) {
@@ -985,7 +985,7 @@ public class Utility {
 	}
 
 	/**
-	 * 判断该字符串是否是半角字符
+	 * �жϸ��ַ����Ƿ��ǰ���ַ�
 	 * 
 	 * @param str
 	 * @return
@@ -1006,7 +1006,7 @@ public class Utility {
 	}
 
 	/**
-	 * 判断该字符串是否是全角字符
+	 * �жϸ��ַ����Ƿ���ȫ���ַ�
 	 * 
 	 * @param str
 	 * @return
@@ -1027,20 +1027,20 @@ public class Utility {
 	}
 
 	/**
-	 * 判断是否是一个连字符（分隔符）
+	 * �ж��Ƿ���һ�����ַ����ָ�����
 	 * 
 	 * @param str
 	 * @return
 	 */
 	public static boolean isDelimiter(String str) {
-		if (str != null && ("-".equals(str) || "－".equals(str)))
+		if (str != null && ("-".equals(str) || "��".equals(str)))
 			return true;
 		else
 			return false;
 	}
 
 	public static boolean isUnknownWord(String word) {
-		if (word != null && word.indexOf("未##") == 0)
+		if (word != null && word.indexOf("δ##") == 0)
 			return true;
 		else
 			return false;
@@ -1092,7 +1092,7 @@ public class Utility {
 
 			if (surNameLen != 2
 					&& ((surNameLen == 0 && len > 2) || giveName.length() > 2 || getForeignCharCount(word) >= 3
-							&& freq < personDict.getFreq("张", 1) / 40 && freq2 < personDict.getFreq("华", 2) / 20 || (freq < 10 && getForeignCharCount(giveName) == (len - surNameLen) / 2)))
+							&& freq < personDict.getFreq("��", 1) / 40 && freq2 < personDict.getFreq("��", 2) / 20 || (freq < 10 && getForeignCharCount(giveName) == (len - surNameLen) / 2)))
 				return null;
 			if (len == 2 && personTagger.isGivenName(word))
 				return null;

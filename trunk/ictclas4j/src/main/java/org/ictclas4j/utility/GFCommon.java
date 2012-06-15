@@ -1,4 +1,4 @@
-ï»¿/*
+/*
  * Created on 2005-1-10
  * 
  * TODO To change the template for this generated file go to Window -
@@ -13,18 +13,18 @@ import java.sql.SQLException;
 
 public class GFCommon {
 	/**
-	 * æŠŠä¸€ä¸ªæ•°ç»„çš„æ•°æ®COPYåˆ°å¦å¤–ä¸€ä¸ªæ•°ç»„ä¸­æŒ‡å®šçš„ä½ç½®ã€‚ å¦‚æœmaxlenå¤§äºsourceæ•°ç»„çš„é•¿åº¦ï¼Œåˆ™åœ¨sourceæ•°ç»„åè¡¥0è¡¥è¶³å¤Ÿmaxlenä½ï¼›
-	 * å¦‚æœmaxlenå°äºsourceæ•°ç»„çš„é•¿åº¦ï¼Œåˆ™æŠŠsourceæ•°ç»„åé¢å¤šå‡ºçš„å‡ ä½å»æ‰ï¼Œå‰©å¤Ÿmaxlenä½
+	 * °ÑÒ»¸öÊı×éµÄÊı¾İCOPYµ½ÁíÍâÒ»¸öÊı×éÖĞÖ¸¶¨µÄÎ»ÖÃ¡£ Èç¹ûmaxlen´óÓÚsourceÊı×éµÄ³¤¶È£¬ÔòÔÚsourceÊı×éºó²¹0²¹×ã¹»maxlenÎ»£»
+	 * Èç¹ûmaxlenĞ¡ÓÚsourceÊı×éµÄ³¤¶È£¬Ôò°ÑsourceÊı×éºóÃæ¶à³öµÄ¼¸Î»È¥µô£¬Ê£¹»maxlenÎ»
 	 * 
 	 * @param d
-	 *            destination æ•°ç»„
+	 *            destination Êı×é
 	 * @param s
-	 *            sourceæ•°ç»„
+	 *            sourceÊı×é
 	 * @param from
-	 *            destinationçš„å¼€å§‹ä½
+	 *            destinationµÄ¿ªÊ¼Î»
 	 * @param maxlen
-	 *            sourceæ•°ç»„ä¸­çš„æ•°æ®COPYåˆ°destinationä¸­ä¹‹ååœ¨å…¶ä¸­å æœ‰çš„æœ€å¤§é•¿åº¦
-	 * @return ç›®çš„æ•°ç»„æ­¤æ—¶è¢«å ç”¨çš„æœ€åä¸€ä½
+	 *            sourceÊı×éÖĞµÄÊı¾İCOPYµ½destinationÖĞÖ®ºóÔÚÆäÖĞÕ¼ÓĞµÄ×î´ó³¤¶È
+	 * @return Ä¿µÄÊı×é´ËÊ±±»Õ¼ÓÃµÄ×îºóÒ»Î»
 	 */
 	public static int bytesCopy(byte d[], byte s[], int from, int maxlen) {
 		int end = from;
@@ -54,15 +54,15 @@ public class GFCommon {
 	}
 
 	/**
-	 * ä»ä¸€ä¸ªæ•°ç»„ä¸­çš„æŒ‡å®šä½ç½®å¼€å§‹ï¼Œå‘åå–å‡ºlenä¸ªå€¼ï¼› å¦‚æœfromä¸ºè´Ÿå€¼ï¼Œåˆ™ä»æŒ‡å®šä½ç½®å‘å‰å–å‡ºlenä¸ªå€¼
+	 * ´ÓÒ»¸öÊı×éÖĞµÄÖ¸¶¨Î»ÖÃ¿ªÊ¼£¬ÏòºóÈ¡³ölen¸öÖµ£» Èç¹ûfromÎª¸ºÖµ£¬Ôò´ÓÖ¸¶¨Î»ÖÃÏòÇ°È¡³ölen¸öÖµ
 	 * 
 	 * @param src
-	 *            æºæ•°ç»„
+	 *            Ô´Êı×é
 	 * @param from
-	 *            èµ·å§‹ä½ç½®
+	 *            ÆğÊ¼Î»ÖÃ
 	 * @param len
-	 *            COPYçš„é•¿åº¦
-	 * @return æºæ•°ç»„çš„ä¸€éƒ¨åˆ†
+	 *            COPYµÄ³¤¶È
+	 * @return Ô´Êı×éµÄÒ»²¿·Ö
 	 */
 	public static byte[] bytesCopy(byte[] src, int from, int len) {
 		byte[] result = null;
@@ -77,7 +77,7 @@ public class GFCommon {
 					result[j] = src[i];
 
 			} else {
-				int i0 = src.length + from;// æ­£å‘å®é™…ä½ç½®
+				int i0 = src.length + from;// ÕıÏòÊµ¼ÊÎ»ÖÃ
 				if (i0 - len < 0)
 					totalLen = i0 + 1;
 				else
@@ -115,11 +115,11 @@ public class GFCommon {
 	}
 
 	/**
-	 * å¾—åˆ°ä¸€ä¸ªå¯¹è±¡çš„ç±»å
+	 * µÃµ½Ò»¸ö¶ÔÏóµÄÀàÃû
 	 * 
 	 * @param obj
-	 *            å¯¹è±¡
-	 * @return å¯¹è±¡çš„ç±»å
+	 *            ¶ÔÏó
+	 * @return ¶ÔÏóµÄÀàÃû
 	 */
 	public static String getClassName(Object obj) {
 		String name = null;
@@ -146,7 +146,7 @@ public class GFCommon {
 	}
 
 	/**
-	 * å­—èŠ‚æ•°ç»„è½¬æˆé•¿æ•´å½¢ã€‚æŒ‰é«˜ä½åœ¨å‰è¿›è¡Œè½¬æ¢ã€‚
+	 * ×Ö½ÚÊı×é×ª³É³¤ÕûĞÎ¡£°´¸ßÎ»ÔÚÇ°½øĞĞ×ª»»¡£
 	 * 
 	 * @param b
 	 * @return
@@ -157,11 +157,11 @@ public class GFCommon {
 	}
 
 	/**
-	 * å­—èŠ‚æ•°ç»„è½¬æˆé•¿æ•´å½¢
+	 * ×Ö½ÚÊı×é×ª³É³¤ÕûĞÎ
 	 * 
 	 * @param b
 	 * @param isHighFirst
-	 *            æ˜¯å¦é«˜ä½åœ¨å‰
+	 *            ÊÇ·ñ¸ßÎ»ÔÚÇ°
 	 * @return
 	 */
 	public static long bytes2long(byte[] b, boolean isHighFirst) {
@@ -244,7 +244,7 @@ public class GFCommon {
 	}
 
 	/**
-	 * æ ¼å¼åŒ–IPåœ°å€,æŠŠ219.11.33.44è½¬åŒ–æˆå¦‚ä¸‹å½¢å¼:219011033044
+	 * ¸ñÊ½»¯IPµØÖ·,°Ñ219.11.33.44×ª»¯³ÉÈçÏÂĞÎÊ½:219011033044
 	 * 
 	 * @param ip
 	 * @return
@@ -303,9 +303,9 @@ public class GFCommon {
 	}
 
 	/**
-	 * å¾—åˆ°ç³»ç»Ÿä¿¡æ¯ã€‚
+	 * µÃµ½ÏµÍ³ĞÅÏ¢¡£
 	 * <p>
-	 * æ¯”å¦‚ï¼šæ“ä½œç³»ç»Ÿï¼ŒJAVAè™šæ‹Ÿæœºç­‰
+	 * ±ÈÈç£º²Ù×÷ÏµÍ³£¬JAVAĞéÄâ»úµÈ
 	 * 
 	 * @return
 	 */
@@ -323,19 +323,19 @@ public class GFCommon {
 	}
 
 	/**
-	 * è·å–æ•°æ®åº“çš„è¿æ¥ã€‚
+	 * »ñÈ¡Êı¾İ¿âµÄÁ¬½Ó¡£
 	 * 
 	 * @param driver
-	 *            æ•°æ®åº“é©±åŠ¨å‚æ•°
+	 *            Êı¾İ¿âÇı¶¯²ÎÊı
 	 * @param url
-	 *            æ•°æ®åº“URLåœ°å€
+	 *            Êı¾İ¿âURLµØÖ·
 	 * @param userName
-	 *            æ•°æ®åº“ç™»é™†ç”¨æˆ·å
+	 *            Êı¾İ¿âµÇÂ½ÓÃ»§Ãû
 	 * @param pwd
-	 *            ç™»é™†å¯†ç 
+	 *            µÇÂ½ÃÜÂë
 	 * @param conn
-	 *            æ•°æ®åº“è¿æ¥
-	 * @return æ•°æ®åº“è¿æ¥
+	 *            Êı¾İ¿âÁ¬½Ó
+	 * @return Êı¾İ¿âÁ¬½Ó
 	 */
 	public static Connection getConn(String driver, String url,
 			String userName, String pwd) {
@@ -346,7 +346,7 @@ public class GFCommon {
 				Class.forName(driver);
 				conn = DriverManager.getConnection(url, userName, pwd);
 				if (conn != null) {
-					String str = "å»ºç«‹å’Œè¿œç¨‹æ•°æ®åº“çš„è¿æ¥!";
+					String str = "½¨Á¢ºÍÔ¶³ÌÊı¾İ¿âµÄÁ¬½Ó!";
 					System.out.println(str);
 				}
 			} catch (ClassNotFoundException e) {
@@ -359,11 +359,11 @@ public class GFCommon {
 	}
 
 	/**
-	 * å–å¾—Classæ–‡ä»¶æ‰€åœ¨çš„è·¯å¾„ã€‚
+	 * È¡µÃClassÎÄ¼şËùÔÚµÄÂ·¾¶¡£
 	 * 
 	 * @param className
-	 *            ç±»å
-	 * @return Classæ–‡ä»¶æ‰€åœ¨çš„è·¯å¾„ï¼Œä¸åŒ…æ‹¬Classæ–‡ä»¶æœ¬èº«çš„åŒ…è·¯å¾„ã€‚æ¯”å¦‚ï¼šcom.gftech.web.Test,è¿”å›çš„è·¯å¾„æ ¼å¼å¦‚ä¸‹/E:/gftech/project/web/bin/
+	 *            ÀàÃû
+	 * @return ClassÎÄ¼şËùÔÚµÄÂ·¾¶£¬²»°üÀ¨ClassÎÄ¼ş±¾ÉíµÄ°üÂ·¾¶¡£±ÈÈç£ºcom.gftech.web.Test,·µ»ØµÄÂ·¾¶¸ñÊ½ÈçÏÂ/E:/gftech/project/web/bin/
 	 * 
 	 */
 	public static String getClassPath(String className) {
@@ -379,11 +379,11 @@ public class GFCommon {
 	}
 
 	/**
-	 * å–å¾—Classæ–‡ä»¶æ‰€åœ¨çš„è·¯å¾„ã€‚
+	 * È¡µÃClassÎÄ¼şËùÔÚµÄÂ·¾¶¡£
 	 * 
 	 * @param objName
-	 *            å¯¹è±¡åç§°
-	 * @return Classæ–‡ä»¶æ‰€åœ¨çš„è·¯å¾„ï¼Œä¸åŒ…æ‹¬Classæ–‡ä»¶æœ¬èº«çš„åŒ…è·¯å¾„ã€‚æ¯”å¦‚ï¼šcom.gftech.web.Test,è¿”å›çš„è·¯å¾„æ ¼å¼å¦‚ä¸‹/E:/gftech/project/web/bin/
+	 *            ¶ÔÏóÃû³Æ
+	 * @return ClassÎÄ¼şËùÔÚµÄÂ·¾¶£¬²»°üÀ¨ClassÎÄ¼ş±¾ÉíµÄ°üÂ·¾¶¡£±ÈÈç£ºcom.gftech.web.Test,·µ»ØµÄÂ·¾¶¸ñÊ½ÈçÏÂ/E:/gftech/project/web/bin/
 	 * 
 	 */
 	public static String getClassPath(Object objName) {
@@ -393,11 +393,11 @@ public class GFCommon {
 	}
 
 	/**
-	 * è¿”å›Jspåº”ç”¨ç¨‹åºä¸­WEB-INFçš„è·¯å¾„ã€‚
+	 * ·µ»ØJspÓ¦ÓÃ³ÌĞòÖĞWEB-INFµÄÂ·¾¶¡£
 	 * 
 	 * @param classPath
-	 *            WEB-INF/classesçš„è·¯å¾„ï¼Œæ ¼å¼ä¸º/E:/web/myjsp/WEB-INF/classes/
-	 * @return WEB-INFçš„è·¯å¾„ï¼Œæ ¼å¼ä¸ºE:\web\myjsp\WEB-INF\
+	 *            WEB-INF/classesµÄÂ·¾¶£¬¸ñÊ½Îª/E:/web/myjsp/WEB-INF/classes/
+	 * @return WEB-INFµÄÂ·¾¶£¬¸ñÊ½ÎªE:\web\myjsp\WEB-INF\
 	 */
 	public static String getWebinfPath(String classPath) {
 		String path = null;
@@ -416,11 +416,11 @@ public class GFCommon {
 	}
 
 	/**
-	 * äº§ç”Ÿä¸€ä¸ªä¸å¤§äºseedçš„éšæœºæ•°
+	 * ²úÉúÒ»¸ö²»´óÓÚseedµÄËæ»úÊı
 	 * 
 	 * @param seed
-	 *            äº§ç”Ÿéšæœºæ•°çš„ç§å­
-	 * @return éšæœºæ•°
+	 *            ²úÉúËæ»úÊıµÄÖÖ×Ó
+	 * @return Ëæ»úÊı
 	 */
 	public static int random(int seed) {
 		long result = 0;
@@ -428,7 +428,7 @@ public class GFCommon {
 			double d = Math.random();
 			String temp = d + "";
 			// System.out.println("temp:" + temp);
-			int len = temp.length() - 2;// å»æ‰å¼€å¤´ä¸¤ä½
+			int len = temp.length() - 2;// È¥µô¿ªÍ·Á½Î»
 			d = d * Math.pow(10, len);
 			// System.out.println("d:" + d);
 			result = (long) d % seed;
@@ -437,12 +437,12 @@ public class GFCommon {
 	}
 
 	/**
-	 * ç”Ÿæˆä¸€ä¸ªåœ¨minåˆ°maxä¹‹é—´çš„éšæœºæ•°
+	 * Éú³ÉÒ»¸öÔÚminµ½maxÖ®¼äµÄËæ»úÊı
 	 * 
 	 * @param min
-	 *            æœ€å°å€¼
+	 *            ×îĞ¡Öµ
 	 * @param max
-	 *            æœ€å¤§å€¼
+	 *            ×î´óÖµ
 	 * @return
 	 */
 	public static int random(int min, int max) {
@@ -455,7 +455,7 @@ public class GFCommon {
 	}
 
 	/**
-	 * å¾—åˆ°æ•°ç»„ä¸­0ç¬¬ä¸€æ¬¡æ•°ç»„bä¸­å‡ºç°çš„ä½ç½®
+	 * µÃµ½Êı×éÖĞ0µÚÒ»´ÎÊı×ébÖĞ³öÏÖµÄÎ»ÖÃ
 	 * 
 	 * @param b
 	 * @return
@@ -471,7 +471,7 @@ public class GFCommon {
 	}
 
 	/**
-	 * æ•°ç»„ä¸­æ˜¯å¦å«æœ‰0å€¼
+	 * Êı×éÖĞÊÇ·ñº¬ÓĞ0Öµ
 	 * 
 	 * @param b
 	 * @return

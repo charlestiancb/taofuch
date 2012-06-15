@@ -1,20 +1,20 @@
-ï»¿package org.ictclas4j.bean;
+package org.ictclas4j.bean;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
- * é¢„å¤„ç†åçš„è¯æ¡.
+ * Ô¤´¦ÀíºóµÄ´ÊÌõ.
  * @author sinboy
  *
  */
 public class Preword {
-	//è¯
+	//´Ê
 	private String word;
 	
-	//å»æ‰ç¬¬ä¸€ä¸ªå­—åå‰©ä½™çš„éƒ¨åˆ†
+	//È¥µôµÚÒ»¸ö×ÖºóÊ£ÓàµÄ²¿·Ö
 	private String res;
 	
-	//è¯åœ¨è¯å…¸è¡¨ä¸­å‡ºç°çš„ä½ç½®ï¼Œå³è¯çš„é¦–å­—åœ¨åŒºä½ç è¡¨ä¸­å¯¹åº”çš„åç§»ä½ç½®.æ¯”å¦‚ï¼šå•Šï¼ï¼0
+	//´ÊÔÚ´Êµä±íÖĞ³öÏÖµÄÎ»ÖÃ£¬¼´´ÊµÄÊ××ÖÔÚÇøÎ»Âë±íÖĞ¶ÔÓ¦µÄÆ«ÒÆÎ»ÖÃ.±ÈÈç£º°¡£­£­0
 	private int index;
 	
 	 

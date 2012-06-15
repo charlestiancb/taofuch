@@ -1,4 +1,4 @@
-ï»¿package org.ictclas4j.segment;
+package org.ictclas4j.segment;
 
 import java.util.ArrayList;
 
@@ -9,16 +9,16 @@ import org.ictclas4j.utility.Utility;
 
 
 /**
- * åˆ†è¯å›¾è¡¨ï¼Œå³äºŒç»´è¡¨
+ * ·Ö´ÊÍ¼±í£¬¼´¶şÎ¬±í
  * 
  * @author sinboy
  * @since 2006.6
  * 
  */
 public class SegGraph {
-	private boolean isRowFirst;// æ˜¯å¦æŒ‰è¡Œä¼˜å…ˆ
+	private boolean isRowFirst;// ÊÇ·ñ°´ĞĞÓÅÏÈ
 
-	private ArrayList<SegNode> snList;// åˆ†è¯å›¾è¡¨å®é™…æ˜¯ç”¨é“¾è¡¨æ¥è¡¨ç¤º
+	private ArrayList<SegNode> snList;// ·Ö´ÊÍ¼±íÊµ¼ÊÊÇÓÃÁ´±íÀ´±íÊ¾
 
 	public SegGraph() {
 
@@ -66,7 +66,7 @@ public class SegGraph {
 	}
 
 	/**
-	 * è®¾ç½®å…ƒç´ .å¦‚æœèƒ½åœ¨å›¾è¡¨ä¸­æ‰¾åˆ°,é‡æ–°è®¾å€¼.å¦åˆ™æ·»åŠ è¿›å».
+	 * ÉèÖÃÔªËØ.Èç¹ûÄÜÔÚÍ¼±íÖĞÕÒµ½,ÖØĞÂÉèÖµ.·ñÔòÌí¼Ó½øÈ¥.
 	 * 
 	 * @param sg
 	 * @return
@@ -108,12 +108,12 @@ public class SegGraph {
 	}
 
 	/**
-	 * å¾—åˆ°æ‰€æœ‰åˆ—å€¼ä¸ºColçš„å…ƒç´ 
+	 * µÃµ½ËùÓĞÁĞÖµÎªColµÄÔªËØ
 	 * 
 	 * @param curIndex
-	 *            å½“å‰ç´¢å¼•å€¼ï¼Œè¡¨ç¤ºåˆ—å€¼æˆ–è¡Œå€¼
+	 *            µ±Ç°Ë÷ÒıÖµ£¬±íÊ¾ÁĞÖµ»òĞĞÖµ
 	 * @param isColFirst
-	 *            æ˜¯å¦æŒ‰åˆ—ä¼˜å…ˆè¿›è¡Œéå†
+	 *            ÊÇ·ñ°´ÁĞÓÅÏÈ½øĞĞ±éÀú
 	 * @return
 	 */
 	public ArrayList<SegNode> getNodes(int curIndex, boolean isColFirst) {
@@ -137,13 +137,13 @@ public class SegGraph {
 	}
 
 	/**
-	 * æŠŠSegGraphæ’å…¥çš„åˆ—è¡¨å½“ä¸­
+	 * °ÑSegGraph²åÈëµÄÁĞ±íµ±ÖĞ
 	 * 
 	 * @param snList
 	 * @param graph
 	 * @param isRowFirst
-	 *            æ˜¯å¦æŒ‰è¡Œä¼˜å…ˆåŸåˆ™
-	 * @return å¦‚æœæ’å…¥æˆåŠŸè¿”å›True,å¦åˆ™è¿”å›False
+	 *            ÊÇ·ñ°´ĞĞÓÅÏÈÔ­Ôò
+	 * @return Èç¹û²åÈë³É¹¦·µ»ØTrue,·ñÔò·µ»ØFalse
 	 */
 	public boolean insert(SegNode graph, boolean isRowFirst) {
 		SegNode sg = null;
@@ -160,7 +160,7 @@ public class SegGraph {
 				sg = snList.get(i);
 
 				if (isRowFirst) {
-					// åˆ°æœ€åä¸€ä¸ªèŠ‚ç‚¹
+					// µ½×îºóÒ»¸ö½Úµã
 					if (i == snList.size() - 1) {
 						if (graph.getRow() > sg.getRow()
 								|| (graph.getRow() == sg.getRow() && graph.getCol() > sg.getCol()))
@@ -185,7 +185,7 @@ public class SegGraph {
 						return true;
 					}
 				} else {
-					// åˆ°æœ€åä¸€ä¸ªèŠ‚ç‚¹
+					// µ½×îºóÒ»¸ö½Úµã
 					if (i == snList.size() - 1) {
 						if (graph.getCol() > sg.getCol()
 								|| (graph.getCol() == sg.getCol() && graph.getRow() > sg.getRow()))
@@ -235,7 +235,7 @@ public class SegGraph {
 		ArrayList <ArrayList<SegNode>> _index=new ArrayList <ArrayList<SegNode>> ();
 		
 		/**
-		 * åˆ©ç”¨ç´¢å¼•å¾—åˆ°ä¸‹ä¸€ä¸ªè¡Œå€¼å’Œè¯¥åˆ—å€¼ç›¸ç­‰çš„æ‰€æœ‰å…ƒç´ ã€‚
+		 * ÀûÓÃË÷ÒıµÃµ½ÏÂÒ»¸öĞĞÖµºÍ¸ÃÁĞÖµÏàµÈµÄËùÓĞÔªËØ¡£
 		 */
 		public ArrayList<SegNode> getNextElements(int curIndex) {
 			if (snList != null && snList.size() > 0 && curIndex >= 0 && curIndex < snList.size()) {
@@ -268,7 +268,7 @@ public class SegGraph {
 		
 		/**
 		 * 
-		 *å»ºç«‹å¾—åˆ°ä¸‹ä¸€ä¸ªè¡Œå€¼å’Œè¯¥åˆ—å€¼ç›¸ç­‰çš„æ‰€æœ‰å…ƒç´ çš„ç´¢å¼•
+		 *½¨Á¢µÃµ½ÏÂÒ»¸öĞĞÖµºÍ¸ÃÁĞÖµÏàµÈµÄËùÓĞÔªËØµÄË÷Òı
 		 */
 		public NextElementIndex() {			
 			if (snList == null) return ;
@@ -279,7 +279,7 @@ public class SegGraph {
 				SegNode sg = snList.get(i);
 				int row=sg.getRow();				
 				
-				//æ‰¾åˆ°æ¯ä¸€é¡¹çš„ç´¢å¼•å…¥å£å¹¶åŠ å…¥å½“å‰é¡¹
+				//ÕÒµ½Ã¿Ò»ÏîµÄË÷ÒıÈë¿Ú²¢¼ÓÈëµ±Ç°Ïî
 				ArrayList<SegNode> next_eles=_index.get(row);
 				next_eles.add(sg);
 			}									
@@ -287,11 +287,11 @@ public class SegGraph {
 	}
 	
 	/**
-	 * å¾—åˆ°ä¸‹ä¸€ä¸ªè¡Œå€¼å’Œè¯¥åˆ—å€¼ç›¸ç­‰çš„æ‰€æœ‰å…ƒç´ ã€‚
+	 * µÃµ½ÏÂÒ»¸öĞĞÖµºÍ¸ÃÁĞÖµÏàµÈµÄËùÓĞÔªËØ¡£
 	 * 
 	 * @param snList
 	 * @param curIndex
-	 *            å½“å‰å…ƒç´ çš„ä½ç½®
+	 *            µ±Ç°ÔªËØµÄÎ»ÖÃ
 	 * @return
 	 */
 	public ArrayList<SegNode> getNextElements(int curIndex) {
@@ -359,7 +359,7 @@ public class SegGraph {
 	}
 
 	/**
-	 * è·å–å‰ä¸€ä¸ªè¯ä¸å½“å‰è¯æœ€åŒ¹é…çš„è¯æ€§ä½ç½®
+	 * »ñÈ¡Ç°Ò»¸ö´ÊÓëµ±Ç°´Ê×îÆ¥ÅäµÄ´ÊĞÔÎ»ÖÃ
 	 * 
 	 */
 	public void getBestPrev(ContextStat context) {

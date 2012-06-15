@@ -1,18 +1,18 @@
-ï»¿package org.ictclas4j.bean;
+package org.ictclas4j.bean;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
- * è¯æ¡.åŒ…æ‹¬è¯å†…å®¹ã€é•¿åº¦ã€å¥æŸ„åŠé¢‘åº¦
+ * ´ÊÌõ.°üÀ¨´ÊÄÚÈİ¡¢³¤¶È¡¢¾ä±ú¼°Æµ¶È
  * 
  * @author sinboy
  * 
  */
 public class WordItem {
 	private String word;
-	private int len;//è¯åœ¨ç£ç›˜ä¸Šå­˜å‚¨çš„å­—èŠ‚é•¿åº¦
-	private int handle;// å¥æŸ„ï¼Œç”¨æ¥æ ‡è¯†è¯çš„è¯æ€§
-	private int freq;// é¢‘åº¦ï¼Œç”¨æ¥è¯´æ˜è¯¥è¯å‡ºç°åœ¨è¯­æ–™åº“ä¸­çš„æ¬¡æ•°æˆ–æ¦‚ç‡
+	private int len;//´ÊÔÚ´ÅÅÌÉÏ´æ´¢µÄ×Ö½Ú³¤¶È
+	private int handle;// ¾ä±ú£¬ÓÃÀ´±êÊ¶´ÊµÄ´ÊĞÔ
+	private int freq;// Æµ¶È£¬ÓÃÀ´ËµÃ÷¸Ã´Ê³öÏÖÔÚÓïÁÏ¿âÖĞµÄ´ÎÊı»ò¸ÅÂÊ
 	
 	WordItem() {
 		

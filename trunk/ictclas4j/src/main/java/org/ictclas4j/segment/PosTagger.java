@@ -1,4 +1,4 @@
-ï»¿package org.ictclas4j.segment;
+package org.ictclas4j.segment;
 
 import java.util.ArrayList;
 
@@ -14,7 +14,7 @@ import org.ictclas4j.utility.Utility.TAG_TYPE;
 
 
 /**
- * æœªç™»å½•è¯çš„å¤„ç†
+ * Î´µÇÂ¼´ÊµÄ´¦Àí
  * 
  * @author sinboy
  * @since 2007.5.17 updated
@@ -47,11 +47,11 @@ public class PosTagger {
 				// Set the special flag for transliterations
 			case TT_TRANS_PERSON:
 				pos = -POSTag.NOUN_PERSON;
-				unknownFlags = "æœª##äºº";
+				unknownFlags = "Î´##ÈË";
 				break;
 			case TT_PLACE:
 				pos = -POSTag.NOUN_SPACE;
-				unknownFlags = "æœª##åœ°";
+				unknownFlags = "Î´##µØ";
 				break;
 			default:
 				pos = 0;
@@ -61,7 +61,7 @@ public class PosTagger {
 	}
 
 	/**
-	 * ä»ç»è¿‡åˆåˆ†çš„ç»“æœä¸­ï¼Œæ‰¾å‡ºæ„æˆäººåã€åœ°åæˆ–å…¶å®ƒè¯çš„æœªç™»é™†è¯
+	 * ´Ó¾­¹ı³õ·ÖµÄ½á¹ûÖĞ£¬ÕÒ³ö¹¹³ÉÈËÃû¡¢µØÃû»òÆäËü´ÊµÄÎ´µÇÂ½´Ê
 	 * 
 	 * @param segGraph
 	 * @param coreDict
@@ -107,16 +107,16 @@ public class PosTagger {
 	}
 
 	/**
-	 * å¯¹æ‰€æœ‰çš„è¯æ€§è¿›è¡Œæ ‡è®°
+	 * ¶ÔËùÓĞµÄ´ÊĞÔ½øĞĞ±ê¼Ç
 	 * 
 	 * @param frs
-	 *            åˆæ¬¡åˆ‡åˆ†çš„ç»“æœ
-	 * @pararm startIndex å¼€å§‹è¿›è¡Œè¯æ€§æ ‡è®°çš„ä½ç½®
+	 *            ³õ´ÎÇĞ·ÖµÄ½á¹û
+	 * @pararm startIndex ¿ªÊ¼½øĞĞ´ÊĞÔ±ê¼ÇµÄÎ»ÖÃ
 	 * @param coreDict
-	 *            æ ¸å¿ƒè¯å…¸åº“
+	 *            ºËĞÄ´Êµä¿â
 	 * @param unknownDict
-	 *            æœªç™»é™†è¯å…¸åº“
-	 * @return ä¸‹ä¸€ä¸ªéœ€è¦å¼€å§‹çš„ä½ç½®
+	 *            Î´µÇÂ½´Êµä¿â
+	 * @return ÏÂÒ»¸öĞèÒª¿ªÊ¼µÄÎ»ÖÃ
 	 */
 	public void posTag(ArrayList<SegNode> sns) {
 		if (sns != null && coreDict != null && unknownDict != null && context != null) {
@@ -134,18 +134,18 @@ public class PosTagger {
 
 				if (tagType != Utility.TAG_TYPE.TT_NORMAL) {
 
-					// æŠŠå…¨è§’å­—ç¬¦è½¦æˆåŠè§’çš„å­—ç¬¦
+					// °ÑÈ«½Ç×Ö·û³µ³É°ë½ÇµÄ×Ö·û
 					if (tagType == Utility.TAG_TYPE.TT_TRANS_PERSON && i > 0) {
 						String prevWord = sns.get(i - 1).getSrcWord();
 						if (Utility.charType(prevWord) == Utility.CT_CHINESE) {
 							if (".".equals(curWord))
-								curWord = "ï¼";
+								curWord = "£®";
 							else if ("-".equals(curWord))
-								curWord = "ï¼";
+								curWord = "£­";
 						}
 					}
 
-					// ä»unknownDictè¯å…¸åº“ä¸­è·å–å½“å‰çš„æ‰€æœ‰è¯æ€§
+					// ´ÓunknownDict´Êµä¿âÖĞ»ñÈ¡µ±Ç°µÄËùÓĞ´ÊĞÔ
 					ArrayList<WordItem> wis = unknownDict.getHandle(curWord);
 					for (int j = 0; wis != null && j < wis.size(); j++) {
 						WordItem wi = wis.get(j);
@@ -203,8 +203,8 @@ public class PosTagger {
 				if (sn.getAllPos() == null)
 					guessPos(tagType, sn);
 				
-				// å¦‚æœä¸€ä¸ªè¯èŠ‚ç‚¹å¯¹åº”çš„allPosä¸ºnullï¼Œåˆ™è¯´æ˜å®ƒæ— æ³•å•ç‹¬æˆè¯
-				// å®ƒçš„è¯æ€§éšä¸‹ä¸€ä¸ªè¯çš„è¯æ€§
+				// Èç¹ûÒ»¸ö´Ê½Úµã¶ÔÓ¦µÄallPosÎªnull£¬ÔòËµÃ÷ËüÎŞ·¨µ¥¶À³É´Ê
+				// ËüµÄ´ÊĞÔËæÏÂÒ»¸ö´ÊµÄ´ÊĞÔ
 				if (i - 1 >= 0 && sns.get(i - 1).getPosSize() == -1) {
 					if (sn.getPosSize() > 0) {
 						POS pos = new POS(sn.getAllPos().get(0).getTag(), 0);
@@ -213,7 +213,7 @@ public class PosTagger {
 				}
 			}
 
-			// æ·»åŠ ä¸€ä¸ªç»“æŸç‚¹
+			// Ìí¼ÓÒ»¸ö½áÊøµã
 			SegNode last = sns.get(i - 1);
 			if (last != null) {
 				SegNode sn = new SegNode();
@@ -230,7 +230,7 @@ public class PosTagger {
 	}
 
 	/**
-	 * å–å¾—ä¸Šä¸€ä¸ªè¯çš„Nä¸ªè¯æ€§è™½å’Œå½“å‰è¯çš„è¯æ€§æœ€åŒ¹é…çš„é‚£ä¸€ä¸ª
+	 * È¡µÃÉÏÒ»¸ö´ÊµÄN¸ö´ÊĞÔËäºÍµ±Ç°´ÊµÄ´ÊĞÔ×îÆ¥ÅäµÄÄÇÒ»¸ö
 	 */
 	private void getBestPos(ArrayList<SegNode> sns) {
 		ArrayList<POS> prevAllPos = null;
@@ -268,7 +268,7 @@ public class PosTagger {
 		}
 	}
 
-	// çŒœæµ‹è¯¥è¯çš„è¯æ€§
+	// ²Â²â¸Ã´ÊµÄ´ÊĞÔ
 	private int guessPos(TAG_TYPE tagType, SegNode sn) {
 		int result = -1;
 		if (sn != null && context != null) {
@@ -281,7 +281,7 @@ public class PosTagger {
 			case TT_NORMAL:
 				break;
 			case TT_PERSON:
-				if (word.indexOf("Ã—Ã—") != -1) {
+				if (word.indexOf("¡Á¡Á") != -1) {
 					freq = (double) 1 / (double) (context.getFreq(0, 6) + 1);
 					sn.addPos(new POS(6, freq));
 				} else {
@@ -427,7 +427,7 @@ public class PosTagger {
 	}
 
 	/**
-	 * äººåæ¨¡å¼åŒ¹é…
+	 * ÈËÃûÄ£Ê½Æ¥Åä
 	 * 
 	 * <pre>
 	 *          
@@ -448,27 +448,27 @@ public class PosTagger {
 	 *          XD 926 0.009735
 	 *          
 	 *          The person recognition patterns set
-	 *          BBCD:å§“+å§“+å1+å2;
-	 *          BBE: å§“+å§“+å•å;
-	 *          BBZ: å§“+å§“+åŒåæˆè¯;
-	 *          BCD: å§“+å1+å2;
-	 *          BE: å§“+å•å;
-	 *          BEE: å§“+å•å+å•å;éŸ©ç£Šç£Š
-	 *          BG: å§“+åç¼€
-	 *          BXD: å§“+å§“åŒåé¦–å­—æˆè¯+åŒåæœ«å­—
-	 *          BZ: å§“+åŒåæˆè¯;
-	 *          B: å§“
-	 *          CD: å1+å2;
-	 *          EE: å•å+å•å;
-	 *          FB: å‰ç¼€+å§“
-	 *          XD: å§“åŒåé¦–å­—æˆè¯+åŒåæœ«å­—
-	 *          Y: å§“å•åæˆè¯
+	 *          BBCD:ĞÕ+ĞÕ+Ãû1+Ãû2;
+	 *          BBE: ĞÕ+ĞÕ+µ¥Ãû;
+	 *          BBZ: ĞÕ+ĞÕ+Ë«Ãû³É´Ê;
+	 *          BCD: ĞÕ+Ãû1+Ãû2;
+	 *          BE: ĞÕ+µ¥Ãû;
+	 *          BEE: ĞÕ+µ¥Ãû+µ¥Ãû;º«ÀÚÀÚ
+	 *          BG: ĞÕ+ºó×º
+	 *          BXD: ĞÕ+ĞÕË«ÃûÊ××Ö³É´Ê+Ë«ÃûÄ©×Ö
+	 *          BZ: ĞÕ+Ë«Ãû³É´Ê;
+	 *          B: ĞÕ
+	 *          CD: Ãû1+Ãû2;
+	 *          EE: µ¥Ãû+µ¥Ãû;
+	 *          FB: Ç°×º+ĞÕ
+	 *          XD: ĞÕË«ÃûÊ××Ö³É´Ê+Ë«ÃûÄ©×Ö
+	 *          Y: ĞÕµ¥Ãû³É´Ê
 	 * </pre>
 	 */
 	private void personRecognize(SegGraph segGraph, ArrayList<SegNode> sns) {
 		String sPos = null;
 		String personName = null;
-		// äººåè¯†åˆ«æ¨¡å¼
+		// ÈËÃûÊ¶±ğÄ£Ê½
 		final String[] patterns = { "BBCD", "BBC", "BBE", "BBZ", "BCD", "BEE", "BE", "BG", "BXD", "BZ", "CDCD", "CD",
 				"EE", "FB", "Y", "XD", "" };
 		final double[] factor = { 0.003606, 0.000021, 0.001314, 0.000315, 0.656624, 0.000021, 0.146116, 0.009136,
@@ -482,15 +482,15 @@ public class PosTagger {
 			while (sPos != null && j < sPos.length()) {
 				bMatched = false;
 				for (k = 0; !bMatched && patterns[k].length() > 0; k++) {
-					// å¦‚æœå½“å‰å¥å­ä¸­æœ‰ç¬¦åˆè¯¥æ¨¡å¼çš„å­—ä¸²ï¼Œå¹¶ä¸”è¯¥å­—ä¸²å‰åéƒ½ä¸æ˜¯åœ†ç‚¹ï¼Œåˆ™è®¤ä¸ºæ˜¯åŒ¹é…çš„
-					if (sPos.substring(j).indexOf(patterns[k]) == 0 && !"Â·".equals(sns.get(j - 1).getWord())
-							&& !"Â·".equals(sns.get(j + patterns[k].length()))) {// Find
+					// Èç¹ûµ±Ç°¾ä×ÓÖĞÓĞ·ûºÏ¸ÃÄ£Ê½µÄ×Ö´®£¬²¢ÇÒ¸Ã×Ö´®Ç°ºó¶¼²»ÊÇÔ²µã£¬ÔòÈÏÎªÊÇÆ¥ÅäµÄ
+					if (sPos.substring(j).indexOf(patterns[k]) == 0 && !"¡¤".equals(sns.get(j - 1).getWord())
+							&& !"¡¤".equals(sns.get(j + patterns[k].length()))) {// Find
 
 						String temp = sPos.substring(j + 2);
 						if (temp.length() > 1)
 							temp = temp.substring(0, 1);
 
-						// Rule 1 for exclusion:å‰ç¼€+å§“+å1(å2): è§„åˆ™(å‰ç¼€+å§“)å¤±æ•ˆï¼›
+						// Rule 1 for exclusion:Ç°×º+ĞÕ+Ãû1(Ãû2): ¹æÔò(Ç°×º+ĞÕ)Ê§Ğ§£»
 						if ("FB".equals(patterns[k]) && ("E".equals(temp) || "C".equals(temp) || "G".equals(temp))) {
 							continue;
 						}
@@ -538,7 +538,7 @@ public class PosTagger {
 	}
 
 	/**
-	 * åœ°åæ¨¡å¼åŒ¹é…
+	 * µØÃûÄ£Ê½Æ¥Åä
 	 * 
 	 */
 	private void placeRecognize(SegGraph segGraph, ArrayList<SegNode> sns, Dictionary coreDict) {
@@ -655,7 +655,7 @@ public class PosTagger {
 			snp += Math.log(context.getPossibility(0, 1, 4) + 1.0);
 			snp -= Math.log(context.getFreq(0, 1) + 1.0);
 
-			// å¼ éœ‡||m_dict.getFrequency(sFirstChar,1)/m_dict.getFrequency(sFirstChar,2)>=10
+			// ÕÅÕğ||m_dict.getFrequency(sFirstChar,1)/m_dict.getFrequency(sFirstChar,2)>=10
 			// The possibility being a single given name is more than being a
 			// 2-char given name
 			if (snp >= gnp)
@@ -666,7 +666,7 @@ public class PosTagger {
 		return false;
 	}
 
-	// æŠŠç»è¿‡åˆæ¬¡åˆ†è¯åçš„é“¾è¡¨å½¢å¼è½¬æˆäººåå­—ç¬¦ä¸²æ¨¡å¼
+	// °Ñ¾­¹ı³õ´Î·Ö´ÊºóµÄÁ´±íĞÎÊ½×ª³ÉÈËÃû×Ö·û´®Ä£Ê½
 	private String word2pattern(ArrayList<SegNode> sns) {
 		String result = null;
 
@@ -681,7 +681,7 @@ public class PosTagger {
 	}
  
 	/**
-	 * æ ‡è®°å‡ºæœ€ä½³è¯æ€§
+	 * ±ê¼Ç³ö×î¼Ñ´ÊĞÔ
 	 * 
 	 * @param sns
 	 */
@@ -690,7 +690,7 @@ public class PosTagger {
 		if (sns != null) {
 			int size = sns.size();
 
-			// ä¸è€ƒè™‘å¼€å§‹å’Œç»“æŸæ ‡è®°
+			// ²»¿¼ÂÇ¿ªÊ¼ºÍ½áÊø±ê¼Ç
 			for (int i = size - 1, j = 0; i >= 0; i--) {
 				ArrayList<POS> allPos = sns.get(i).getAllPos();
 				if (allPos != null && allPos.size() > j) {
@@ -704,7 +704,7 @@ public class PosTagger {
 					sns.get(i).addPos(pos);
 				}
 			}
-			// æŠŠç»“æŸç‚¹å»æ‰ï¼Œç”¨åˆ°å®ƒçš„ç›®çš„ä»…ä»…æ˜¯ä¸ºäº†å¾—åˆ°æœ€åä¸€ä¸ªâ€œæœ«ï¼ƒï¼ƒæœ«â€è¯çš„æœ€ä¼˜è¯æ€§
+			// °Ñ½áÊøµãÈ¥µô£¬ÓÃµ½ËüµÄÄ¿µÄ½ö½öÊÇÎªÁËµÃµ½×îºóÒ»¸ö¡°Ä©££££Ä©¡±´ÊµÄ×îÓÅ´ÊĞÔ
 
 			if (size > 1) {
 				if (sns.get(size - 1).getWord() == null)
