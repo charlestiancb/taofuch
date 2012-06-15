@@ -1,13 +1,13 @@
-ï»¿package org.ictclas4j.bean;
+package org.ictclas4j.bean;
 
 import java.util.ArrayList;
 
 
 public class ModifyTable {
-	// åŒä¸€å¼€å¤´è¯æ¡çš„æ•°ç›®åœ¨ä¿®æ”¹è¡¨ä¸­
+	// Í¬Ò»¿ªÍ·´ÊÌõµÄÊıÄ¿ÔÚĞŞ¸Ä±íÖĞ
 	private int count;
 
-	// åœ¨åŸå­—å…¸è¡¨ä¸­åˆ é™¤çš„è¯æ¡çš„æ•°ç›®
+	// ÔÚÔ­×Öµä±íÖĞÉ¾³ıµÄ´ÊÌõµÄÊıÄ¿
 	private int delete;
 
 	private  ArrayList<WordItem> words;

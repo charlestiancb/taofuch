@@ -1,4 +1,4 @@
-ï»¿package org.ictclas4j.segment;
+package org.ictclas4j.segment;
 
 import java.util.ArrayList;
 
@@ -10,25 +10,25 @@ import org.ictclas4j.utility.Utility;
 
 
 /**
- * N-æœ€çŸ­è·¯å¾„
+ * N-×î¶ÌÂ·¾¶
  * 
  * @author sinboy
  * @since 2007.5.17 updated
  */
 public class NShortPath {
-	// æœ€çŸ­è·¯å¾„çš„æ•°ç›®
+	// ×î¶ÌÂ·¾¶µÄÊıÄ¿
 	private int pathCount;
 
-	// äºŒå‰åˆ†è¯å›¾è¡¨
+	// ¶ş²æ·Ö´ÊÍ¼±í
 	private SegGraph biSegGraph;
 
-	// æ¯æ¡è·¯å¾„å¯¹åº”çš„æƒå€¼
+	// Ã¿ÌõÂ·¾¶¶ÔÓ¦µÄÈ¨Öµ
 	private double[][] pathWeight;
 
-	// è®°å½•å½“å‰èŠ‚ç‚¹çš„Nä¸ªçˆ¶äº²ç‚¹åŠå…¶æƒé‡
+	// ¼ÇÂ¼µ±Ç°½ÚµãµÄN¸ö¸¸Ç×µã¼°ÆäÈ¨ÖØ
 	private Queue[] parent;
 
-	// åˆ†è¯å›¾è¡¨ä¸­é¡¶ç‚¹ä¸ªæ•°
+	// ·Ö´ÊÍ¼±íÖĞ¶¥µã¸öÊı
 	private int vertex;
 
 	//Logger logger = Logger.getLogger(NShortPath.class);
@@ -55,7 +55,7 @@ public class NShortPath {
 	}
 
 	/**
-	 * æŒ‰åˆ—éå†å›¾è¡¨ï¼Œå¹¶æŠŠæ¯ä¸€åˆ—ä¸­æƒé‡æœ€å°çš„å–å‡ºæ¥ã€‚
+	 * °´ÁĞ±éÀúÍ¼±í£¬²¢°ÑÃ¿Ò»ÁĞÖĞÈ¨ÖØ×îĞ¡µÄÈ¡³öÀ´¡£
 	 * 
 	 */
 	private void shortPath() {
@@ -63,9 +63,9 @@ public class NShortPath {
 		double weight = 0;
 
 		if (biSegGraph != null) {
-			// å›¾è¡¨çš„åˆ—å€¼æ˜¯ä»1å¼€å§‹,æ‰€ä»¥å¿½ç•¥æ‰ç¬¬0åˆ—
+			// Í¼±íµÄÁĞÖµÊÇ´Ó1¿ªÊ¼,ËùÒÔºöÂÔµôµÚ0ÁĞ
 			for (int cur = 1; cur < vertex; cur++) {
-				// å¾—åˆ°åŒä¸€åˆ—çš„æ‰€æœ‰å…ƒç´ 
+				// µÃµ½Í¬Ò»ÁĞµÄËùÓĞÔªËØ
 				ArrayList<SegNode> colSgs = biSegGraph.getNodes(cur, true);
 				if (colSgs == null || colSgs.size() == 0)
 					return;
@@ -85,7 +85,7 @@ public class NShortPath {
 
 				}
 
-				// è®°å½•æ¯ä¸€ä¸ªèŠ‚ç‚¹çš„Nä¸ªå‰é©±åŠæƒé‡
+				// ¼ÇÂ¼Ã¿Ò»¸ö½ÚµãµÄN¸öÇ°Çı¼°È¨ÖØ
 				QueueNode minNode = null;
 				int pathIndex = 0;
 				while ((minNode = queWork.pop()) != null && pathIndex < pathCount) {
@@ -101,7 +101,7 @@ public class NShortPath {
 
 	public ArrayList<ArrayList<Integer>> getPaths() {
 		ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
-		ArrayList<Integer> onePath = null;// ä¸€æ¡åˆ†è¯è·¯å¾„
+		ArrayList<Integer> onePath = null;// Ò»Ìõ·Ö´ÊÂ·¾¶
 
 		Queue queResult = null;
 		int curNode, curIndex = 0;
@@ -130,7 +130,7 @@ public class NShortPath {
 				}
 
 				if (curNode == 0) {
-					// è¾“å‡ºä¸€æ¡åˆ†è¯è·¯å¾„
+					// Êä³öÒ»Ìõ·Ö´ÊÂ·¾¶
 					QueueNode qn = null;
 					onePath = new ArrayList<Integer>();
 					onePath.add(curNode);
@@ -138,11 +138,11 @@ public class NShortPath {
 						onePath.add(qn.getParent());
 					result.add(onePath);
 					queResult.resetIndex();
-					pathIndex++;// å¯»æ‰¾ä¸‹ä¸€æ¡æ¬¡çŸ­è·¯å¾„
+					pathIndex++;// Ñ°ÕÒÏÂÒ»Ìõ´Î¶ÌÂ·¾¶
 					if (pathIndex == pathCount)
 						break;
 
-					// å¦‚æœæ‰¾åˆ°æœ‰ä¸‹ä¸€ä¸ªå‰é©±çš„èŠ‚ç‚¹ï¼Œåˆ™æŠŠå®ƒçš„è¿™ä¸ªå‰é©±å‹å…¥æ ˆä¸­
+					// Èç¹ûÕÒµ½ÓĞÏÂÒ»¸öÇ°ÇıµÄ½Úµã£¬Ôò°ÑËüµÄÕâ¸öÇ°ÇıÑ¹ÈëÕ»ÖĞ
 					while ((qn = queResult.pop()) != null) {
 						curNode = qn.getParent();
 						QueueNode next = parent[curNode].pop(false);

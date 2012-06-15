@@ -1,4 +1,4 @@
-ï»¿package org.ictclas4j.segment;
+package org.ictclas4j.segment;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ import org.ictclas4j.utility.Utility;
 
 public class GraphGenerate {
 	/**
-	 * å…¨åˆ‡åˆ†,ç”Ÿæˆåˆ‡åˆ†å›¾.å³æ‰¾å‡ºæ‰€æœ‰å¯èƒ½çš„è¯ç»„
+	 * È«ÇĞ·Ö,Éú³ÉÇĞ·ÖÍ¼.¼´ÕÒ³öËùÓĞ¿ÉÄÜµÄ´Ê×é
 	 * 
 	 * @param atoms
 	 * @return
@@ -73,11 +73,11 @@ public class GraphGenerate {
 			for (int i = 0; i < atoms.size(); i++) {
 				int j = i + 1;
 				word = atoms.get(i).getWord();
-				// å¦‚æœæ˜¯â€œæœˆä»½â€ï¼Œä¸è¦åˆ†å‰²
+				// Èç¹ûÊÇ¡°ÔÂ·İ¡±£¬²»Òª·Ö¸î
 				boolean flag = false;
 				if (j < atoms.size()) {
 					Atom a2 = atoms.get(j);
-					if ("æœˆ".equals(word) && "ä»½".equals(a2.getWord())) {
+					if ("ÔÂ".equals(word) && "·İ".equals(a2.getWord())) {
 						segGraph.delete(i, j);
 						segGraph.delete(i + 1, j + 1);
 						word += a2.getWord();
@@ -97,17 +97,17 @@ public class GraphGenerate {
 							for (WordItem w : wis)
 								totalFreq += w.getFreq();
 
-							// 1å¹´å†…ï¼Œ1999å¹´æœ«
+							// 1ÄêÄÚ£¬1999ÄêÄ©
 							if (word.length() == 2 && segGraph.getSize() > 0) {
 								SegNode g2 = segGraph.getLast();
 								if (Utility.isAllNum(g2.getWord()) || Utility.isAllChinese(g2.getWord())
-										&& (g2.getWord().indexOf("å¹´") == 0 || g2.getWord().indexOf("æœˆ") == 0)) {
+										&& (g2.getWord().indexOf("Äê") == 0 || g2.getWord().indexOf("ÔÂ") == 0)) {
 
-									if ("æœ«å†…ä¸­åº•å‰é—´åˆ".indexOf(word.substring(1)) != -1)
+									if ("Ä©ÄÚÖĞµ×Ç°¼ä³õ".indexOf(word.substring(1)) != -1)
 										break;
 								}
 							}
-							// åªæœ‰ä¸€ä¸ªæ€§è¯ï¼Œå­˜è´®å®ƒ
+							// Ö»ÓĞÒ»¸öĞÔ´Ê£¬´æÖüËü
 							SegNode sg = null;
 							if (wis.size() == 1)
 								sg = new SegNode(i, j, wis.get(0).getHandle(), totalFreq, word);
@@ -133,7 +133,7 @@ public class GraphGenerate {
 	}
 
 	/**
-	 * ç”ŸæˆäºŒå‰å›¾è¡¨,æ¯ä¸ªèŠ‚ç‚¹è¡¨ç¤ºç›¸é‚»ä¸¤ä¸ªè¯ç»„çš„è€¦åˆå…³ç³»,å¦‚:è¯´@çš„ç¡®
+	 * Éú³É¶ş²æÍ¼±í,Ã¿¸ö½Úµã±íÊ¾ÏàÁÚÁ½¸ö´Ê×éµÄñîºÏ¹ØÏµ,Èç:Ëµ@µÄÈ·
 	 * 
 	 * @param sgs
 	 */
@@ -155,14 +155,14 @@ public class GraphGenerate {
 				else
 					curFreq = dict.getFreq(sg.getWord(), 2);
 
-				// å¾—åˆ°ä¸‹é¢è¡Œå€¼å’Œè¯¥åˆ—å€¼ç›¸ç­‰çš„æ‰€æœ‰å…ƒç´ 
+				// µÃµ½ÏÂÃæĞĞÖµºÍ¸ÃÁĞÖµÏàµÈµÄËùÓĞÔªËØ
 				ArrayList<SegNode> nextSgs = nextEleIndex.getNextElements(i);
 				for (SegNode graph : nextSgs) {
 					String twoWords = sg.getWord();
 					twoWords += Utility.WORD_SEGMENTER;
 					twoWords += graph.getWord();
 
-					// è®¡ç®—ç›¸ä¸´ä¸¤ä¸ªè¯ä¹‹é—´çš„å¹³æ»‘å€¼
+					// ¼ÆËãÏàÁÙÁ½¸ö´ÊÖ®¼äµÄÆ½»¬Öµ
 					// -log{a*P(Ci-1)+(1-a)P(Ci|Ci-1)} Note 0<a<1
 					int twoFreq = biDict.getFreq(twoWords, 3);
 					double temp = (double) 1 / Utility.MAX_FREQUENCE;
@@ -174,11 +174,11 @@ public class GraphGenerate {
 						value += sg.getValue();
 
 					SegNode sg2 = new SegNode();
-					// åˆ†éš”ç¬¦@å‰çš„è¯åœ¨é“¾è¡¨ä¸­çš„ä½ç½®
+					// ·Ö¸ô·û@Ç°µÄ´ÊÔÚÁ´±íÖĞµÄÎ»ÖÃ
 					int wordIndex = getWordIndex(sgs, sg);
 					sg2.setRow(wordIndex);
 
-					// åˆ†éš”ç¬¦@åçš„è¯åœ¨é“¾è¡¨ä¸­çš„ä½ç½®
+					// ·Ö¸ô·û@ºóµÄ´ÊÔÚÁ´±íÖĞµÄÎ»ÖÃ
 					wordIndex = getWordIndex(sgs, graph);
 					sg2.setCol(wordIndex);
 					sg2.setWord(twoWords);

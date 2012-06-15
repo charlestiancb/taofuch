@@ -1,7 +1,7 @@
-ï»¿package org.ictclas4j.bean;
+package org.ictclas4j.bean;
 
 /**
- * äººå
+ * ÈËÃû
  * 
  * @author sinboy
  * 

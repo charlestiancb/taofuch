@@ -1,4 +1,4 @@
-ï»¿package org.ictclas4j.bean;
+package org.ictclas4j.bean;
 
 import java.io.DataInputStream;
 import java.io.FileNotFoundException;
@@ -29,11 +29,11 @@ public class ContextStat {
 		try {
 			byte[] b = null;
 			DataInputStream in = new DataInputStream(ContextStat.class.getResourceAsStream(fileName));
-			// è¯»å–é•¿åº¦
+			// ¶ÁÈ¡³¤¶È
 			tableLen = GFCommon.bytes2int(Utility.readBytes(in, 4), false);
 			// logger.debug("tableLen:" + tableLen);
 
-			// è¯»å–ç¬¦å·æ ‡å¿—
+			// ¶ÁÈ¡·ûºÅ±êÖ¾
 			symbolTable = new int[tableLen];
 			for (int i = 0; i < tableLen; i++) {
 				b = Utility.readBytes(in, 4);
@@ -47,19 +47,19 @@ public class ContextStat {
 				// logger.debug("tagContext:");
 				TagContext tc = new TagContext();
 
-				// è¯»å–å…³é”®è¯
+				// ¶ÁÈ¡¹Ø¼ü´Ê
 				b = Utility.readBytes(in, 4);
 				int key = GFCommon.bytes2int(b);
 				curLen += 4;
 				// logger.debug("\tkey:" + key);
 
-				// è¯»å–æ€»è¯é¢‘
+				// ¶ÁÈ¡×Ü´ÊÆµ
 				b = Utility.readBytes(in, 4);
 				curLen += 4;
 				int totalFreq = GFCommon.bytes2int(b, false);
 				// logger.debug("\ttotalFreq:" + totalFreq);
 
-				// è¯»å–è¯é¢‘
+				// ¶ÁÈ¡´ÊÆµ
 				int[] tagFreq = new int[tableLen];
 				for (int i = 0; i < tableLen; i++) {
 					b = Utility.readBytes(in, 4);
@@ -68,7 +68,7 @@ public class ContextStat {
 					// logger.debug("\ttagFreq[" + i + "]:" + tagFreq[i]);
 				}
 
-				// è¯»å–ä¸Šä¸‹æ–‡æ•°ç»„
+				// ¶ÁÈ¡ÉÏÏÂÎÄÊı×é
 				int[][] contextArray = new int[tableLen][tableLen];
 				for (int i = 0; i < tableLen; i++) {
 					String pr = "";

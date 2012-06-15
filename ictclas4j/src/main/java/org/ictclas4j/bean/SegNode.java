@@ -1,4 +1,4 @@
-ï»¿package org.ictclas4j.bean;
+package org.ictclas4j.bean;
 
 import java.util.ArrayList;
 
@@ -7,26 +7,26 @@ import org.ictclas4j.utility.Utility;
 
 
 /**
- * åˆ†è¯å›¾è¡¨ä¸­çš„èŠ‚ç‚¹ï¼Œå®é™…è¡¨ç¤ºå›¾ä¸­çš„ä¸€æ¡è¾¹
+ * ·Ö´ÊÍ¼±íÖĞµÄ½Úµã£¬Êµ¼Ê±íÊ¾Í¼ÖĞµÄÒ»Ìõ±ß
  * 
  * @author sinboy
  * 
  */
 public class SegNode implements Cloneable {
 
-	private int col;// è¡¨ç¤ºè¾¹çš„åé©±ï¼Œå³ç»ˆç‚¹
+	private int col;// ±íÊ¾±ßµÄºóÇı£¬¼´ÖÕµã
 
-	private int row;// è¡¨ç¤ºè¾¹çš„å‰é©±ï¼Œå³èµ·ç‚¹
+	private int row;// ±íÊ¾±ßµÄÇ°Çı£¬¼´Æğµã
 
-	private double value;// è¯é¢‘å€¼
+	private double value;// ´ÊÆµÖµ
 
-	private int pos;// è¯æ€§
+	private int pos;// ´ÊĞÔ
 
-	private ArrayList<POS> allPos;// è¯æ€§ï¼Œä¸€ä¸ªè¯å¯èƒ½å¯¹åº”å¤šä¸ªè¯æ€§
+	private ArrayList<POS> allPos;// ´ÊĞÔ£¬Ò»¸ö´Ê¿ÉÄÜ¶ÔÓ¦¶à¸ö´ÊĞÔ
 
-	private String word;// è¾¹çš„å†…å®¹ï¼Œå¯èƒ½æœ‰è¿™æ ·çš„è¡¨ç¤ºå½¢å¼ï¼šæœ«ï¼ƒï¼ƒæ•°ã€æœ«ï¼ƒï¼ƒæ—¶ç­‰
+	private String word;// ±ßµÄÄÚÈİ£¬¿ÉÄÜÓĞÕâÑùµÄ±íÊ¾ĞÎÊ½£ºÄ©££££Êı¡¢Ä©££££Ê±µÈ
 
-	private String srcWord;// åˆ†è¯å‰å¯¹åº”çš„åŸå§‹å†…å®¹
+	private String srcWord;// ·Ö´ÊÇ°¶ÔÓ¦µÄÔ­Ê¼ÄÚÈİ
 
 	public SegNode() {
 

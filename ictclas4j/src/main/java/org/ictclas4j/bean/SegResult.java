@@ -1,4 +1,4 @@
-ï»¿package org.ictclas4j.bean;
+package org.ictclas4j.bean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +9,13 @@ public class SegResult {
 
 	private long startTime;
 
-	private String rawContent;// åŸå§‹åˆ†è¯å†…å®¹
+	private String rawContent;// Ô­Ê¼·Ö´ÊÄÚÈİ
 
-	private ArrayList<MidResult> mrList;// ä¸­é—´ç»“æœ
+	private ArrayList<MidResult> mrList;// ÖĞ¼ä½á¹û
 
-	private String finalResult;// æœ€ç»ˆåˆ†è¯ç»“æœ
+	private String finalResult;// ×îÖÕ·Ö´Ê½á¹û
 
-	private List<String> wordList = new ArrayList<String>();// åˆ†è¯çš„ç»“æœï¼Œæ‰€æœ‰çš„è¯
+	private List<String> wordList = new ArrayList<String>();// ·Ö´ÊµÄ½á¹û£¬ËùÓĞµÄ´Ê
 
 	public SegResult(String rawContent) {
 		this.rawContent = rawContent;
@@ -61,7 +61,7 @@ public class SegResult {
 		StringBuffer html = new StringBuffer();
 
 		if (rawContent != null) {
-			html.append("åŸæ–‡å†…å®¹ï¼š");
+			html.append("Ô­ÎÄÄÚÈİ£º");
 			html.append("<table border=\"1\" width=\"100%\"><tr><td width=\"100%\">");
 			html.append(rawContent);
 			html.append("</td></tr></table>");
@@ -73,7 +73,7 @@ public class SegResult {
 			}
 
 			if (finalResult != null) {
-				html.append("<p>æœ€ç»ˆåˆ†è¯ç»“æœï¼š");
+				html.append("<p>×îÖÕ·Ö´Ê½á¹û£º");
 				html.append("<table border=\"1\" width=\"100%\"><tr><td width=\"100%\">");
 				html.append("<font color=\"blue\" size=6><b>" + finalResult + "</b></font>");
 				html.append("</td></tr></table>");
@@ -85,7 +85,7 @@ public class SegResult {
 	}
 
 	/**
-	 * æ·»åŠ ä¸€ä¸ªè¯å†…å®¹åˆ°é˜Ÿåˆ—ä¸­
+	 * Ìí¼ÓÒ»¸ö´ÊÄÚÈİµ½¶ÓÁĞÖĞ
 	 * 
 	 * @param word
 	 */

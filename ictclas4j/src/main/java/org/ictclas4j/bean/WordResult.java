@@ -1,4 +1,4 @@
-﻿package org.ictclas4j.bean;
+package org.ictclas4j.bean;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 

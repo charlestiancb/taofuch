@@ -1,26 +1,30 @@
-ï»¿package org.ictclas4j.bean;
+package org.ictclas4j.bean;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 
+import org.apache.commons.io.IOUtils;
 import org.ictclas4j.utility.GFCommon;
 import org.ictclas4j.utility.GFString;
 import org.ictclas4j.utility.Utility;
 
 public class Dictionary {
 	/**
-	 * è¯å…¸è¡¨,å…±6768ä¸ª,GB2312ç¼–ç 
+	 * ´Êµä±í,¹²6768¸ö,GB2312±àÂë
 	 */
 	public ArrayList<WordTable> wts;
 
 	/**
-	 * è¯å…¸ä¿®æ”¹è¡¨
+	 * ´ÊµäĞŞ¸Ä±í
 	 */
 	public ArrayList<ModifyTable> mts;
 
@@ -50,13 +54,13 @@ public class Dictionary {
 	}
 
 	/**
-	 * ä»è¯å…¸è¡¨ä¸­åŠ è½½è¯æ¡.å…±6768ä¸ªå¤§çš„æ•°æ®å—(åŒ…æ‹¬5ä¸ªéæ±‰å­—å­—ç¬¦),æ¯ä¸ªå¤§æ•°æ®å—åŒ…æ‹¬è‹¥å¹²ä¸ªå°æ•°æ®å—,
-	 * æ¯ä¸ªå°æ•°æ®å—ä¸ºä¸€ä¸ªè¯æ¡,è¯¥æ•°æ®å—ä¸­æ¯ä¸ªè¯æ¡éƒ½æ˜¯å…±ä¸€ä¸ªå­—å¼€å¤´çš„.
+	 * ´Ó´Êµä±íÖĞ¼ÓÔØ´ÊÌõ.¹²6768¸ö´óµÄÊı¾İ¿é(°üÀ¨5¸ö·Çºº×Ö×Ö·û),Ã¿¸ö´óÊı¾İ¿é°üÀ¨Èô¸É¸öĞ¡Êı¾İ¿é,
+	 * Ã¿¸öĞ¡Êı¾İ¿éÎªÒ»¸ö´ÊÌõ,¸ÃÊı¾İ¿éÖĞÃ¿¸ö´ÊÌõ¶¼ÊÇ¹²Ò»¸ö×Ö¿ªÍ·µÄ.
 	 * 
 	 * @param filename
-	 *            æ ¸å¿ƒè¯å…¸æ–‡ä»¶å
+	 *            ºËĞÄ´ÊµäÎÄ¼şÃû
 	 * @param isReset
-	 *            æ˜¯å¦è¦é‡ç½®
+	 *            ÊÇ·ñÒªÖØÖÃ
 	 * @return
 	 */
 	public boolean load(String filename, boolean isReset) {
@@ -65,11 +69,12 @@ public class Dictionary {
 
 		try {
 			delModified();
-
-			DataInputStream in = new DataInputStream(new BufferedInputStream(Dictionary.class.getResourceAsStream(filename)));
+			Reader reader = new InputStreamReader(Dictionary.class.getResourceAsStream(filename), "UTF-8");
+			ByteArrayInputStream bais = new ByteArrayInputStream(IOUtils.toByteArray(reader));
+			DataInputStream in = new DataInputStream(new BufferedInputStream(bais));
 			for (int i = 0; i < Utility.CC_NUM; i++) {
-				// logger.debug("å—" + i);
-				// è¯å…¸åº“åœ¨å†™äºŒè¿›åˆ¶æ•°æ®æ—¶é‡‡ç”¨ä½ä½ä¼˜å…ˆ(å°å¤´åœ¨å‰)æ–¹å¼,éœ€è¦è½¬æ¢ä¸€ä¸‹
+				// logger.debug("¿é" + i);
+				// ´Êµä¿âÔÚĞ´¶ş½øÖÆÊı¾İÊ±²ÉÓÃµÍÎ»ÓÅÏÈ(Ğ¡Í·ÔÚÇ°)·½Ê½,ĞèÒª×ª»»Ò»ÏÂ
 				int count = GFCommon.bytes2int(Utility.readBytes(in, 4), false);
 				// logger.debug(" count:" + count);
 				wts.get(i).setCount(count);
@@ -119,7 +124,7 @@ public class Dictionary {
 	}
 
 	/**
-	 * ä¿å­˜è¯å…¸è¡¨.å¦‚æœæœ‰ä¿®æ”¹çš„è¯æ¡ï¼Œåˆ™å…ˆè¦å¯¹è¯å…¸è¡¨è¿›è¡Œæ›´æ–°æ‰èƒ½æŠŠå†…å®¹å†™å…¥æ–‡ä»¶
+	 * ±£´æ´Êµä±í.Èç¹ûÓĞĞŞ¸ÄµÄ´ÊÌõ£¬ÔòÏÈÒª¶Ô´Êµä±í½øĞĞ¸üĞÂ²ÅÄÜ°ÑÄÚÈİĞ´ÈëÎÄ¼ş
 	 * 
 	 * @param filename
 	 * @return
@@ -229,14 +234,14 @@ public class Dictionary {
 	}
 
 	/**
-	 * å‘è¯å…¸åº“ä¸­æ·»åŠ è¯æ¡.æ·»åŠ æ—¶åªæ˜¯å…ˆæŠŠè¯æ¡æ”¾åˆ°ä¿®æ”¹è¡¨ä¸­ï¼Œä¿å­˜æ—¶æ‰çœŸæ­£æŠŠæ·»åŠ çš„è¯æ¡å†™å…¥è¯å…¸åº“ä¸­
+	 * Ïò´Êµä¿âÖĞÌí¼Ó´ÊÌõ.Ìí¼ÓÊ±Ö»ÊÇÏÈ°Ñ´ÊÌõ·Åµ½ĞŞ¸Ä±íÖĞ£¬±£´æÊ±²ÅÕæÕı°ÑÌí¼ÓµÄ´ÊÌõĞ´Èë´Êµä¿âÖĞ
 	 * 
 	 * @param word
-	 *            è¯
+	 *            ´Ê
 	 * @param handle
-	 *            å¥æŸ„
+	 *            ¾ä±ú
 	 * @param frequency
-	 *            é¢‘åº¦
+	 *            Æµ¶È
 	 * @return
 	 */
 	public boolean addItem(String word, int handle, int frequency) {
@@ -396,12 +401,12 @@ public class Dictionary {
 	}
 
 	/**
-	 * ç”¨2åˆ†æ³•æŸ¥è¯¢æºè¯å…¸åº“,çœ‹æ˜¯å¦å·²å­˜åœ¨
+	 * ÓÃ2·Ö·¨²éÑ¯Ô´´Êµä¿â,¿´ÊÇ·ñÒÑ´æÔÚ
 	 * 
 	 * @param index
-	 *            å¤§æ•°æ®å—å¯¹åº”çš„ä¸‹æ ‡ï¼ˆæ‰€æœ‰åŒä¸€ä¸ªå­—å¼€å¤´çš„è¯æ¡ä¸ºä¸€ä¸ªå¤§æ•°æ®å—ï¼‰
+	 *            ´óÊı¾İ¿é¶ÔÓ¦µÄÏÂ±ê£¨ËùÓĞÍ¬Ò»¸ö×Ö¿ªÍ·µÄ´ÊÌõÎªÒ»¸ö´óÊı¾İ¿é£©
 	 * @param res
-	 *            å»æ‰å¤´ä¸€ä¸ªå­—åå‰©ä½™çš„éƒ¨åˆ†
+	 *            È¥µôÍ·Ò»¸ö×ÖºóÊ£ÓàµÄ²¿·Ö
 	 * @param handle
 	 * @return
 	 */
@@ -443,12 +448,12 @@ public class Dictionary {
 	}
 
 	/**
-	 * ä»ä¿®æ”¹è¡¨ä¸­æŸ¥è¯¢æ˜¯å¦å­˜åœ¨,å¹¶è¿”å›å®ƒçš„ä½ç½®åæ ‡
+	 * ´ÓĞŞ¸Ä±íÖĞ²éÑ¯ÊÇ·ñ´æÔÚ,²¢·µ»ØËüµÄÎ»ÖÃ×ø±ê
 	 * 
 	 * @param index
 	 * @param res
 	 * @param handle
-	 * @return ä½ç½®åæ ‡
+	 * @return Î»ÖÃ×ø±ê
 	 */
 	protected int findInModifyTable(int index, String res, int handle) {
 		int result = -1;
@@ -496,7 +501,7 @@ public class Dictionary {
 	}
 
 	/**
-	 * é¢„å¤„ç†,å…ˆæŠŠè¯å‰åçš„ç©ºæ ¼å»æ‰
+	 * Ô¤´¦Àí,ÏÈ°Ñ´ÊÇ°ºóµÄ¿Õ¸ñÈ¥µô
 	 * 
 	 * @param word
 	 * @param wordRet
@@ -547,7 +552,7 @@ public class Dictionary {
 	}
 
 	/**
-	 * ä»è¯å…¸åº“ä¸­æ‰¾å‡ºæœ€åŒ¹é…çš„ä¸€ä¸ª
+	 * ´Ó´Êµä¿âÖĞÕÒ³ö×îÆ¥ÅäµÄÒ»¸ö
 	 * 
 	 * @param word
 	 * @return
@@ -571,9 +576,9 @@ public class Dictionary {
 						}
 					}
 				}
-				// ä»æºè¯å…¸è¡¨ä¸­æ‰¾å‡ºå»æ‰ç¬¬ä¸€ä¸ªå¼€å¤´çš„å­—ä¹‹åç›¸ç­‰çš„è¯
+				// ´ÓÔ´´Êµä±íÖĞÕÒ³öÈ¥µôµÚÒ»¸ö¿ªÍ·µÄ×ÖÖ®ºóÏàµÈµÄ´Ê
 				if (found >= 0 && wts != null && wts.get(pw.getIndex()) != null) {
-					// è‡³å°‘æœ‰ä¸€ä¸ª
+					// ÖÁÉÙÓĞÒ»¸ö
 					ArrayList<WordItem> wis = wts.get(pw.getIndex()).getWords();
 					if (wis == null || found > wis.size() - 1)
 						return null;
@@ -623,7 +628,7 @@ public class Dictionary {
 	}
 
 	// ---------------------------------------------------------//
-	// æš‚æ—¶ä¸ä¼šç”¨åˆ°çš„æ–¹æ³•
+	// ÔİÊ±²»»áÓÃµ½µÄ·½·¨
 	public boolean optimum() {
 		return false;
 	}

@@ -1,21 +1,21 @@
-ï»¿package org.ictclas4j.utility;
+package org.ictclas4j.utility;
 
 /**
- * æ•°å­—ç›¸å…³çš„å·¥å…·ç±»
+ * Êı×ÖÏà¹ØµÄ¹¤¾ßÀà
  * 
  * @author sinboy
  * @since 2007.5.23
  */
 public class NumUtil {
 	/**
-	 * å­—ç¬¦ä¸²çš„æ‰€æœ‰å•ä¸ªå­—ç¬¦éƒ½æ˜¯æ•°å­—ä½†æœ¬èº«å¹¶ä¸æ˜¯ä¸€ä¸ªæœ‰æ„ä¹‰çš„æ•°å­—
+	 * ×Ö·û´®µÄËùÓĞµ¥¸ö×Ö·û¶¼ÊÇÊı×Öµ«±¾Éí²¢²»ÊÇÒ»¸öÓĞÒâÒåµÄÊı×Ö
 	 * 
 	 * @param str
 	 * @return
 	 */
 	public static boolean isNumStrNotNum(String word) {
 		if (word != null) {
-			if (word.length() == 2 && Utility.isInAggregate("ç¬¬ä¸ŠæˆÂ±â€”ï¼‹âˆ¶Â·ï¼ï¼", word))
+			if (word.length() == 2 && Utility.isInAggregate("µÚÉÏ³É¡À¡ª£«¡Ã¡¤£®£¯", word))
 				return true;
 			if (word.length() == 1 && Utility.isInAggregate("+-./", word))
 				return true;
@@ -24,7 +24,7 @@ public class NumUtil {
 	}
 
 	/**
-	 * æ˜¯å¦æ˜¯æ•°å­—ã€è¿å­—ç¬¦çš„æƒ…å†µï¼Œå¦‚ï¼šï¼“-4æœˆ
+	 * ÊÇ·ñÊÇÊı×Ö¡¢Á¬×Ö·ûµÄÇé¿ö£¬Èç£º£³-4ÔÂ
 	 * 
 	 * @param pos
 	 * @param str
@@ -35,7 +35,7 @@ public class NumUtil {
 			String first = str.substring(0, 1);
 			// //27904='m'*256 29696='t'*256
 			if ((Math.abs(pos) == POSTag.NUM || Math.abs(pos) == POSTag.TIME)
-					&& ("â€”".equals(first) || "-".equals(first)))
+					&& ("¡ª".equals(first) || "-".equals(first)))
 				return true;
 		}
 		return false;

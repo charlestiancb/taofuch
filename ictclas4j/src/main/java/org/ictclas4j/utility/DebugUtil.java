@@ -1,4 +1,4 @@
-ï»¿package org.ictclas4j.utility;
+package org.ictclas4j.utility;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -12,7 +12,7 @@ import org.ictclas4j.bean.SegResult;
 
 
 /**
- * æ—¥å¿—è®°å½•å·¥å…·ç±»
+ * ÈÕÖ¾¼ÇÂ¼¹¤¾ßÀà
  * 
  * @author sinboy
  * 
@@ -20,14 +20,14 @@ import org.ictclas4j.bean.SegResult;
 public class DebugUtil {
 
 	/**
-	 * æŠŠåˆ†è¯è¿‡ç¨‹ä¸­ç”Ÿæˆçš„ä¸­é—´ç»“æœè¾“å‡ºåˆ°HMTLæ–‡ä»¶ä¸­
+	 * °Ñ·Ö´Ê¹ı³ÌÖĞÉú³ÉµÄÖĞ¼ä½á¹ûÊä³öµ½HMTLÎÄ¼şÖĞ
 	 * 
 	 * @param snList
 	 */
 	public static void output2html(SegResult sr) {
 		if (sr != null) {
 			try {
-				String html = "<html><head><title>ictclas4jåˆ†è¯ç»“æœ</title></head>";
+				String html = "<html><head><title>ictclas4j·Ö´Ê½á¹û</title></head>";
 				html += "<body bgcolor=\"#CCFF99\">";
 				html += sr.toHTML();
 				html += "</body></html>"; 
@@ -42,9 +42,9 @@ public class DebugUtil {
 		if (sns != null) {
 			try {
 				StringBuffer html = new StringBuffer();
-				html.append("<html><head><title>ictclas4jåˆ†è¯ç»“æœ</title></head>");
+				html.append("<html><head><title>ictclas4j·Ö´Ê½á¹û</title></head>");
 				html.append("<body bgcolor=\"#CCFF99\">");
-				html.append("<p>è¿›è¡ŒåŸå­åˆ†è¯åçš„ç»“æœï¼š");
+				html.append("<p>½øĞĞÔ­×Ó·Ö´ÊºóµÄ½á¹û£º");
 				html.append("<table border=\"1\" width=\"100%\">");
 				for (SegNode sn : sns) {
 					html.append("<tr>");
@@ -75,7 +75,7 @@ public class DebugUtil {
 	}
 
 	/**
-	 * æŠŠåˆ†è¯è¿‡ç¨‹ä¸­ç”Ÿæˆçš„ä¸­é—´ç»“æœè¾“å‡ºåˆ°GUIå›¾å½¢ç•Œé¢ä¸Š
+	 * °Ñ·Ö´Ê¹ı³ÌÖĞÉú³ÉµÄÖĞ¼ä½á¹ûÊä³öµ½GUIÍ¼ĞÎ½çÃæÉÏ
 	 * 
 	 * @param snList
 	 */
@@ -86,14 +86,14 @@ public class DebugUtil {
 	}
 
 	/**
-	 * å†™æ–‡æœ¬æ–‡ä»¶.å¦‚æœå†™å…¥æ•°æ®ä¸­æœ‰æ¢è¡Œç¬¦"\n"çš„è¯,è‡ªåŠ¨åœ¨å†™å…¥æ–‡ä»¶ä¸­æ¢ä¸­
+	 * Ğ´ÎÄ±¾ÎÄ¼ş.Èç¹ûĞ´ÈëÊı¾İÖĞÓĞ»»ĞĞ·û"\n"µÄ»°,×Ô¶¯ÔÚĞ´ÈëÎÄ¼şÖĞ»»ÖĞ
 	 * 
 	 * @param fileName
-	 *            æ–‡ä»¶è·¯å¾„
+	 *            ÎÄ¼şÂ·¾¶
 	 * @param txt
-	 *            è¦å†™å…¥çš„æ–‡ä»¶ä¿¡æ¯
+	 *            ÒªĞ´ÈëµÄÎÄ¼şĞÅÏ¢
 	 * @param isAppend
-	 *            æ˜¯å¦ä»¥è¿½åŠ çš„æ–¹å¼å†™å…¥
+	 *            ÊÇ·ñÒÔ×·¼ÓµÄ·½Ê½Ğ´Èë
 	 * @return
 	 * @throws IOException
 	 */
@@ -107,7 +107,7 @@ public class DebugUtil {
 				File fp;
 
 				File file = new File(fileName);
-				// å¦‚æœæ–‡ä»¶ä¸å­˜åœ¨ï¼Œå°±åˆ›å»ºä¸€ä¸ªï¼Œå¦‚æœç›®å½•ä¹Ÿä¸å­˜åœ¨ï¼Œä¹Ÿåˆ›å»ºä¸€ä¸ª
+				// Èç¹ûÎÄ¼ş²»´æÔÚ£¬¾Í´´½¨Ò»¸ö£¬Èç¹ûÄ¿Â¼Ò²²»´æÔÚ£¬Ò²´´½¨Ò»¸ö
 				if (!file.exists()) {
 					parent = file.getParent();
 					if (parent != null) {

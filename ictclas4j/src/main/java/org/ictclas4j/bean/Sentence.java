@@ -1,11 +1,11 @@
-ï»¿package org.ictclas4j.bean;
+package org.ictclas4j.bean;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 public class Sentence {
 	private String content;
 
-	/** æ˜¯å¦éœ€è¦è¿›è¡Œåˆ†è¯.å›è½¦æ¢è¡Œå’Œç©ºæ ¼æ˜¯ä¸éœ€è¦çš„ */
+	/** ÊÇ·ñĞèÒª½øĞĞ·Ö´Ê.»Ø³µ»»ĞĞºÍ¿Õ¸ñÊÇ²»ĞèÒªµÄ */
 	private boolean isSeg;
 
 	public Sentence() {

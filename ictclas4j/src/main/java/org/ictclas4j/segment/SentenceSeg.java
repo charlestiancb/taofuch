@@ -1,4 +1,4 @@
-ï»¿package org.ictclas4j.segment;
+package org.ictclas4j.segment;
 
 import java.util.ArrayList;
 
@@ -16,7 +16,7 @@ public class SentenceSeg {
 		sens=split();
 	}
 	/**
-	 * è¿›è¡Œå¥å­åˆ†éš”
+	 * ½øĞĞ¾ä×Ó·Ö¸ô
 	 * 
 	 * @param src
 	 * @return
@@ -30,15 +30,15 @@ public class SentenceSeg {
 			String[] ss = GFString.atomSplit(src);
 
 			for (int i = 0; i < ss.length; i++) {
-				// å¦‚æœæ˜¯åˆ†éš”ç¬¦ï¼Œæ¯”å¦‚å›è½¦æ¢è¡Œ/é€—å·ç­‰
+				// Èç¹ûÊÇ·Ö¸ô·û£¬±ÈÈç»Ø³µ»»ĞĞ/¶ººÅµÈ
 				if (Utility.SEPERATOR_C_SENTENCE.indexOf(ss[i]) != -1
 						|| Utility.SEPERATOR_LINK.indexOf(ss[i]) != -1
 						|| Utility.SEPERATOR_C_SUB_SENTENCE.indexOf(ss[i]) != -1
 						|| Utility.SEPERATOR_E_SUB_SENTENCE.indexOf(ss[i]) != -1) {
-					// å¦‚æœä¸æ˜¯å›è½¦æ¢è¡Œå’Œç©ºæ ¼
+					// Èç¹û²»ÊÇ»Ø³µ»»ĞĞºÍ¿Õ¸ñ
 					if (Utility.SEPERATOR_LINK.indexOf(ss[i]) == -1)
 						s1 += ss[i];
-					// æ–­å¥
+					// ¶Ï¾ä
 					if (s1.length() > 0 && !Utility.SENTENCE_BEGIN.equals(s1)) {
 						if (Utility.SEPERATOR_C_SUB_SENTENCE.indexOf(ss[i]) == -1
 								&& Utility.SEPERATOR_E_SUB_SENTENCE
@@ -49,7 +49,7 @@ public class SentenceSeg {
 						s1 = "";
 					}
 
-					// æ˜¯å›è½¦æ¢è¡Œç¬¦æˆ–ç©ºæ ¼ï¼Œåˆ™ä¸éœ€è¦è¿›è¡Œåˆ†æå¤„ç†
+					// ÊÇ»Ø³µ»»ĞĞ·û»ò¿Õ¸ñ£¬Ôò²»ĞèÒª½øĞĞ·ÖÎö´¦Àí
 					if (Utility.SEPERATOR_LINK.indexOf(ss[i]) != -1) {
 						result.add(new Sentence(ss[i]));
 						s1 = Utility.SENTENCE_BEGIN;

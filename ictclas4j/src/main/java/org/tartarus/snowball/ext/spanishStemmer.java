@@ -1,4 +1,4 @@
-﻿// This file was generated automatically by the Snowball to Java compiler
+// This file was generated automatically by the Snowball to Java compiler
 
 package org.tartarus.snowball.ext;
 
