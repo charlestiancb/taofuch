@@ -9,6 +9,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import com.cloudtech.ebusi.crawler.index.Indexer;
 import com.cloudtech.ebusi.crawler.utils.FileReaderUtils;
@@ -16,7 +17,7 @@ import com.cloudtech.ebusi.crawler.utils.FileReaderUtils;
 public class CompanyIndexer implements Indexer {
 	protected static IndexWriter iw = null;
 	/** 分词器，全系统共用这一个 */
-	public static Analyzer analyzer = null;
+	public static final Analyzer analyzer = new IKAnalyzer(true);
 	public static File indexDir = null;
 	static {
 		String file = FileReaderUtils.readFromFile(CompanyIndexer.class.getResourceAsStream("/context/index/conf.properties"))
@@ -24,7 +25,6 @@ public class CompanyIndexer implements Indexer {
 		if (StringUtils.isBlank(file)) {
 			file = System.getProperty("java.io.tmpDir");
 		}
-		// TODO 初始化分词器
 		IndexWriterConfig iwConf = new IndexWriterConfig(Version.LUCENE_36, analyzer);
 		indexDir = new File(file);
 		try {
