@@ -10,7 +10,7 @@ import com.cloudtech.ebusi.crawler.parser.CompanyInfo;
  */
 public interface Indexer {
 	/**
-	 * 将
+	 * 将公司信息建立索引！
 	 * 
 	 * @param com
 	 */
