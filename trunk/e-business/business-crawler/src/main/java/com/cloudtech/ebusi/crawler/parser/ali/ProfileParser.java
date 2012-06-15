@@ -1,11 +1,13 @@
 package com.cloudtech.ebusi.crawler.parser.ali;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.HasAttributeFilter;
+import org.htmlparser.tags.Bullet;
+import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 
-import com.cloudtech.ebusi.crawler.parser.AliParser;
 import com.cloudtech.ebusi.crawler.parser.CompanyInfo;
 
 /**
@@ -20,6 +22,7 @@ public class ProfileParser {
 	 * 解析用户信息，并将这些信息进行索引！
 	 * 
 	 * @param nl
+	 *            所有Tab链接
 	 */
 	public static CompanyInfo indexComInfo(NodeList nl) {
 		CompanyInfo com = new CompanyInfo();
@@ -33,16 +36,16 @@ public class ProfileParser {
 	 * 解析出诚信相关的指数。
 	 * 
 	 * @param nl
+	 *            所有Tab链接
 	 * @param com
 	 */
-	private static void parseCred(NodeList nl, CompanyInfo com) {
-		NodeList _nl = nl.extractAllNodesThatMatch(new HasAttributeFilter("data-page-type"), true);
-		String link = AliParser.getBulletLink(_nl.elementAt(2));
+	public static void parseCred(NodeList nl, CompanyInfo com) {
+		String link = getBulletLink(nl.elementAt(2));
 		try {
 			Parser par = new Parser(link);
-			_nl = par.parse(new HasAttributeFilter("class", "fd-clr"));
-			if (nl.size() > 0) {
-				String content = nl.asString().trim();
+			NodeList _nl = par.parse(new HasAttributeFilter("class", "fd-clr"));
+			if (_nl.size() > 0) {
+				String content = _nl.asString().trim();
 				content = content.substring(content.indexOf("诚信通指数") + "诚信通指数".length());
 				String chengXingTong = content.substring(0, content.indexOf("\n")).trim();
 				content = content.substring(content.indexOf("信用编码") + "信用编码".length());
@@ -50,10 +53,18 @@ public class ProfileParser {
 				com.putDetails(CompanyInfo.CRED_NUM, chengXingTong);
 				com.putDetails(CompanyInfo.CRED_CODE, xinYongbianMa);
 			}
-			nl.elementAt(0);
 		} catch (Exception e) {
 			System.err.println("判断的解析失败：" + link + "  " + ExceptionUtils.getFullStackTrace(e));
 		}
+	}
+
+	private static String getBulletLink(Node node) {
+		if (!(node instanceof Bullet)) {
+			return null;
+		}
+		node = node.getChildren().extractAllNodesThatMatch(new HasAttributeFilter("href")).elementAt(0);
+		LinkTag t = (LinkTag) node;
+		return t.extractLink();
 	}
 
 	/**

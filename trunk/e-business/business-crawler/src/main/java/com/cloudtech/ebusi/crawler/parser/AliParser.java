@@ -5,11 +5,8 @@ import java.util.List;
 import net.vidageek.crawler.Page;
 import net.vidageek.crawler.Url;
 
-import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.HasAttributeFilter;
-import org.htmlparser.tags.Bullet;
-import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
@@ -44,7 +41,7 @@ public class AliParser extends AbstractParser {
 					try {
 						Parser parser = new Parser(link);
 						NodeList nl = parser.parse(new HasAttributeFilter("data-page-type"));
-						if (CredibilityParser.accept(getBulletLink(nl.elementAt(2)))) {// 判断这个用户的信用档案是否合格
+						if (CredibilityParser.accept(nl)) {// 判断这个用户的信用档案是否合格
 							CompanyInfo com = ProfileParser.indexComInfo(nl);// nl是所有的链接Tab信息。
 							if (com != null && indexer != null) {
 								indexer.indexCom(com);
@@ -56,14 +53,5 @@ public class AliParser extends AbstractParser {
 				}
 			}
 		}
-	}
-
-	public static String getBulletLink(Node node) {
-		if (!(node instanceof Bullet)) {
-			return null;
-		}
-		node = node.getChildren().extractAllNodesThatMatch(new HasAttributeFilter("href")).elementAt(0);
-		LinkTag t = (LinkTag) node;
-		return t.extractLink();
 	}
 }
