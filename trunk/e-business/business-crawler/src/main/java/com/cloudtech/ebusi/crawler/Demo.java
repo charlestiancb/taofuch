@@ -8,6 +8,6 @@ public class Demo {
 	public static void main(String[] args) {
 		String baseUrl = "http://search.china.alibaba.com/selloffer/--1046622.html?showStyle=img&sortType=booked&descendOrder=true&filt=y&lessThanQuantityBegin=true&cleanCookie=false";
 		PageCrawler crawler = new PageCrawler(baseUrl);
-		crawler.crawl(new WebListVisitor(baseUrl, new AliParser()));
+		crawler.crawl(new WebListVisitor(baseUrl, new AliParser(null)));
 	}
 }

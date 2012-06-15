@@ -47,6 +47,6 @@ public class WebListVisitor implements PageVisitor {
 	}
 
 	public void visit(final Page page) {
-		parse.doParse(page);
+		parse.doParse(page, parse.getIndexer());
 	}
 }
