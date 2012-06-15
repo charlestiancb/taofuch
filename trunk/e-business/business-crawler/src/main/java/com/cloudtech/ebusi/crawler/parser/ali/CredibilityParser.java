@@ -37,7 +37,6 @@ public class CredibilityParser {
 					return true;// 如果存在诚信通指数和信用编码，则认为是可以抓取的！
 				}
 			}
-			nl.elementAt(0);
 		} catch (Exception e) {
 			System.err.println("判断的解析失败：" + credibilityLink + "  " + ExceptionUtils.getFullStackTrace(e));
 		}
