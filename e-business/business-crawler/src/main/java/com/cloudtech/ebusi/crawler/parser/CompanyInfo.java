@@ -10,6 +10,9 @@ import java.util.Map;
  * 
  */
 public class CompanyInfo {
+	/** 信用指数 */
+	public static final String CRED_NUM = "credNum";
+
 	/** 公司名称 */
 	public String companyName;
 	/** 公司介绍 */
