@@ -12,6 +12,8 @@ import java.util.Map;
 public class CompanyInfo {
 	/** 信用指数 */
 	public static final String CRED_NUM = "credNum";
+	/** 信用编码 */
+	public static final String CRED_CODE = "credCode";
 
 	/** 公司名称 */
 	public String companyName;
@@ -82,5 +84,9 @@ public class CompanyInfo {
 
 	public void setDetails(Map<String, String> details) {
 		this.details = details;
+	}
+
+	public void putDetails(String fieldName, String fieldValue) {
+		details.put(fieldName, fieldValue);
 	}
 }

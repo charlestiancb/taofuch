@@ -4,6 +4,8 @@ import net.vidageek.crawler.Page;
 import net.vidageek.crawler.Status;
 import net.vidageek.crawler.Url;
 
+import com.cloudtech.ebusi.crawler.index.Indexer;
+
 /**
  * 对Html页面进行解析读取操作的一些解析功能。
  * 
@@ -11,6 +13,21 @@ import net.vidageek.crawler.Url;
  * 
  */
 public abstract class AbstractParser {
+	protected Indexer indexer;
+
+	public AbstractParser(Indexer indexer) {
+		this.indexer = indexer;
+	}
+
+	/**
+	 * 返回索引器
+	 * 
+	 * @return
+	 */
+	public Indexer getIndexer() {
+		return indexer;
+	}
+
 	/**
 	 * 判断这个URL链接是否是应该进行操作的内容。
 	 * 
@@ -35,5 +52,5 @@ public abstract class AbstractParser {
 	 * 
 	 * @param page
 	 */
-	public abstract void doParse(Page page);
+	public abstract void doParse(Page page, Indexer indexer);
 }

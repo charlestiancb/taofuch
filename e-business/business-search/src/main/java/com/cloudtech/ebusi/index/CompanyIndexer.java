@@ -12,6 +12,7 @@ import org.apache.lucene.util.Version;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import com.cloudtech.ebusi.crawler.index.Indexer;
+import com.cloudtech.ebusi.crawler.parser.CompanyInfo;
 import com.cloudtech.ebusi.crawler.utils.FileReaderUtils;
 
 public class CompanyIndexer implements Indexer {
@@ -32,5 +33,10 @@ public class CompanyIndexer implements Indexer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void indexCom(CompanyInfo com) {
+		// TODO Auto-generated method stub
 	}
 }
