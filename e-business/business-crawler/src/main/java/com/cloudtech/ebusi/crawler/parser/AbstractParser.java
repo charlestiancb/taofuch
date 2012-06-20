@@ -1,9 +1,11 @@
 package com.cloudtech.ebusi.crawler.parser;
 
 import net.vidageek.crawler.Page;
+import net.vidageek.crawler.PageCrawler;
 import net.vidageek.crawler.Status;
 import net.vidageek.crawler.Url;
 
+import com.cloudtech.ebusi.crawler.WebListVisitor;
 import com.cloudtech.ebusi.crawler.index.Indexer;
 
 /**
@@ -60,5 +62,8 @@ public abstract class AbstractParser {
 	 * @param startUrl
 	 *            开始的页面
 	 */
-	public abstract void doCrawler(String startUrl);
+	public void doCrawler(String startUrl) {
+		PageCrawler crawler = new PageCrawler(startUrl);
+		crawler.crawl(new WebListVisitor(startUrl, this));
+	}
 }
