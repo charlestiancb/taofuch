@@ -4,7 +4,7 @@ import com.cloudtech.ebusi.crawler.parser.AbstractParser;
 import com.cloudtech.ebusi.crawler.parser.AliParser;
 import com.cloudtech.ebusi.index.CompanyIndexer;
 
-public class AliCrawler {
+public class Crawler {
 	public static void main(String[] args) {
 		doComCrawler(new AliParser(new CompanyIndexer()));
 	}
