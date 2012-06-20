@@ -9,6 +9,11 @@ public class Crawler {
 		doComCrawler(new AliParser(new CompanyIndexer()));
 	}
 
+	/**
+	 * 抓取公司信息
+	 * 
+	 * @param parsers
+	 */
 	public static void doComCrawler(AbstractParser... parsers) {
 		if (parsers != null && parsers.length > 0) {
 			for (final AbstractParser parser : parsers) {
