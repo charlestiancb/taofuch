@@ -46,7 +46,7 @@ public abstract class AbstractParser {
 	 * @param statusError
 	 */
 	public void parseError(Url url, Status statusError) {
-		// TODO 错误时的处理方式，记录已经瓟取过的页面！;
+		// TODO 错误时的处理方式
 	}
 
 	/**
@@ -65,5 +65,15 @@ public abstract class AbstractParser {
 	public void doCrawler(String startUrl) {
 		PageCrawler crawler = new PageCrawler(startUrl);
 		crawler.crawl(new WebListVisitor(startUrl, this));
+	}
+
+	/**
+	 * 已经瓟取过的页面！
+	 * 
+	 * @param url
+	 *            爬取过的页面
+	 */
+	protected void rememberUrl(String url) {
+		// TODO 记住已经瓟取过的页面！
 	}
 }
