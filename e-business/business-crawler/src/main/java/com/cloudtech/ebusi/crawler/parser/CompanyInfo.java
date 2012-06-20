@@ -95,7 +95,7 @@ public class CompanyInfo {
 	private Map<String, String> details = new HashMap<String, String>();
 
 	public String getCompanyName() {
-		return companyName;
+		return StringUtils.isBlank(companyName) ? " " : companyName;
 	}
 
 	public void setCompanyName(String companyName) {
@@ -103,7 +103,7 @@ public class CompanyInfo {
 	}
 
 	public String getIntroduce() {
-		return introduce;
+		return StringUtils.isBlank(introduce) ? " " : introduce;
 	}
 
 	public void setIntroduce(String introduce) {

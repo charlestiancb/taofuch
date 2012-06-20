@@ -47,6 +47,9 @@ public class CompanyIndexer implements Indexer {
 			doc.add(new Field(CompanyInfo.INDEX_INTRO, new StringReader(com.getIntroduce())));
 			// details
 			for (String key : CompanyInfo.COM_INDEX_KEYS) {
+				if (com.getDetails().get(key) == null || com.getDetails().get(key).trim().isEmpty()) {
+					continue;
+				}
 				doc.add(new Field(key, new StringReader(com.getDetails().get(key))));
 			}
 			iw.addDocument(doc, analyzer);
