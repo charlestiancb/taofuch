@@ -21,14 +21,18 @@ import com.cloudtech.ebusi.crawler.parser.ali.ProfileParser;
  * 
  */
 public class AliParser extends AbstractParser {
-
+	/**
+	 * 构造一个指定索引器的解析
+	 * 
+	 * @param indexer
+	 */
 	public AliParser(Indexer indexer) {
 		super(indexer);
 	}
 
 	@Override
 	public boolean followUrl(Url url) {
-		return url.link().startsWith("http://search.china.alibaba.com/selloffer/offer_search.htm");
+		return url.link().startsWith("http://search.china.alibaba.com/selloffer/");
 	}
 
 	@Override
@@ -42,7 +46,8 @@ public class AliParser extends AbstractParser {
 						Parser parser = new Parser(link);
 						NodeList nl = parser.parse(new HasAttributeFilter("data-page-type"));
 						if (CredibilityParser.accept(nl)) {// 判断这个用户的信用档案是否合格
-							CompanyInfo com = ProfileParser.indexComInfo(nl);// nl是所有的链接Tab信息。
+							// System.out.println(link);
+							CompanyInfo com = ProfileParser.getIndexComInfo(nl);// nl是所有的链接Tab信息。
 							if (com != null && indexer != null) {
 								indexer.indexCom(com);
 							}
