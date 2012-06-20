@@ -1,5 +1,6 @@
 package com.cloudtech.ebusi.crawler.parser.ali;
 
+import org.apache.commons.lang.StringUtils;
 import org.htmlparser.util.NodeList;
 
 import com.cloudtech.ebusi.crawler.parser.CompanyInfo;
@@ -26,7 +27,8 @@ public class CredibilityParser {
 		ProfileParser.parseCred(nl, com);
 		String chengXingTong = com.getDetails().get(CompanyInfo.CRED_NUM);
 		String xinYongbianMa = com.getDetails().get(CompanyInfo.CRED_CODE);
-		if (Integer.parseInt(chengXingTong) > 0 || xinYongbianMa.length() > 0) {
+		if ((StringUtils.isNotBlank(chengXingTong) && Integer.parseInt(chengXingTong) > 0)
+				|| StringUtils.isNotBlank(xinYongbianMa)) {
 			return true;// 如果存在诚信通指数和信用编码，则认为是可以抓取的！
 		}
 		return false;
