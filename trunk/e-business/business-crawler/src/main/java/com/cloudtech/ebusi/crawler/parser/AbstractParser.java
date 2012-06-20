@@ -53,4 +53,12 @@ public abstract class AbstractParser {
 	 * @param page
 	 */
 	public abstract void doParse(Page page, Indexer indexer);
+
+	/**
+	 * 开始抓取
+	 * 
+	 * @param startUrl
+	 *            开始的页面
+	 */
+	public abstract void doCrawler(String startUrl);
 }

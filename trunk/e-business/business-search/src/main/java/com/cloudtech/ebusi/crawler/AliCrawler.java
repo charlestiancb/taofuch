@@ -1,13 +1,25 @@
 package com.cloudtech.ebusi.crawler;
 
-import net.vidageek.crawler.PageCrawler;
-
+import com.cloudtech.ebusi.crawler.parser.AbstractParser;
 import com.cloudtech.ebusi.crawler.parser.AliParser;
+import com.cloudtech.ebusi.index.CompanyIndexer;
 
 public class AliCrawler {
 	public static void main(String[] args) {
-		String baseUrl = "http://search.china.alibaba.com/selloffer/--1046622.html?showStyle=img&sortType=booked&descendOrder=true&filt=y&lessThanQuantityBegin=true&cleanCookie=false";
-		PageCrawler crawler = new PageCrawler(baseUrl);
-		crawler.crawl(new WebListVisitor(baseUrl, new AliParser(null)));
+		doComCrawler(new AliParser(new CompanyIndexer()));
+	}
+
+	public static void doComCrawler(AbstractParser... parsers) {
+		if (parsers != null && parsers.length > 0) {
+			for (final AbstractParser parser : parsers) {
+				Thread t = new Thread(new Runnable() {
+					public void run() {
+						parser.doCrawler("http://search.china.alibaba.com/selloffer/--1046622.html?showStyle=img&sortType=booked&descendOrder=true&filt=y&lessThanQuantityBegin=true&cleanCookie=false");
+					}
+				});
+				t.setName(parser.getClass().getName());
+				t.start();
+			}
+		}
 	}
 }

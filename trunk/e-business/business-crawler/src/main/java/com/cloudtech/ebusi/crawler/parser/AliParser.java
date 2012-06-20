@@ -3,6 +3,7 @@ package com.cloudtech.ebusi.crawler.parser;
 import java.util.List;
 
 import net.vidageek.crawler.Page;
+import net.vidageek.crawler.PageCrawler;
 import net.vidageek.crawler.Url;
 
 import org.htmlparser.Parser;
@@ -10,6 +11,7 @@ import org.htmlparser.filters.HasAttributeFilter;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
+import com.cloudtech.ebusi.crawler.WebListVisitor;
 import com.cloudtech.ebusi.crawler.index.Indexer;
 import com.cloudtech.ebusi.crawler.parser.ali.CredibilityParser;
 import com.cloudtech.ebusi.crawler.parser.ali.ProfileParser;
@@ -58,5 +60,11 @@ public class AliParser extends AbstractParser {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void doCrawler(String startUrl) {
+		PageCrawler crawler = new PageCrawler(startUrl);
+		crawler.crawl(new WebListVisitor(startUrl, this));
 	}
 }
