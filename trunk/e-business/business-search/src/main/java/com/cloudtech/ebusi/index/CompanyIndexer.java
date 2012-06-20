@@ -2,9 +2,12 @@ package com.cloudtech.ebusi.index;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.FSDirectory;
@@ -37,6 +40,18 @@ public class CompanyIndexer implements Indexer {
 
 	@Override
 	public void indexCom(CompanyInfo com) {
-		// TODO Auto-generated method stub
+		try {
+			Document doc = new Document();
+			// base info
+			doc.add(new Field(CompanyInfo.INDEX_NAME, new StringReader(com.getCompanyName())));
+			doc.add(new Field(CompanyInfo.INDEX_INTRO, new StringReader(com.getIntroduce())));
+			// details
+			for (String key : CompanyInfo.COM_INDEX_KEYS) {
+				doc.add(new Field(key, new StringReader(com.getDetails().get(key))));
+			}
+			iw.addDocument(doc, analyzer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
