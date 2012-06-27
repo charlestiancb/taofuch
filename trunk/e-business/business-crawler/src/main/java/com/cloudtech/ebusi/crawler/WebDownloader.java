@@ -14,7 +14,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import net.vidageek.crawler.Page;
 import net.vidageek.crawler.Status;
 import net.vidageek.crawler.component.Downloader;
-import net.vidageek.crawler.config.http.Cookie;
 import net.vidageek.crawler.exception.CrawlerException;
 import net.vidageek.crawler.page.ErrorPage;
 import net.vidageek.crawler.page.OkPage;
@@ -22,16 +21,19 @@ import net.vidageek.crawler.page.RejectedMimeTypePage;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.params.CoreProtocolPNames;
 import org.apache.log4j.Logger;
 
 import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
 
 public class WebDownloader implements Downloader {
+
+	private static final String USER_AGENT = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727; InfoPath.3; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET4.0C; .NET4.0E)";
 
 	private final ConcurrentLinkedQueue<String> mimeTypesToInclude;
 
@@ -55,20 +57,23 @@ public class WebDownloader implements Downloader {
 	public Page get(final String url) {
 		DefaultHttpClient client = new DefaultHttpClient();
 		for (Cookie cookie : cookies) {
-			String name = cookie.name();
-			String value = cookie.value();
-			log.debug("Creating cookie [" + name + " = " + value + "] " + cookie.domain());
+			String name = cookie.getName();
+			String value = cookie.getValue();
+			log.debug("Creating cookie [" + name + " = " + value + "] " + cookie.getDomain());
 			BasicClientCookie clientCookie = new BasicClientCookie(name, value);
-			clientCookie.setPath(cookie.path());
-			clientCookie.setDomain(cookie.domain());
+			clientCookie.setPath(cookie.getPath());
+			clientCookie.setDomain(cookie.getDomain());
 			client.getCookieStore().addCookie(clientCookie);
 		}
 		client.getParams().setIntParameter("http.socket.timeout", 15000);
 		return get(client, url);
 	}
 
-	public Page get(final HttpClient client, final String url) {
+	public Page get(final DefaultHttpClient client, final String url) {
 		try {
+			// 设置客户端的信息，防止被屏蔽。
+			client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
+
 			String encodedUrl = encode(url);
 			log.debug("Requesting url: [" + encodedUrl + "]");
 			HttpGet method = new HttpGet(encodedUrl);
@@ -82,6 +87,13 @@ public class WebDownloader implements Downloader {
 				}
 
 				if (Status.OK.equals(status)) {
+					cookies.clear();
+					List<Cookie> cs = client.getCookieStore().getCookies();
+					if (cs != null && !cs.isEmpty()) {
+						for (Cookie c : cs) {
+							cookies.add(c);
+						}
+					}
 					CharsetDetector detector = new CharsetDetector();
 					detector.setText(read(response.getEntity().getContent()));
 					CharsetMatch match = detector.detect();
