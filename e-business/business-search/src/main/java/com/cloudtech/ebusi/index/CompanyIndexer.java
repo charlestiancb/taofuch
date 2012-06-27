@@ -51,6 +51,7 @@ public class CompanyIndexer implements Indexer {
 				TopDocs top = Searcher.indexSearher.search(query, 1);
 				if (top != null && top.totalHits > 0) {
 					// 如果已经存在，则直接不操作下面的逻辑
+					System.err.println("这个公司已经索引过，不需要再建索引:" + com);
 					return;
 				}
 			}

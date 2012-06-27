@@ -174,4 +174,15 @@ public class CompanyInfo {
 	public String getB2bHomepage() {
 		return b2bHomepage;
 	}
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("B2B_Url:");
+		sb.append(getB2bHomepage());
+		sb.append("; homepage:");
+		sb.append(getHomepage());
+		sb.append("; comName:");
+		sb.append(getCompanyName());
+		return sb.toString();
+	}
 }
