@@ -1,6 +1,7 @@
 package com.cloudtech.ebusi.crawler.parser;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import net.vidageek.crawler.Page;
 import net.vidageek.crawler.Url;
@@ -32,7 +33,7 @@ public class HcParser extends AbstractParser {
 
 	@Override
 	public boolean followUrl(Url url) {
-		return url.link().startsWith("http://search.china.alibaba.com/selloffer/");
+		return url.link().startsWith("http://list.b2b.hc360.com/company/kw/%CE%E5%BD%F0.html");
 	}
 
 	@Override
@@ -41,7 +42,7 @@ public class HcParser extends AbstractParser {
 		List<String> links = page.getLinks();
 		if (links != null && !links.isEmpty()) {
 			for (String link : links) {
-				if (link.startsWith("http://detail.china.alibaba.com/buyer/offerdetail")) {
+				if (Pattern.matches("http://([a-zA-Z0-9\\-_]+).b2b.hc360.com/(.+)", link)) {
 					try {
 						Parser parser = new Parser(link);
 						NodeList nl = parser.parse(new HasAttributeFilter("data-page-type"));
