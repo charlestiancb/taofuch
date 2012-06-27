@@ -17,6 +17,8 @@ public class CompanyInfo {
 	/** 信用编码 */
 	public static final String CRED_CODE = "credCode";
 	// ////////////////////////////////////////////////////////
+	/** 索引字段：公司在B2B网站上的主页链接 */
+	public static final String INDEX_B2B = "com_b2b_homepage";
 	/** 索引字段：公司名称 */
 	public static final String INDEX_NAME = "com_name";
 	/** 索引字段：公司介绍 */
@@ -87,6 +89,8 @@ public class CompanyInfo {
 	private String introduce;
 	/** 公司主页 */
 	private String homepage;
+	/** 公司在B2B网站上的主页 */
+	private String b2bHomepage;
 	/** 公司商标、标志性图片 */
 	private String iconLink;
 	/** 公司介绍图片（如大门图片） */
@@ -161,5 +165,13 @@ public class CompanyInfo {
 			sb.append("</a>, ");
 		}
 		return sb.substring(0, sb.length() - 1);
+	}
+
+	public void setB2bHomepage(String b2bHomepage) {
+		this.b2bHomepage = b2bHomepage;
+	}
+
+	public String getB2bHomepage() {
+		return b2bHomepage;
 	}
 }
