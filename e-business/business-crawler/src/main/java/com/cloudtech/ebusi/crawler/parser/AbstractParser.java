@@ -4,7 +4,9 @@ import net.vidageek.crawler.Page;
 import net.vidageek.crawler.PageCrawler;
 import net.vidageek.crawler.Status;
 import net.vidageek.crawler.Url;
+import net.vidageek.crawler.component.DefaultLinkNormalizer;
 
+import com.cloudtech.ebusi.crawler.WebDownloader;
 import com.cloudtech.ebusi.crawler.WebListVisitor;
 import com.cloudtech.ebusi.crawler.index.Indexer;
 
@@ -63,7 +65,7 @@ public abstract class AbstractParser {
 	 *            开始的页面
 	 */
 	public void doCrawler(String startUrl) {
-		PageCrawler crawler = new PageCrawler(startUrl);
+		PageCrawler crawler = new PageCrawler(startUrl, new WebDownloader(), new DefaultLinkNormalizer(startUrl));
 		crawler.crawl(new WebListVisitor(startUrl, this));
 	}
 
