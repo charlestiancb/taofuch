@@ -39,6 +39,7 @@ public class ProfileParser {
 		parseCred(nl, com);
 		// 下面的内容解析都是在同一个页面中！如：http://gykaida.cn.alibaba.com/athena/companyprofile/gykaida.html
 		String mainLink = getBulletLink(nl.elementAt(3));
+		com.setB2bHomepage(mainLink);
 		try {
 			NodeList _nl = new Parser(mainLink).parse(new HasAttributeFilter(	"class",
 																				"m-body m-body-ext info-detail info-brief"));
