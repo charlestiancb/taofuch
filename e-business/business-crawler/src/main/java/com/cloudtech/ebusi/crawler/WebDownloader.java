@@ -55,6 +55,11 @@ public class WebDownloader implements Downloader {
 	}
 
 	public Page get(final String url) {
+		try {
+			Thread.sleep(1000);// 停个1秒钟，然后再抓取，模拟人的操作有间歇
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		DefaultHttpClient client = new DefaultHttpClient();
 		for (Cookie cookie : cookies) {
 			String name = cookie.getName();
