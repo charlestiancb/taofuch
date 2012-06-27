@@ -87,12 +87,10 @@ public class WebDownloader implements Downloader {
 				}
 
 				if (Status.OK.equals(status)) {
-					cookies.clear();
 					List<Cookie> cs = client.getCookieStore().getCookies();
 					if (cs != null && !cs.isEmpty()) {
-						for (Cookie c : cs) {
-							cookies.add(c);
-						}
+						cookies.clear();
+						cookies.addAll(cs);
 					}
 					CharsetDetector detector = new CharsetDetector();
 					detector.setText(read(response.getEntity().getContent()));
