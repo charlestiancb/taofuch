@@ -33,7 +33,7 @@ public class HcParser extends AbstractParser {
 
 	@Override
 	public boolean followUrl(Url url) {
-		return url.link().startsWith("http://list.b2b.hc360.com/company/kw/%CE%E5%BD%F0.html");
+		return url.link().startsWith("http://b2b.hc360.com/companylist/");
 	}
 
 	@Override
@@ -42,13 +42,13 @@ public class HcParser extends AbstractParser {
 		List<String> links = page.getLinks();
 		if (links != null && !links.isEmpty()) {
 			for (String link : links) {
-				if (Pattern.matches("http://([a-zA-Z0-9\\-_]+).b2b.hc360.com/(.+)", link)) {
+				if (Pattern.matches("^http://([a-zA-Z0-9\\-_]+).b2b.hc360.com/$", link)) {
 					try {
-						Parser parser = new Parser(link);
-						NodeList nl = parser.parse(new HasAttributeFilter("data-page-type"));
+						Parser parser = new Parser(link + "shop/show.html");// 公司介绍页面
+						NodeList nl = parser.parse(new HasAttributeFilter("class", "mainbox"));// 总体信息
 						if (CredibilityParser.accept(nl)) {// 判断这个用户的信用档案是否合格
 							System.out.println(link);
-							CompanyInfo com = ProfileParser.getIndexComInfo(nl);// nl是所有的链接Tab信息。
+							CompanyInfo com = ProfileParser.getIndexComInfo(nl);// nl是公司的所有信息页面。
 							if (com != null && indexer != null) {
 								indexer.indexCom(com);
 							}

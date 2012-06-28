@@ -25,10 +25,8 @@ public class CredibilityParser {
 		}
 		CompanyInfo com = new CompanyInfo();
 		ProfileParser.parseCred(nl, com);
-		String chengXingTong = com.getDetails().get(CompanyInfo.CRED_NUM);
-		String xinYongbianMa = com.getDetails().get(CompanyInfo.CRED_CODE);
-		if ((StringUtils.isNotBlank(chengXingTong) && Integer.parseInt(chengXingTong) > 0)
-				|| StringUtils.isNotBlank(xinYongbianMa)) {
+		String credNum = com.getDetails().get(CompanyInfo.CRED_NUM);
+		if (StringUtils.isNotBlank(credNum) && Integer.parseInt(credNum) > 0) {
 			return true;// 如果存在诚信通指数和信用编码，则认为是可以抓取的！
 		}
 		return false;
