@@ -81,7 +81,7 @@ public abstract class AbstractParser {
 	 * @param url
 	 *            爬取过的页面
 	 */
-	protected void rememberUrl(String url) {
+	protected void saveLatestListUrl(String url) {
 		// TODO 记住已经瓟取过的页面！
 	}
 }
