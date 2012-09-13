@@ -4,13 +4,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.tfc</groupId>
 	<artifactId>word-search</artifactId>
-	<version>1.1</version>
+	<version>1.2</version>
+	<packaging>bundle</packaging>
 	<name>关键词快速查找</name>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
@@ -20,6 +22,25 @@
 	</dependencies>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-Name>${project.artifactId}</Bundle-Name>
+						<Bundle-SymbolicName>${project.groupId}-${project.artifactId}</Bundle-SymbolicName>
+						<Export-Package>
+							com.tfc.analysis*
+						</Export-Package>
+						<Import-Package>
+							org.apache.commons*
+						</Import-Package>
+						<Implementation-Title>Word Search</Implementation-Title>
+						<Implementation-Version>${project.version}</Implementation-Version>
+					</instructions>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -43,4 +64,6 @@
 			</plugin>
 		</plugins>
 	</build>
+	<distributionManagement>
+	</distributionManagement>
 </project>
