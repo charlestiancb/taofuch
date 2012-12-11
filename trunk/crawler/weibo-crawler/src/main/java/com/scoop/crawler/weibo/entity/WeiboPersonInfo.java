@@ -1,4 +1,4 @@
-package com.scoop.crawler.weibo.fetch.info;
+package com.scoop.crawler.weibo.entity;
 
 import java.util.ArrayList;
 import java.util.Iterator;

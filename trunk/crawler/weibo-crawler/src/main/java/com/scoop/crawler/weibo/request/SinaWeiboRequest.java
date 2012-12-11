@@ -21,7 +21,7 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.scoop.crawler.weibo.fetch.info.LogonInfo;
+import com.scoop.crawler.weibo.entity.LogonInfo;
 import com.scoop.crawler.weibo.repository.mysql.FailedRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.request.failed.FailedNode;

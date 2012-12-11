@@ -7,7 +7,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.scoop.crawler.weibo.fetch.info.OneWeiboInfo;
+import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
 import com.scoop.crawler.weibo.runnable.MysqlRunnable;

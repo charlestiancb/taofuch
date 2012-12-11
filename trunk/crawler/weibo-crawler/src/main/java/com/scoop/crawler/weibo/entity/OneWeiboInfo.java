@@ -1,4 +1,4 @@
-package com.scoop.crawler.weibo.fetch.info;
+package com.scoop.crawler.weibo.entity;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;

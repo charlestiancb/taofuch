@@ -4,8 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.fetch.FetchSinaWeibo;
-import com.scoop.crawler.weibo.fetch.info.WeiboPersonInfo;
 import com.scoop.crawler.weibo.parser.JsonStyle4CommonParser;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.FailedRequest;

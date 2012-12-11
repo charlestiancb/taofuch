@@ -15,9 +15,9 @@ import org.hibernate.cfg.Environment;
 import org.hibernate.cfg.ImprovedNamingStrategy;
 import org.hibernate.service.jdbc.connections.internal.DriverManagerConnectionProviderImpl;
 
-import com.scoop.crawler.weibo.fetch.info.OneWeiboInfo;
-import com.scoop.crawler.weibo.fetch.info.WeiboComment;
-import com.scoop.crawler.weibo.fetch.info.WeiboPersonInfo;
+import com.scoop.crawler.weibo.entity.OneWeiboInfo;
+import com.scoop.crawler.weibo.entity.WeiboComment;
+import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.parser.Parser;
 import com.scoop.crawler.weibo.repository.entity.FetchType;
 import com.scoop.crawler.weibo.repository.mysql.Comment;
