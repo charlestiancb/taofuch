@@ -5,7 +5,7 @@ import java.util.concurrent.Executors;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.scoop.crawler.weibo.fetch.info.LogonInfo;
+import com.scoop.crawler.weibo.entity.LogonInfo;
 import com.scoop.crawler.weibo.request.SinaWeiboRequest;
 
 public class ThreadUtils {

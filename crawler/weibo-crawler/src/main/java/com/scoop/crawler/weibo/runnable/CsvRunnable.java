@@ -11,9 +11,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.select.Elements;
 
 import com.csvreader.CsvWriter;
-import com.scoop.crawler.weibo.fetch.info.OneWeiboInfo;
-import com.scoop.crawler.weibo.fetch.info.WeiboComment;
-import com.scoop.crawler.weibo.fetch.info.WeiboPersonInfo;
+import com.scoop.crawler.weibo.entity.OneWeiboInfo;
+import com.scoop.crawler.weibo.entity.WeiboComment;
+import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.repository.CsvDataSource;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.util.ThreadUtils;
