@@ -77,9 +77,11 @@ public class CnkiArticleParser {
 	protected void getMeta(Document page) {
 		// 先将所有的结果获取，然后再一条条的解析：论文名、作者、摘要、关键词、被引频次、下载频次
 		// 论文名
-		titleCn = StringUtils.trimToEmpty(page.getElementById("chTitle").text());
+		Element e = page.getElementById("chTitle");
+		titleCn = StringUtils.trimToEmpty(e == null ? "" : e.text());
 		metalist.add(titleCn);
-		titleEn = StringUtils.trimToEmpty(page.getElementById("enTitle").text());
+		e = page.getElementById("enTitle");
+		titleEn = StringUtils.trimToEmpty(e == null ? "" : e.text());
 		metalist.add(titleEn);
 		// 作者与摘要
 		Elements tmp = page.getElementsByAttributeValue("class", "author summaryRight").select("p");
@@ -94,7 +96,8 @@ public class CnkiArticleParser {
 		}
 
 		// 关键词
-		keywords = StringUtils.trimToEmpty(page.getElementsByAttributeValue("class", "keywords int5").text());
+		tmp = page.getElementsByAttributeValue("class", "keywords int5");
+		keywords = StringUtils.trimToEmpty(tmp == null ? "" : tmp.text());
 		keywords = keywords.startsWith(KEYWORD) ? keywords.substring(KEYWORD.length()) : keywords;
 		metalist.add(keywords);
 		// 被引频次
