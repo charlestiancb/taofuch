@@ -99,6 +99,7 @@ public class CnkiArticleParser {
 		tmp = page.getElementsByAttributeValue("class", "keywords int5");
 		keywords = StringUtils.trimToEmpty(tmp == null ? "" : tmp.text());
 		keywords = keywords.startsWith(KEYWORD) ? keywords.substring(KEYWORD.length()) : keywords;
+		keywords = keywords.endsWith("【文内图片】") ? keywords.substring(0, keywords.lastIndexOf("【文内图片】")) : keywords;
 		metalist.add(keywords);
 		// 被引频次
 		tmp = page.getElementsByAttributeValue("class", "summary  pad10").select("li");
