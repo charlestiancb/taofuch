@@ -21,10 +21,19 @@ import org.apache.http.util.EntityUtils;
 
 public class Http {
 	private static DefaultHttpClient client = new DefaultHttpClient();
+	private static long preTime = System.currentTimeMillis();
 	/** 是否已经判断过代理情况！ */
 	private static boolean hasProcProxy = false;
 
 	public static String getPageContent(String url, String defaultEncode) {
+		if (System.currentTimeMillis() - preTime > 10 * 60 * 1000) {
+			try {
+				client = new DefaultHttpClient();
+				Thread.sleep(1 * 60 * 1000);// 等待一分钟
+			} catch (InterruptedException e) {
+			}
+			preTime = System.currentTimeMillis();
+		}
 		url = url == null ? "" : url.trim();
 		procProxy();
 		//
@@ -94,8 +103,9 @@ public class Http {
 			if (response.getStatusLine().getStatusCode() == 403
 					&& html.indexOf("http://oa.vemic.com/system_support/trouble_ticket_add.php") > -1) {
 				// 代理方式访问网络
-				client.getCredentialsProvider().setCredentials(new AuthScope("192.168.16.187", 8080),
-						new UsernamePasswordCredentials("taofucheng", "taofuchok"));
+				client.getCredentialsProvider().setCredentials(	new AuthScope("192.168.16.187", 8080),
+																new UsernamePasswordCredentials("taofucheng",
+																								"taofuchok"));
 				client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, new HttpHost("192.168.16.187", 8080));
 			}
 		} catch (Exception e) {
