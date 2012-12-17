@@ -28,8 +28,9 @@ public class Http {
 	public static String getPageContent(String url, String defaultEncode) {
 		if (System.currentTimeMillis() - preTime > 10 * 60 * 1000) {
 			try {
-				client = new DefaultHttpClient();
+				System.out.println("为了防止cnki屏蔽，等待一分钟再继续抓取……");
 				Thread.sleep(1 * 60 * 1000);// 等待一分钟
+				client = new DefaultHttpClient();
 			} catch (InterruptedException e) {
 			}
 			preTime = System.currentTimeMillis();
