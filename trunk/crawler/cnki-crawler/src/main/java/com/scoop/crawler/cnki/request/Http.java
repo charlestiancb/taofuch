@@ -28,8 +28,8 @@ public class Http {
 	public static String getPageContent(String url, String defaultEncode) {
 		if (System.currentTimeMillis() - preTime > 10 * 60 * 1000) {
 			try {
-				System.out.println("为了防止cnki屏蔽，等待一分钟再继续抓取……");
-				Thread.sleep(1 * 60 * 1000);// 等待一分钟
+				System.out.println("为了防止cnki屏蔽，等待10分钟再继续抓取……");
+				Thread.sleep(10 * 60 * 1000);// 等待10分钟
 				client = new DefaultHttpClient();
 			} catch (InterruptedException e) {
 			}
@@ -104,9 +104,8 @@ public class Http {
 			if (response.getStatusLine().getStatusCode() == 403
 					&& html.indexOf("http://oa.vemic.com/system_support/trouble_ticket_add.php") > -1) {
 				// 代理方式访问网络
-				client.getCredentialsProvider().setCredentials(	new AuthScope("192.168.16.187", 8080),
-																new UsernamePasswordCredentials("taofucheng",
-																								"taofuchok"));
+				client.getCredentialsProvider().setCredentials(new AuthScope("192.168.16.187", 8080),
+						new UsernamePasswordCredentials("taofucheng", "taofuchok"));
 				client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, new HttpHost("192.168.16.187", 8080));
 			}
 		} catch (Exception e) {
