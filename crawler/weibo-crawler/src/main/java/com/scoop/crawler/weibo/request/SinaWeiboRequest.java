@@ -129,7 +129,7 @@ public class SinaWeiboRequest {
 			nvps.add(new BasicNameValuePair("encoding", "UTF-8"));
 			nvps.add(new BasicNameValuePair("returntype", "META"));
 			nvps.add(new BasicNameValuePair("url",
-					"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
+											"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
 			// if (validCode.get() != null && validCode.get().length() > 0) {
 			// String code = InputValidCodeDialog.input(null);
 			// while (StringUtils.isBlank(code)) {
@@ -188,15 +188,13 @@ public class SinaWeiboRequest {
 	 * @return
 	 */
 	public static String request(DefaultHttpClient client, String url, FailedHandler handler, FailedNode node) {
+		try {
+			Thread.sleep(20 * 1000);
+		} catch (InterruptedException e1) {
+		}
 		if (activeTime > 0 && waitInterval > 0 && System.currentTimeMillis() - preTime > activeTime) {
 			// 如果时间已经超过行动时间，则进行等待。
-			try {
-				System.out.println("休息，休息一会儿！");
-				Thread.sleep(waitInterval);
-				System.out.println("休息完了，继续干活！");
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			sleep();
 			preTime = System.currentTimeMillis();
 		}
 		try {
@@ -232,10 +230,29 @@ public class SinaWeiboRequest {
 				return "";
 			}
 			// 获取登录过的微博页面
-			return EntityUtils.toString(res.getEntity(), "UTF-8");
+			String html = EntityUtils.toString(res.getEntity(), "UTF-8");
+			if (html.indexOf("<p class=\\\"code_tit\\\">\\u4f60\\u7684\\u884c\\u4e3a\\u6709\\u4e9b\\u5f02\\u5e38\\uff0c\\u8bf7\\u8f93\\u5165\\u9a8c\\u8bc1\\u7801\\uff1a<\\/p>\\n") > -1) {
+				// 如果存在这样的提示信息，则表示账号不能正常访问，所以，应该提示并等待！
+				System.out.println("账号无法进行正常使用，被封了！休息一会儿！");
+				sleep();
+				return request(_client, url, handler, node);
+			} else {
+				System.out.println("页面信息获取成功！");
+			}
+			return html;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return "";
+		}
+	}
+
+	private static void sleep() {
+		try {
+			System.out.println("休息，休息一会儿！");
+			Thread.sleep(waitInterval);
+			System.out.println("休息完了，继续干活！");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -274,7 +291,7 @@ public class SinaWeiboRequest {
 	}
 
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		System.err.println(URLDecoder.decode(
-				"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB", "GBK"));
+		System.err.println(URLDecoder.decode(	"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB",
+												"GBK"));
 	}
 }
