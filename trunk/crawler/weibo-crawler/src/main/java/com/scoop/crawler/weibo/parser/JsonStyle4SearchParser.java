@@ -36,6 +36,10 @@ public class JsonStyle4SearchParser extends JsonStyleParser {
 	}
 
 	public void parse(String html) throws IOException {
+		// 判断是否没有查询结果！
+		if (html.indexOf("<div class=\\\"search_noresult\\\">") > -1) {
+			return;
+		}
 		String hit = weiboStart;
 		int idx = html.indexOf(weiboStart);
 		if (idx == -1) {
