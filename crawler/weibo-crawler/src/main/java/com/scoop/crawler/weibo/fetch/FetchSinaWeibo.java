@@ -142,6 +142,7 @@ public class FetchSinaWeibo extends FetchSina {
 		while (maxLimit == -1 || curPage <= maxLimit) {
 			boolean hasParam = weiboUrl.indexOf("?") > -1;// 判断链接中是否有参数
 			tmpUrl = weiboUrl + (hasParam ? "&" : "?") + "page=" + (curPage++);
+			System.out.println("正在抓取页面：" + tmpUrl);
 			String content = SinaWeiboRequest.request(client, tmpUrl, handler, FailedNode.MAIN);
 			parseHtml(client, dataSource, content, tmpUrl);
 		}
