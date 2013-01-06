@@ -33,10 +33,6 @@ public class SinaWeiboRequest {
 	private static final String INPUT_CODE_TIP = "%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB";
 	private static final String CODE_ERR_TIP = "%CA%E4%C8%EB%B5%C4%D1%E9%D6%A4%C2%EB%B2%BB%D5%FD%C8%B7";
 	private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 5.1; rv:14.0) Gecko/20100101 Firefox/14.0.1";
-	/** 上一次更新时间 */
-	private static long preTime = System.currentTimeMillis();
-	/** 持续抓取的时间长度 */
-	private static long activeTime = 1 * 60 * 60 * 1000;// 1个小时
 	/** 等待的时间长度 */
 	private static long waitInterval = 20 * 60 * 1000;// 20分钟
 
@@ -129,7 +125,7 @@ public class SinaWeiboRequest {
 			nvps.add(new BasicNameValuePair("encoding", "UTF-8"));
 			nvps.add(new BasicNameValuePair("returntype", "META"));
 			nvps.add(new BasicNameValuePair("url",
-											"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
+					"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
 			// if (validCode.get() != null && validCode.get().length() > 0) {
 			// String code = InputValidCodeDialog.input(null);
 			// while (StringUtils.isBlank(code)) {
@@ -189,13 +185,8 @@ public class SinaWeiboRequest {
 	 */
 	public static String request(DefaultHttpClient client, String url, FailedHandler handler, FailedNode node) {
 		try {
-			Thread.sleep(20 * 1000);
+			Thread.sleep(20 * 1000);// 每次等待20秒，模拟人有停顿
 		} catch (InterruptedException e1) {
-		}
-		if (activeTime > 0 && waitInterval > 0 && System.currentTimeMillis() - preTime > activeTime) {
-			// 如果时间已经超过行动时间，则进行等待。
-			sleep();
-			preTime = System.currentTimeMillis();
 		}
 		try {
 			// 设置需要登录才能访问的微博地址（由于httpClient已经拥有登录后的cookie，所以此处可以直接访问）
@@ -248,7 +239,7 @@ public class SinaWeiboRequest {
 
 	private static void sleep() {
 		try {
-			System.out.println("休息，休息一会儿！");
+			System.out.println("开始休息，休息一会儿！");
 			Thread.sleep(waitInterval);
 			System.out.println("休息完了，继续干活！");
 		} catch (InterruptedException e) {
@@ -291,7 +282,7 @@ public class SinaWeiboRequest {
 	}
 
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		System.err.println(URLDecoder.decode(	"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB",
-												"GBK"));
+		System.err.println(URLDecoder.decode(
+				"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB", "GBK"));
 	}
 }

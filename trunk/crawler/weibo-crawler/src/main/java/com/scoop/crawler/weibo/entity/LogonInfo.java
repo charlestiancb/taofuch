@@ -1,6 +1,5 @@
 package com.scoop.crawler.weibo.entity;
 
-import java.util.Date;
 
 /**
  * 登录信息
@@ -17,7 +16,7 @@ public class LogonInfo {
 	private LogonInfo(String username, String password) {
 		setUsername(username);
 		setPassword(password);
-		setPreTime(new Date().getTime());
+		setPreTime(System.currentTimeMillis());
 	}
 
 	public static void store(String username, String password) {
@@ -25,8 +24,8 @@ public class LogonInfo {
 	}
 
 	public static boolean shouldLogAgain() {
-		// return new Date().getTime() - preTime > 6 * 3600 * 1000;
-		return false;
+		return System.currentTimeMillis() - preTime > 4 * 24 * 3600 * 1000;// 四天就要重新登录一次
+		// return false;
 	}
 
 	public static LogonInfo getLogonInfo() {
