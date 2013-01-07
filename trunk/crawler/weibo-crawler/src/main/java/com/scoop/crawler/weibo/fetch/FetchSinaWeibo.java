@@ -3,8 +3,9 @@ package com.scoop.crawler.weibo.fetch;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
@@ -52,7 +53,7 @@ public class FetchSinaWeibo extends FetchSina {
 	 *            需要批量操作的词文件，与网址中对应的词保持一致
 	 * @return
 	 */
-	public static boolean fetch(String sinaUserName, String password, String weiboBaseUrl, String wordsFile) {
+	public static boolean fetch(String sinaUserName, String password, String weiboBaseUrl, String[] wordsFiles) {
 		if (StringUtils.isBlank(weiboBaseUrl)) {
 			return false;
 		}
@@ -66,10 +67,18 @@ public class FetchSinaWeibo extends FetchSina {
 				handler = new RequestFailedHandler(client, dataSource);
 			}
 			handler.reTry();
-			List<String> urls = parseUrls(weiboBaseUrl, wordsFile);
-			for (String url : urls) {
-				saveBaseUrl(new TempUrl(weiboBaseUrl, url));
-				fetch(client, dataSource, url);
+			if (wordsFiles != null && wordsFiles.length > 0) {
+				for (String wordsFile : wordsFiles) {
+					Set<String> urls = parseUrls(weiboBaseUrl, wordsFile);
+					for (String url : urls) {
+						saveBaseUrl(new TempUrl(weiboBaseUrl, url));
+						fetch(client, dataSource, url);
+						saveBaseUrl(null);
+					}
+				}
+			} else {
+				saveBaseUrl(new TempUrl(weiboBaseUrl, weiboBaseUrl));
+				fetch(client, dataSource, weiboBaseUrl);
 				saveBaseUrl(null);
 			}
 		} catch (Exception e) {
@@ -90,9 +99,9 @@ public class FetchSinaWeibo extends FetchSina {
 	 * @return
 	 * @throws IOException
 	 */
-	protected static List<String> parseUrls(String weiboBaseUrl, String wordsFile) throws IOException {
+	protected static Set<String> parseUrls(String weiboBaseUrl, String wordsFile) throws IOException {
 		// 判断有没有指定文件，同时给定的网址中有没有变量，都有的话，进行循环
-		List<String> urls = new ArrayList<String>();
+		Set<String> urls = new HashSet<String>();
 		boolean hasVar = Pattern.compile("\\{\\d+\\}").matcher(weiboBaseUrl).find();
 		if (hasVar) {
 			File file = new File(wordsFile);
@@ -135,16 +144,54 @@ public class FetchSinaWeibo extends FetchSina {
 	public static void fetch(DefaultHttpClient client, DataSource dataSource, String weiboUrl) {
 		String tmpUrl = getRealUrl(weiboUrl);
 		if (tmpUrl.isEmpty()) {
+			System.out.println("指定的抓取url为空！不处理！");
 			return;
 		}
-		int idx = tmpUrl.lastIndexOf("page=");
-		int curPage = idx == -1 ? 1 : NumberUtils.toInt(StringUtils.trim(tmpUrl.substring(idx + "page=".length())), 1);
-		while (maxLimit == -1 || curPage <= maxLimit) {
-			boolean hasParam = weiboUrl.indexOf("?") > -1;// 判断链接中是否有参数
-			tmpUrl = weiboUrl + (hasParam ? "&" : "?") + "page=" + (curPage++);
-			System.out.println("正在抓取页面：" + tmpUrl);
-			String content = SinaWeiboRequest.request(client, tmpUrl, handler, FailedNode.MAIN);
-			parseHtml(client, dataSource, content, tmpUrl);
+		System.out.println("正在抓取页面：" + tmpUrl);
+		String html = SinaWeiboRequest.request(client, tmpUrl, handler, FailedNode.MAIN);
+		// 评论数：评论详细信息列表，包括评论者id,评论者姓名，评论者评论时间，评论者评论内容，评论者个人资料
+		// 写入csv文件
+		if (StringUtils.isBlank(html)) {
+			System.out.println("抓取的页面[" + tmpUrl + "]内容为空，不处理！");
+			return;
+		}
+		// 将内容构建成一个HtmlParser可解析的对象
+		try {
+			Document doc = Jsoup.parse(html);
+			// 将一条条的微博根据标签的特征统一取出来
+			Elements eles = doc.getElementsByClass("MIB_feed_c");
+			if (eles.size() > 0) {
+				// 如果这样的格式存在，则说明是那种HTML格式的，如：http://gov.weibo.com/profile.php?uid=sciencenet&ref=
+				HtmlStyleParser htmlParser = new HtmlStyleParser(client, dataSource);
+				htmlParser.setHandler(handler);
+				htmlParser.parse(eles);
+			} else {
+				// 否则就是那种js的json格式的内容方式，使用json的方式进行解析
+				JsonStyle4CommonParser commonParser = new JsonStyle4CommonParser(client, dataSource);
+				JsonStyle4SearchParser searchParser = new JsonStyle4SearchParser(client, dataSource);
+				if (searchParser.isBelong(html)) {
+					searchParser.setHandler(handler);
+					int idx = tmpUrl.lastIndexOf("page=");
+					int curPage = idx == -1 ? 1 : NumberUtils.toInt(StringUtils.trim(tmpUrl.substring(idx
+																			+ "page=".length())),
+																	1);
+					while (maxLimit == -1 || curPage <= maxLimit) {
+						searchParser.parse(html);
+						boolean hasParam = weiboUrl.indexOf("?") > -1;// 判断链接中是否有参数
+						tmpUrl = weiboUrl + (hasParam ? "&" : "?") + "page=" + (++curPage);// 从当前页的下一页开始！因为当前页在上一行已经抓取过。
+						System.out.println("正在抓取页面：" + tmpUrl);
+						html = SinaWeiboRequest.request(client, tmpUrl, handler, FailedNode.MAIN);
+					}
+				} else if (commonParser.isBelong(html)) {
+					commonParser.setHandler(handler);
+					commonParser.setCurUrl(weiboUrl);
+					commonParser.parse(html);
+				} else {
+					return;
+				}
+			}
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e);
 		}
 	}
 
@@ -171,7 +218,11 @@ public class FetchSinaWeibo extends FetchSina {
 				sb.append(p);
 			}
 		}
-		sb.append("&");
+		if (weiboUrl.indexOf("?") == -1) {
+			sb.append("?");
+		} else {
+			sb.append("&");
+		}
 		// 如果URL中有分页信息，则直接添加到URL最后，否则默认为page=1
 		if (StringUtils.isNotEmpty(pageInfo)) {
 			sb.append(pageInfo);
@@ -180,43 +231,4 @@ public class FetchSinaWeibo extends FetchSina {
 		}
 		return sb.substring(1);
 	}
-
-	/**
-	 * 解析每页微博中的内容。
-	 * 
-	 * @param html
-	 * @param csvFile
-	 */
-	protected static void parseHtml(DefaultHttpClient client, DataSource dataSource, String html, String weiboUrl) {
-		// 评论数：评论详细信息列表，包括评论者id,评论者姓名，评论者评论时间，评论者评论内容，评论者个人资料
-		// 写入csv文件
-		if (StringUtils.isBlank(html)) {
-			return;
-		}
-		// 将内容构建成一个HtmlParser可解析的对象
-		try {
-			Document doc = Jsoup.parse(html);
-			// 将一条条的微博根据标签的特征统一取出来
-			Elements eles = doc.getElementsByClass("MIB_feed_c");
-			if (eles.size() > 0) {
-				// 如果这样的格式存在，则说明是那种HTML格式的，如：http://gov.weibo.com/profile.php?uid=sciencenet&ref=
-				new HtmlStyleParser(client, dataSource).parse(eles);
-			} else {
-				// 否则就是那种js的json格式的内容方式，使用json的方式进行解析
-				JsonStyle4CommonParser commonParser = new JsonStyle4CommonParser(client, dataSource);
-				JsonStyle4SearchParser searchParser = new JsonStyle4SearchParser(client, dataSource);
-				if (searchParser.isBelong(html)) {
-					searchParser.parse(html);
-				} else if (commonParser.isBelong(html)) {
-					commonParser.setCurUrl(weiboUrl);
-					commonParser.parse(html);
-				} else {
-					return;
-				}
-			}
-		} catch (Exception e) {
-			throw new IllegalArgumentException(e);
-		}
-	}
-
 }

@@ -27,6 +27,16 @@ public class FetchInfo implements Serializable {
 	public FetchInfo() {
 	}
 
+	/**
+	 * 指定的抓取的相关内容。
+	 * 
+	 * @param queryStr
+	 *            URL查询的词语
+	 * @param relationId
+	 *            保存该抓取信息的功能中记录的id
+	 * @param relationType
+	 *            保存该抓取信息的功能
+	 */
 	public FetchInfo(String queryStr, String relationId, String relationType) {
 		setQueryStr(queryStr);
 		setRelationId(relationId);
@@ -66,7 +76,7 @@ public class FetchInfo implements Serializable {
 	}
 
 	/**
-	 * 是否需要保存！
+	 * 是否需要保存！如果有查询词，则要保存！
 	 * 
 	 * @return
 	 */
