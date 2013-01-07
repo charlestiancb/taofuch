@@ -26,6 +26,6 @@ public class Main {
 		// url =
 		// "http://s.weibo.com/user/%25E7%25A4%25BE%25E4%25BC%259A%25E8%25AE%25A1%25E7%25AE%2597";
 		// 抓取指定页面的微博
-		FetchSinaWeibo.fetch("hellohank1@gmail.com", "hellohank", url, "F:/tmp/words.txt");
+		FetchSinaWeibo.fetch("hellohank1@gmail.com", "hellohank", url, new String[] { "F:/tmp/words.txt" });
 	}
 }
