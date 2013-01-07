@@ -24,7 +24,7 @@ public abstract class JsonStyleParser extends Parser {
 	 * @return
 	 */
 	protected static String parseMsgUrlFromJSONStyle(Element node) {
-		Elements eles = node.getElementsByClass("date");
+		Elements eles = node.getElementsByAttributeValue("node-type", "feed_list_item_date");
 		if (eles != null && eles.size() > 0) {
 			String url = eles.get(0).attr("href");
 			url = url.startsWith("/") ? url : "/" + url;

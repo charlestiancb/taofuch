@@ -21,7 +21,7 @@ public abstract class Parser {
 	private static ThreadLocal<String> query = new InheritableThreadLocal<String>();
 
 	/**
-	 * 保存用户给定的当前URL。
+	 * 保存用户在URL中查询的具体词语！。
 	 * 
 	 * @param url
 	 */

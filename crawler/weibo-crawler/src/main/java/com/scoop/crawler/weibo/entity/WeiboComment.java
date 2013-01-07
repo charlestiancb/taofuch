@@ -3,13 +3,15 @@ package com.scoop.crawler.weibo.entity;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import com.scoop.crawler.weibo.util.TimeExpUtils;
 
 public class WeiboComment extends Info {
-	private Elements tmp;
+	/** 一条评论的完整的HTML */
+	private Element tmp;
 	/** 对应的微博编号 */
 	private String weiboId;
 	/** 评论内容 */
@@ -21,8 +23,8 @@ public class WeiboComment extends Info {
 	/** 评论者 */
 	private WeiboPersonInfo person;
 
-	public WeiboComment(Elements eles) {
-		tmp = eles;
+	public WeiboComment(Element comment) {
+		tmp = comment;
 	}
 
 	public String getWeiboId() {
@@ -37,7 +39,7 @@ public class WeiboComment extends Info {
 		if (content == null) {
 			boolean hasContent = false;// 是否是评论内容。
 			String comment = "";// 评论的内容
-			List<TextNode> nl = tmp.first().textNodes();
+			List<TextNode> nl = tmp.textNodes();
 			for (int i = 0; i < nl.size(); i++) {
 				TextNode n = nl.get(i);
 				String t = StringUtils.trim(n.text());
@@ -87,7 +89,7 @@ public class WeiboComment extends Info {
 	/** 微博评论编号 */
 	public String getId() {
 		if (id == null) {
-			String commentId = tmp.last().getElementsMatchingOwnText("回复").last().attr("action-data");
+			String commentId = tmp.getElementsMatchingOwnText("回复").last().attr("action-data");
 			commentId = commentId.substring(commentId.indexOf("&cid=") + "&cid=".length());
 			commentId = commentId.substring(0, commentId.indexOf("&"));
 			id = commentId;

@@ -143,8 +143,10 @@ public class WeiboPersonInfo extends Info {
 				name = StringUtils.trimToEmpty(doc_base.getElementsByAttributeValue("class", "pf_name bsp clearfix")
 														.select(".name")
 														.text());
+				System.out.println(doc_base.html());
 				if (StringUtils.isBlank(name)) {
-					name = StringUtils.trimToEmpty(doc_base.getElementsByAttributeValue("class", "name clearfix")
+					name = StringUtils.trimToEmpty(doc_base.getElementsByAttributeValue("class", "tit_prf clearFix")
+															.select(".lf")
 															.text());
 				}
 				name = name.endsWith("(设置备注)") ? name.substring(0, name.length() - 6) : name;
@@ -165,7 +167,6 @@ public class WeiboPersonInfo extends Info {
 			try {
 				addr = StringUtils.trim(StringUtils.replace(doc_base.getElementsByAttributeValue("class", "pf_tags bsp")
 																	.select(".tags")
-																	.select("em")
 																	.text(),
 															"&nbsp;",
 															""));
@@ -174,6 +175,7 @@ public class WeiboPersonInfo extends Info {
 																"&nbsp;",
 																""));
 				}
+				addr = addr.endsWith("标签") ? addr.substring(0, addr.lastIndexOf("标签")) : addr;
 			} catch (Exception e) {
 				addr = " ";
 			}
@@ -188,11 +190,19 @@ public class WeiboPersonInfo extends Info {
 		}
 		if (StringUtils.isEmpty(favorite)) {
 			try {
-				Elements eles = _doc.getElementById("plc_profile_header")
-									.getElementsByClass("pf_info_right")
-									.select("p");
+				Elements eles = null;
+				try {
+					eles = _doc.getElementById("pl_profile_extraInfo")
+								.getElementsByAttributeValue("class", "pf_star_info bsp S_txt2")
+								.select("p");
+				} catch (Exception e) {
+				}
 				if (eles == null || eles.isEmpty()) {
-					eles = doc_stat.getElementsByClass("W_sina_vip").select("dd");
+					eles = doc_stat.getElementsByAttributeValue("class", "pf_verified_info bsp S_txt2").select("dd");
+				}
+				if (eles == null || eles.isEmpty()) {
+					favorite = " ";
+					return favorite;
 				}
 				for (int i = 0; i < eles.size(); i++) {
 					String tmp = StringUtils.trim(StringUtils.replace(eles.get(i).text(), "&nbsp;", ""));
@@ -218,14 +228,20 @@ public class WeiboPersonInfo extends Info {
 		}
 		if (StringUtils.isEmpty(intro)) {
 			try {
-				intro = StringUtils.trim(StringUtils.replace(	doc_base.getElementsByAttributeValue(	"class",
-																										"pf_intro bsp")
-																		.select(".S_txt2")
-																		.text(),
-																"&nbsp;",
-																""));
+				try {
+					intro = StringUtils.trim(StringUtils.replace(	doc_base.getElementsByAttributeValue(	"class",
+																											"pf_intro bsp")
+																			.select(".S_txt2")
+																			.text(),
+																	"&nbsp;",
+																	""));
+				} catch (Exception e) {
+				}
 				if (StringUtils.isBlank(intro)) {
-					intro = StringUtils.trim(StringUtils.replace(	doc_base.getElementsByClass("text").text(),
+					intro = StringUtils.trim(StringUtils.replace(	doc_base.getElementsByAttributeValue(	"class",
+																											"tCon MIB_txtb MIB_linkb")
+																			.select("#epintro")
+																			.text(),
 																	"&nbsp;",
 																	""));
 				}
@@ -255,30 +271,34 @@ public class WeiboPersonInfo extends Info {
 	}
 
 	/**
-	 * 胜于解析统计信息中的关注数、粉丝数、发布的微博数等
+	 * 用于解析统计信息中的关注数、粉丝数、发布的微博数等
 	 * 
-	 * @param attr
-	 * @param value
+	 * @param text
 	 * @return
 	 */
 	private String parseStatisticInfo(String text) {
 		String tmp = "0";
 		try {
-			Elements eles = doc_stat.getElementsByTag("li");
+			Elements eles = doc_stat.getElementsByClass("user_atten").select("li");
 			// 从后往前找，这样避免转发的微博信息
 			for (int i = eles.size() - 1; i >= 0; i--) {
 				Element e = eles.get(i);
-				Elements es = e.getElementsMatchingOwnText(text);
+				Elements es = e.getElementsMatchingOwnText("^" + text + "$");
 				if (es.size() > 0) {
 					// 如果存在，则取之！
 					e = es.last().previousElementSibling();
 					if (e != null) {
 						tmp = StringUtils.trim(e.text());
+						if (StringUtils.isBlank(tmp)) {
+							tmp = "0";
+							continue;
+						}
 						break;
 					}
 				}
 			}
 		} catch (Exception e) {
+			tmp = "0";
 		}
 		return tmp;
 	}
@@ -326,24 +346,32 @@ public class WeiboPersonInfo extends Info {
 			return "";
 		}
 		if (StringUtils.isEmpty(tagInfo)) {
-			Elements eles = doc_base.getElementsByAttributeValue("class", "pf_tags bsp")
-									.first()
-									.getElementsByAttributeValue("class", "layer_menulist_tags S_line3 S_bg5")
-									.select("li")
-									.select(".S_func1")
-									.select("span");
-			if (eles == null || eles.isEmpty()) {
-				Document doc = parseToDoc(contentHtml, "pl_content_hisTags");
-				eles = doc.getElementsByTag("a");
+			Elements eles = null;
+			try {
+				eles = doc_base.getElementsByAttributeValue("class", "pf_tags bsp")
+								.first()
+								.getElementsByAttributeValue("class", "layer_menulist_tags S_line3 S_bg5")
+								.select("li")
+								.select(".S_func1")
+								.select("span");
+			} catch (Exception e) {
 			}
-			Iterator<Element> es = eles.iterator();
-			StringBuffer sb = new StringBuffer();
-			while (es.hasNext()) {
-				Element e = es.next();
-				sb.append(",");
-				sb.append(StringUtils.trimToEmpty(e.text()));
+			try {
+				if (eles == null || eles.isEmpty()) {
+					Document doc = parseToDoc(contentHtml, "pl_content_hisTags");
+					eles = doc.getElementsByTag("a");
+				}
+				Iterator<Element> es = eles.iterator();
+				StringBuffer sb = new StringBuffer();
+				while (es.hasNext()) {
+					Element e = es.next();
+					sb.append(",");
+					sb.append(StringUtils.trimToEmpty(e.text()));
+				}
+				tagInfo = sb.length() > 0 ? sb.substring(1) : "";
+			} catch (Exception e) {
+				tagInfo = " ";
 			}
-			tagInfo = sb.length() > 0 ? sb.substring(1) : "";
 		}
 		return tagInfo;
 	}

@@ -73,7 +73,7 @@ public class JsonStyle4CommonParser extends JsonStyleParser {
 		weiboList = JSONUtils.getSinaHtml(weiboList);
 		Document doc = Jsoup.parse(weiboList);
 		Elements eles = doc.getElementsByAttributeValue("action-type", "feed_list_item");
-		while (eles != null && eles.size() > 0) {
+		if (eles != null && eles.size() > 0) {
 			List<String> ids = new ArrayList<String>();
 			// 如果这样的格式存在，则说明是那种HTML格式的
 			for (int i = 0; i < eles.size(); i++) {

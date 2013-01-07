@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
@@ -25,8 +26,8 @@ public abstract class WeiboCommentRunnable extends Thread implements Runnable {
 
 	protected Elements loadNextPage(Comments comments, DefaultHttpClient client) {
 		// 这里取下一页的URL是否正确！
-		Elements eles = Jsoup.parse(comments.getCurrentPage()).getElementsByAttributeValue("class",
-				"W_pages W_pages_comment");
+		Elements eles = Jsoup.parse(comments.getCurrentPage()).getElementsByAttributeValue(	"class",
+																							"W_pages W_pages_comment");
 		if (eles != null && eles.size() > 0) {
 			eles = eles.first().getElementsMatchingOwnText("下一页");
 		}
@@ -38,8 +39,8 @@ public abstract class WeiboCommentRunnable extends Thread implements Runnable {
 				url = url + param;
 				String html = SinaWeiboRequest.request(client, url, weibo.getHandler(), FailedNode.COMMENT);
 				comments.setCurrentPage(JSONUtils.getSinaHtml(html));
-				eles = Jsoup.parse(comments.getCurrentPage()).getElementsByAttributeValue("class",
-						"comment_list W_linecolor clearfix");
+				eles = Jsoup.parse(comments.getCurrentPage())
+							.getElementsByAttributeValue("class", "comment_list W_linecolor clearfix");
 				if (eles != null) {
 					return eles;
 				}
@@ -55,8 +56,8 @@ public abstract class WeiboCommentRunnable extends Thread implements Runnable {
 	 * @param weiboUrl
 	 * @return
 	 */
-	protected String parseToUrl(Elements tmp, String weiboUrl) {
-		Elements eles = tmp.get(0).getElementsByTag("a");
+	protected String parseToUrl(Element tmp, String weiboUrl) {
+		Elements eles = tmp.getElementsByTag("a");
 		String userInfoUrl = eles.get(0).attr("href");
 		userInfoUrl = userInfoUrl.startsWith("http://") ? userInfoUrl
 				: (userInfoUrl.startsWith("/") ? "http://weibo.com" + userInfoUrl : weiboUrl + userInfoUrl);
@@ -103,6 +104,9 @@ public abstract class WeiboCommentRunnable extends Thread implements Runnable {
 		/** 当前一整页的所有评论信息的页面！ */
 		private String currentPage;
 
+		/**
+		 * 一个完整页面的评论信息，其中包含当前页的评论和下一页的评论
+		 */
 		public Comments(String currentPage) {
 			this.currentPage = currentPage;
 		}
