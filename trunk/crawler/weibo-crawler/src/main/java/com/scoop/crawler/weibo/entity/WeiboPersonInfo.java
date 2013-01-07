@@ -143,7 +143,6 @@ public class WeiboPersonInfo extends Info {
 				name = StringUtils.trimToEmpty(doc_base.getElementsByAttributeValue("class", "pf_name bsp clearfix")
 														.select(".name")
 														.text());
-				System.out.println(doc_base.html());
 				if (StringUtils.isBlank(name)) {
 					name = StringUtils.trimToEmpty(doc_base.getElementsByAttributeValue("class", "tit_prf clearFix")
 															.select(".lf")
