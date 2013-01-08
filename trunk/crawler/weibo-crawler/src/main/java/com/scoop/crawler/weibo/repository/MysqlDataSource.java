@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -47,6 +48,8 @@ public class MysqlDataSource implements DataSource {
 		pro.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
 		pro.put(Environment.POOL_SIZE, 100);
 		pro.put(Environment.CONNECTION_PROVIDER, DriverManagerConnectionProviderImpl.class.getName());
+		pro.put(Environment.AUTO_CLOSE_SESSION, "true");
+		pro.put(Environment.AUTOCOMMIT, "true");
 		// 初始化Hibernate
 		Configuration c = new Configuration();
 		c.setProperties(pro);
@@ -73,6 +76,7 @@ public class MysqlDataSource implements DataSource {
 				Transaction t = s.beginTransaction();
 				s.save(EntityTransfer.parseWeibo(weibo));
 				t.commit();
+				s.close();
 			}
 		} catch (Exception e) {
 		}
@@ -92,14 +96,13 @@ public class MysqlDataSource implements DataSource {
 			if (fi.needSave()) {
 				Session s = getCurrentSession();
 				Object obj = s.createQuery("from FetchInfo where queryStr=? and relationId=? and relationType=?")
-								.setString(0, fi.getQueryStr())
-								.setString(1, fi.getRelationId())
-								.setString(2, fi.getRelationType())
-								.uniqueResult();
+						.setString(0, fi.getQueryStr()).setString(1, fi.getRelationId())
+						.setString(2, fi.getRelationType()).uniqueResult();
 				if (obj == null) {
 					Transaction t = s.beginTransaction();
 					s.save(fi);
 					t.commit();
+					s.close();
 				}
 			}
 		} catch (Exception e) {
@@ -118,6 +121,7 @@ public class MysqlDataSource implements DataSource {
 				Transaction t = s.beginTransaction();
 				s.save(EntityTransfer.parseComment(comment));
 				t.commit();
+				s.close();
 			}
 		} catch (Exception e) {
 		}
@@ -148,6 +152,7 @@ public class MysqlDataSource implements DataSource {
 					Transaction t = s.beginTransaction();
 					s.save(f);
 					t.commit();
+					s.close();
 				} catch (Exception e) {
 				}
 				saveUserIfNeccessory(fansUser);
@@ -172,6 +177,7 @@ public class MysqlDataSource implements DataSource {
 					Transaction t = s.beginTransaction();
 					s.save(f);
 					t.commit();
+					s.close();
 				} catch (Exception e) {
 				}
 				saveUserIfNeccessory(followUser);
@@ -192,6 +198,7 @@ public class MysqlDataSource implements DataSource {
 				Transaction t = s.beginTransaction();
 				s.save(EntityTransfer.parseUser(person));
 				t.commit();
+				s.close();
 			}
 		} catch (Exception e) {
 		}
@@ -202,15 +209,51 @@ public class MysqlDataSource implements DataSource {
 	}
 
 	public boolean isWeiboExists(String weiboId) {
-		return getCurrentSession().get(Weibo.class, weiboId) != null;
+		Session s = getCurrentSession();
+		boolean r = false;
+		try {
+			r = s.get(Weibo.class, weiboId) != null;
+			s.close();
+		} catch (Exception e) {
+		} finally {
+			try {
+				s.close();
+			} catch (HibernateException e) {
+			}
+		}
+		return r;
 	}
 
 	public boolean isCommentExists(String commentId) {
-		return getCurrentSession().get(Comment.class, commentId) != null;
+		Session s = getCurrentSession();
+		boolean r = false;
+		try {
+			r = s.get(Comment.class, commentId) != null;
+			s.close();
+		} catch (Exception e) {
+		} finally {
+			try {
+				s.close();
+			} catch (HibernateException e) {
+			}
+		}
+		return r;
 	}
 
 	public boolean isUserExists(String userId) {
-		return getCurrentSession().get(User.class, userId) != null;
+		Session s = getCurrentSession();
+		boolean r = false;
+		try {
+			r = getCurrentSession().get(User.class, userId) != null;
+			s.close();
+		} catch (Exception e) {
+		} finally {
+			try {
+				s.close();
+			} catch (HibernateException e) {
+			}
+		}
+		return r;
 	}
 
 	public static void main(String[] args) {
@@ -236,21 +279,22 @@ public class MysqlDataSource implements DataSource {
 			Transaction t = s.beginTransaction();
 			s.save(request);
 			t.commit();
+			s.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public FailedRequest pop() {
-		FailedRequest req = (FailedRequest) getCurrentSession().createCriteria(FailedRequest.class)
-																.setFetchSize(1)
-																.uniqueResult();
+		FailedRequest req = (FailedRequest) getCurrentSession().createCriteria(FailedRequest.class).setFetchSize(1)
+				.uniqueResult();
 		if (req != null && req.getRecId() != null) {
 			try {
 				Session s = getCurrentSession();
 				Transaction tx = s.beginTransaction();
 				s.delete(req);
 				tx.commit();
+				s.close();
 			} catch (Exception e) {
 			}
 		}
