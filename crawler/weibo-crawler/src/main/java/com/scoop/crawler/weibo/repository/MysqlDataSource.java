@@ -7,7 +7,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -49,7 +48,6 @@ public class MysqlDataSource implements DataSource {
 		pro.put(Environment.POOL_SIZE, 100);
 		pro.put(Environment.CONNECTION_PROVIDER, DriverManagerConnectionProviderImpl.class.getName());
 		pro.put(Environment.AUTO_CLOSE_SESSION, "true");
-		pro.put(Environment.AUTOCOMMIT, "true");
 		// 初始化Hibernate
 		Configuration c = new Configuration();
 		c.setProperties(pro);
@@ -74,9 +72,11 @@ public class MysqlDataSource implements DataSource {
 			if (!isWeiboExists(weibo.getId())) {
 				Session s = getCurrentSession();
 				Transaction t = s.beginTransaction();
-				s.save(EntityTransfer.parseWeibo(weibo));
+				try {
+					s.save(EntityTransfer.parseWeibo(weibo));
+				} catch (Exception e) {
+				}
 				t.commit();
-				s.close();
 			}
 		} catch (Exception e) {
 		}
@@ -100,9 +100,11 @@ public class MysqlDataSource implements DataSource {
 						.setString(2, fi.getRelationType()).uniqueResult();
 				if (obj == null) {
 					Transaction t = s.beginTransaction();
-					s.save(fi);
+					try {
+						s.save(fi);
+					} catch (Exception e) {
+					}
 					t.commit();
-					s.close();
 				}
 			}
 		} catch (Exception e) {
@@ -119,9 +121,11 @@ public class MysqlDataSource implements DataSource {
 			if (!isCommentExists(comment.getId())) {
 				Session s = getCurrentSession();
 				Transaction t = s.beginTransaction();
-				s.save(EntityTransfer.parseComment(comment));
+				try {
+					s.save(EntityTransfer.parseComment(comment));
+				} catch (Exception e) {
+				}
 				t.commit();
-				s.close();
 			}
 		} catch (Exception e) {
 		}
@@ -150,9 +154,11 @@ public class MysqlDataSource implements DataSource {
 					f.setFansId(fansUser.getId());
 					Session s = getCurrentSession();
 					Transaction t = s.beginTransaction();
-					s.save(f);
+					try {
+						s.save(f);
+					} catch (Exception e) {
+					}
 					t.commit();
-					s.close();
 				} catch (Exception e) {
 				}
 				saveUserIfNeccessory(fansUser);
@@ -175,9 +181,11 @@ public class MysqlDataSource implements DataSource {
 					f.setFollowId(followUser.getId());
 					Session s = getCurrentSession();
 					Transaction t = s.beginTransaction();
-					s.save(f);
+					try {
+						s.save(f);
+					} catch (Exception e) {
+					}
 					t.commit();
-					s.close();
 				} catch (Exception e) {
 				}
 				saveUserIfNeccessory(followUser);
@@ -196,9 +204,11 @@ public class MysqlDataSource implements DataSource {
 				// 如果用户不存在，则保存！
 				Session s = getCurrentSession();
 				Transaction t = s.beginTransaction();
-				s.save(EntityTransfer.parseUser(person));
+				try {
+					s.save(EntityTransfer.parseUser(person));
+				} catch (Exception e) {
+				}
 				t.commit();
-				s.close();
 			}
 		} catch (Exception e) {
 		}
@@ -209,49 +219,28 @@ public class MysqlDataSource implements DataSource {
 	}
 
 	public boolean isWeiboExists(String weiboId) {
-		Session s = getCurrentSession();
 		boolean r = false;
 		try {
-			r = s.get(Weibo.class, weiboId) != null;
-			s.close();
+			r = getCurrentSession().get(Weibo.class, weiboId) != null;
 		} catch (Exception e) {
-		} finally {
-			try {
-				s.close();
-			} catch (HibernateException e) {
-			}
 		}
 		return r;
 	}
 
 	public boolean isCommentExists(String commentId) {
-		Session s = getCurrentSession();
 		boolean r = false;
 		try {
-			r = s.get(Comment.class, commentId) != null;
-			s.close();
+			r = getCurrentSession().get(Comment.class, commentId) != null;
 		} catch (Exception e) {
-		} finally {
-			try {
-				s.close();
-			} catch (HibernateException e) {
-			}
 		}
 		return r;
 	}
 
 	public boolean isUserExists(String userId) {
-		Session s = getCurrentSession();
 		boolean r = false;
 		try {
 			r = getCurrentSession().get(User.class, userId) != null;
-			s.close();
 		} catch (Exception e) {
-		} finally {
-			try {
-				s.close();
-			} catch (HibernateException e) {
-			}
 		}
 		return r;
 	}
@@ -277,9 +266,11 @@ public class MysqlDataSource implements DataSource {
 		try {
 			Session s = getCurrentSession();
 			Transaction t = s.beginTransaction();
-			s.save(request);
+			try {
+				s.save(request);
+			} catch (Exception e) {
+			}
 			t.commit();
-			s.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -292,9 +283,11 @@ public class MysqlDataSource implements DataSource {
 			try {
 				Session s = getCurrentSession();
 				Transaction tx = s.beginTransaction();
-				s.delete(req);
+				try {
+					s.delete(req);
+				} catch (Exception e) {
+				}
 				tx.commit();
-				s.close();
 			} catch (Exception e) {
 			}
 		}
