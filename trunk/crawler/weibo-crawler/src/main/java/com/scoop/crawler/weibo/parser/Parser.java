@@ -15,6 +15,7 @@ import com.scoop.crawler.weibo.runnable.WeiboCommentRunnable;
 import com.scoop.crawler.weibo.util.ThreadUtils;
 
 public abstract class Parser {
+	private int curPage = 1;
 	protected DefaultHttpClient client;
 	protected DataSource dataSource;
 	private RequestFailedHandler handler;
@@ -91,5 +92,13 @@ public abstract class Parser {
 			return StringUtils.trim(date);
 		}
 		return "";
+	}
+
+	public int getCurPage() {
+		return curPage;
+	}
+
+	public void setCurPage(int curPage) {
+		this.curPage = curPage;
 	}
 }
