@@ -69,7 +69,7 @@ public class HtmlStyleParser extends Parser {
 	public void parse(String tmpUrl) {
 		WebDriver driver = null;
 		try {
-			driver = ExploreRequest.firefox(client, tmpUrl);
+			driver = ExploreRequest.firefox(tmpUrl);
 			if (driver == null) {
 				System.out.println("页面启动失败，中止抓取！");
 				System.exit(0);
@@ -87,7 +87,7 @@ public class HtmlStyleParser extends Parser {
 				// 获取下一页
 				Element nextPage = doc.getElementsByAttributeValue("class", "MIB_bobar")
 										.select("a")
-										.select("btn_numWidth")
+										.select(".btn_numWidth")
 										.last();
 				if (nextPage != null) {
 					// 如果有下一页，则点击下一页
@@ -103,7 +103,7 @@ public class HtmlStyleParser extends Parser {
 			e.printStackTrace();
 		} finally {
 			if (driver != null) {
-				driver.close();
+				driver.quit();
 			}
 		}
 	}
