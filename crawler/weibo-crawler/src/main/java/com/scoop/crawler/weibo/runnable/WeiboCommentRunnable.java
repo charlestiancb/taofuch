@@ -42,10 +42,12 @@ public abstract class WeiboCommentRunnable extends Thread implements Runnable {
 				eles = Jsoup.parse(comments.getCurrentPage())
 							.getElementsByAttributeValue("class", "comment_list W_linecolor clearfix");
 				if (eles != null) {
+					System.out.println("获取下一 页评论信息……");
 					return eles;
 				}
 			}
 		}
+		System.out.println("当前微博评论信息读取完毕！");
 		return null;
 	}
 

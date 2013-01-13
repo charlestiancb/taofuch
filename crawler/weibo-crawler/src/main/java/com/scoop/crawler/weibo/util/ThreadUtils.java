@@ -1,6 +1,6 @@
 package com.scoop.crawler.weibo.util;
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -14,7 +14,11 @@ public class ThreadUtils {
 	/** 并发的线程数上限 */
 	private static final int THREAD_LIMIT = 5;
 	private static DefaultHttpClient client;
-	private static Executor exec = Executors.newFixedThreadPool(THREAD_LIMIT);
+	private static ExecutorService exec = Executors.newFixedThreadPool(THREAD_LIMIT);
+
+	public static ExecutorService getRunnaleExecutor() {
+		return exec;
+	}
 
 	/**
 	 * 释放一个线程

@@ -25,6 +25,7 @@ import com.scoop.crawler.weibo.repository.MysqlDataSource;
 import com.scoop.crawler.weibo.request.SinaWeiboRequest;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
 import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
+import com.scoop.crawler.weibo.util.ThreadUtils;
 
 /**
  * 抓取新浪微博的个人页面的微博信息
@@ -84,8 +85,13 @@ public class FetchSinaWeibo extends FetchSina {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			if (dataSource != null) {
-				dataSource.close();
+			try {
+				if (dataSource != null) {
+					dataSource.close();
+				}
+				ThreadUtils.getRunnaleExecutor().shutdown();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		return true;
@@ -164,7 +170,7 @@ public class FetchSinaWeibo extends FetchSina {
 				// 如果这样的格式存在，则说明是那种HTML格式的，如：http://gov.weibo.com/profile.php?uid=sciencenet&ref=
 				HtmlStyleParser htmlParser = new HtmlStyleParser(client, dataSource);
 				htmlParser.setHandler(handler);
-				htmlParser.parse(eles);
+				htmlParser.parse(tmpUrl);
 			} else {
 				// 否则就是那种js的json格式的内容方式，使用json的方式进行解析
 				JsonStyle4CommonParser commonParser = new JsonStyle4CommonParser(client, dataSource);
