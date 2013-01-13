@@ -1,13 +1,12 @@
 package com.scoop.crawler.weibo.request;
 
-import java.util.List;
-
-import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+
+import com.scoop.crawler.weibo.entity.LogonInfo;
 
 /**
  * 使用浏览器功能进行访问，使用这个需要已经提供登录信息。
@@ -17,9 +16,10 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
  */
 public class ExploreRequest {
 	public static void main(String[] args) {
+		LogonInfo.store("sszcgfss@gmail.com", "jmi2009095");
 		// ie();
 		// chrome();
-		// firefox();
+		firefox("http://gov.weibo.com/profile.php?uid=sciencenet&ref=");
 	}
 
 	/**
@@ -29,35 +29,35 @@ public class ExploreRequest {
 	 * @param url
 	 * @return
 	 */
-	public static WebDriver ie(DefaultHttpClient client, String url) {
+	public static WebDriver ie(String url) {
 		WebDriver driver = null;
 		try {
 			System.setProperty("webdriver.ie.driver", "src/main/java/driver/IEDriverServer.exe");
 			driver = new InternetExplorerDriver();
-			return requestWithCookie(client, url, driver);
+			return loginAndRequest(driver, url);
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
 		return null;
 	}
 
-	public static WebDriver chrome(DefaultHttpClient client, String url) {
+	public static WebDriver chrome(String url) {
 		WebDriver driver = null;
 		try {
 			System.setProperty("webdriver.chrome.driver", "src/main/java/driver/chromedriver.exe");
 			driver = new ChromeDriver();
-			return requestWithCookie(client, url, driver);
+			return loginAndRequest(driver, url);
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
 		return null;
 	}
 
-	public static WebDriver firefox(DefaultHttpClient client, String url) {
+	public static WebDriver firefox(String url) {
 		WebDriver driver = null;
 		try {
 			driver = new FirefoxDriver();
-			return requestWithCookie(client, url, driver);
+			return loginAndRequest(driver, url);
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
@@ -65,26 +65,36 @@ public class ExploreRequest {
 	}
 
 	/**
-	 * 使用cookie方式进行请求！
+	 * 页面登录，然后请求指定页面。
 	 * 
-	 * @param client
-	 * @param url
 	 * @param driver
+	 * @param url
 	 * @return
 	 */
-	private static WebDriver requestWithCookie(DefaultHttpClient client, String url, WebDriver driver) {
+	private static WebDriver loginAndRequest(WebDriver driver, String url) {
 		try {
-			List<Cookie> cs = client.getCookieStore().getCookies();
-			if (cs != null && cs.size() > 0) {
-				for (Cookie c : cs) {
-					driver.manage().addCookie(new org.openqa.selenium.Cookie(c.getName(), c.getValue()));
-				}
+			driver.get("http://www.weibo.com/");
+			// 这次访问肯定需要登录！因此登录之
+			driver.findElement(By.name("loginname")).sendKeys(LogonInfo.getLogonInfo().getUsername());
+			driver.findElement(By.name("password")).sendKeys(LogonInfo.getLogonInfo().getPassword());
+			Thread.sleep(2 * 1000);// 2秒
+			if (driver.findElement(By.name("door")) != null && driver.findElement(By.name("door")).isDisplayed()) {
+				Thread.sleep(5 * 1000);// 等待5s
+				System.out.println("你也看到了，要输入验证码的，我做不了了！我撤了，拜拜~");
+				driver.quit();
+				System.exit(0);
+			} else {
+				driver.findElement(By.className("W_btn_d")).click();
+				Thread.sleep(5 * 1000);// 等待5s
+				// 解析页面
+				driver.navigate().to(url);// 打开指定页面
 			}
-			driver.get(url);
+			return driver;
 		} catch (Exception e) {
-			driver.close();
+			e.printStackTrace();
+			driver.quit();
 			System.exit(0);
 		}
-		return driver;
+		return null;
 	}
 }
