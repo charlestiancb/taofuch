@@ -1,6 +1,7 @@
 package com.scoop.crawler.weibo.parser;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -10,6 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.ExploreRequest;
@@ -84,14 +86,11 @@ public class HtmlStyleParser extends Parser {
 				if (eles.size() > 0) {
 					parse(eles);
 				}
-				// 获取下一页
-				Element nextPage = doc.getElementsByAttributeValue("class", "MIB_bobar")
-										.select("a")
-										.select(".btn_numWidth")
-										.last();
-				if (nextPage != null) {
-					// 如果有下一页，则点击下一页
-					driver.findElement(By.className("btn_numWidth")).click();
+				// 如果有下一页，则点击下一页
+				List<WebElement> webeles = driver.findElements(By.className("btn_numWidth"));
+				if (webeles != null && webeles.size() > 0) {
+					webeles.get(webeles.size() - 1).click();
+					Thread.sleep(5 * 1000);// 等待5秒，等页面加载完毕！
 					html = driver.getPageSource();
 					setCurPage(getCurPage() + 1);
 				} else {
