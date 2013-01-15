@@ -23,7 +23,7 @@ public class MysqlRunnable extends WeiboCommentRunnable {
 			System.out.println("解析评论信息……");
 			try {
 				MysqlDataSource m = (MysqlDataSource) dataSource;
-				System.out.println("目前数据库连接数：" + m.getSessionFactory().getStatistics().getConnectCount());
+				System.out.println("目前未释放的数据库连接数：" + m.getSessionFactory().getStatistics().getConnectCount());
 			} catch (Exception e1) {
 			}
 			// 获取所有评论信息，并进行循环处理。
