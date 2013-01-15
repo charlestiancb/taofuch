@@ -64,7 +64,7 @@ public class WeiboComment extends Info {
 
 	public String getPublishTime() {
 		if (publishTime == null) {
-			Elements nl = tmp.select(".W_textb");
+			Elements nl = tmp.select("span").select(".S_txt2");
 			if (nl != null && nl.size() > 0) {
 				String timeStr = nl.first().text();
 				timeStr = timeStr.startsWith("(") ? timeStr.substring(1) : timeStr;
