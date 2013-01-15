@@ -16,6 +16,7 @@ import com.tfc.analysis.fragment.AbstractFragment;
 import com.tfc.analysis.fragment.HTMLFragment;
 import com.tfc.analysis.process.DataInit;
 import com.tfc.analysis.process.Highlight;
+import com.tfc.analysis.process.KeywordFinder;
 import com.tfc.analysis.process.Processor;
 import com.tfc.analysis.process.WordFinder;
 
@@ -186,6 +187,19 @@ public class KWSeeker {
 	 */
 	public Set<String> findWords(String text) {
 		return new WordFinder().process(wordsTree, text, null, wordLeastLen);
+	}
+
+	/**
+	 * 将指定的字符串中的关键词提取出来。
+	 * 
+	 * @param text
+	 *            指定的字符串。即：预处理的字符串
+	 * @param keywords
+	 *            指定使用的词库
+	 * @return 返回其中所有关键词。如果没有，则返回null。
+	 */
+	public Set<Keyword> findKeywords(String text) {
+		return new KeywordFinder().process(wordsTree, text, null, wordLeastLen);
 	}
 
 	/**
