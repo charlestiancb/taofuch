@@ -227,6 +227,10 @@ public class MysqlDataSource implements DataSource {
 		return sessionFactory.openSession();
 	}
 
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
 	public boolean isWeiboExists(String weiboId) {
 		boolean r = false;
 		try {
