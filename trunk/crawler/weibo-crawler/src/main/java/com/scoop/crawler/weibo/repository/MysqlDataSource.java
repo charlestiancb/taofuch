@@ -31,48 +31,50 @@ import com.scoop.crawler.weibo.repository.mysql.Weibo;
 import com.scoop.crawler.weibo.util.ClassUtils;
 
 public class MysqlDataSource implements DataSource {
-	private SessionFactory sessionFactory;
+	private static SessionFactory sessionFactory;
 
 	/**
 	 * 用于操作Mysql的数据源方式！
 	 */
 	@SuppressWarnings("deprecation")
 	public MysqlDataSource() {
-		// Hibernate的基本配置
-		Properties pro = new Properties();
-		pro.put(Environment.URL, "jdbc:mysql://localhost:3306/weibo?useUnicode=true&characterEncoding=UTF-8");
-		pro.put(Environment.USER, "root");
-		pro.put(Environment.PASS, "root");
+		if (sessionFactory == null) {
+			// Hibernate的基本配置
+			Properties pro = new Properties();
+			pro.put(Environment.URL, "jdbc:mysql://localhost:3306/weibo?useUnicode=true&characterEncoding=UTF-8");
+			pro.put(Environment.USER, "root");
+			pro.put(Environment.PASS, "root");
 
-		pro.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
-		pro.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
-		pro.put(Environment.CONNECTION_PROVIDER, DriverManagerConnectionProviderImpl.class.getName());
+			pro.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
+			pro.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
+			pro.put(Environment.CONNECTION_PROVIDER, DriverManagerConnectionProviderImpl.class.getName());
 
-		// 使用c3p0连接池
-		pro.put(Environment.C3P0_MIN_SIZE, "5");
-		pro.put(Environment.C3P0_MAX_SIZE, "30");
-		pro.put(Environment.C3P0_TIMEOUT, "1800");// 30分钟
-		pro.put(Environment.C3P0_MAX_STATEMENTS, "50");
-		pro.put(Environment.C3P0_IDLE_TEST_PERIOD, "120");
-		pro.put(Environment.C3P0_ACQUIRE_INCREMENT, "2");
+			// 使用c3p0连接池
+			pro.put(Environment.C3P0_MIN_SIZE, "5");
+			pro.put(Environment.C3P0_MAX_SIZE, "30");
+			pro.put(Environment.C3P0_TIMEOUT, "60");// 1分钟
+			pro.put(Environment.C3P0_MAX_STATEMENTS, "50");
+			pro.put(Environment.C3P0_IDLE_TEST_PERIOD, "120");
+			pro.put(Environment.C3P0_ACQUIRE_INCREMENT, "2");
 
-		pro.put(Environment.AUTO_CLOSE_SESSION, "true");
-		// 初始化Hibernate
-		Configuration c = new Configuration();
-		c.setProperties(pro);
-		// 将实体类加载到Hibernate容器中！
-		Set<Class<?>> clazzs = ClassUtils.getClasses(EntityTransfer.class.getPackage());
-		if (clazzs != null && !clazzs.isEmpty()) {
-			for (Class<?> clazz : clazzs) {
-				if (Serializable.class.isAssignableFrom(clazz) && !Modifier.isAbstract(clazz.getModifiers())) {
-					c = c.addAnnotatedClass(clazz);
+			pro.put(Environment.AUTO_CLOSE_SESSION, "true");
+			// 初始化Hibernate
+			Configuration c = new Configuration();
+			c.setProperties(pro);
+			// 将实体类加载到Hibernate容器中！
+			Set<Class<?>> clazzs = ClassUtils.getClasses(EntityTransfer.class.getPackage());
+			if (clazzs != null && !clazzs.isEmpty()) {
+				for (Class<?> clazz : clazzs) {
+					if (Serializable.class.isAssignableFrom(clazz) && !Modifier.isAbstract(clazz.getModifiers())) {
+						c = c.addAnnotatedClass(clazz);
+					}
 				}
 			}
+			// 字段自动转换与数据库保持一致
+			c.setNamingStrategy(ImprovedNamingStrategy.INSTANCE);
+			// 创建SessionFactory！
+			sessionFactory = c.buildSessionFactory();
 		}
-		// 字段自动转换与数据库保持一致
-		c.setNamingStrategy(ImprovedNamingStrategy.INSTANCE);
-		// 创建SessionFactory！
-		sessionFactory = c.buildSessionFactory();
 	}
 
 	public void saveWeibo(OneWeiboInfo weibo) {
