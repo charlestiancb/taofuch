@@ -382,7 +382,9 @@ public class WeiboPersonInfo extends Info {
 		if (fans == null) {
 			fans = new ArrayList<WeiboPersonInfo>();
 			String url = "http://weibo.com/" + getId() + "/fans";
-			parseRelation(url, FailedNode.FANS, fans);
+			if (StringUtils.isNotBlank(getId())) {
+				parseRelation(url, FailedNode.FANS, fans);
+			}
 		}
 		return fans;
 	}
@@ -395,7 +397,9 @@ public class WeiboPersonInfo extends Info {
 		if (follows == null) {
 			follows = new ArrayList<WeiboPersonInfo>();
 			String url = "http://weibo.com/" + getId() + "/follow";
-			parseRelation(url, FailedNode.FOLLOWS, follows);
+			if (StringUtils.isNotBlank(getId())) {
+				parseRelation(url, FailedNode.FOLLOWS, follows);
+			}
 		}
 		return follows;
 	}
