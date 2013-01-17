@@ -116,14 +116,29 @@ public class WeiboPersonInfo extends Info {
 			return "";
 		}
 		if (id == null || "".equals(id)) {
-			initIfNeccessory();
-			try {
-				String userId = contentHtml.substring(contentHtml.indexOf("$CONFIG['oid'] = '"));
-				userId = userId.substring("$CONFIG['oid'] = '".length());
-				userId = userId.substring(0, userId.indexOf("';"));
-				id = userId;
-			} catch (Exception e) {
-				id = " ";
+			String userUrlPreffix = "http://weibo.com/u/";
+			if (StringUtils.isNotBlank(getUrl()) && getUrl().trim().toLowerCase().startsWith(userUrlPreffix)) {
+				// 如果是以带有id的链接，则直接解析。
+				id = getUrl().trim().toLowerCase().substring(userUrlPreffix.length());
+				int idx = id.indexOf("/");
+				if (idx != -1) {
+					id = id.substring(0, idx);
+				} else {
+					idx = id.indexOf("?");
+					if (idx != -1) {
+						id = id.substring(0, idx);
+					}
+				}
+			} else {
+				initIfNeccessory();
+				try {
+					String userId = contentHtml.substring(contentHtml.indexOf("$CONFIG['oid'] = '"));
+					userId = userId.substring("$CONFIG['oid'] = '".length());
+					userId = userId.substring(0, userId.indexOf("';"));
+					id = userId;
+				} catch (Exception e) {
+					id = " ";
+				}
 			}
 		}
 		return id;
@@ -141,12 +156,10 @@ public class WeiboPersonInfo extends Info {
 		if (StringUtils.isEmpty(name)) {
 			try {
 				name = StringUtils.trimToEmpty(doc_base.getElementsByAttributeValue("class", "pf_name bsp clearfix")
-														.select(".name")
-														.text());
+						.select(".name").text());
 				if (StringUtils.isBlank(name)) {
 					name = StringUtils.trimToEmpty(doc_base.getElementsByAttributeValue("class", "tit_prf clearFix")
-															.select(".lf")
-															.text());
+							.select(".lf").text());
 				}
 				name = name.endsWith("(设置备注)") ? name.substring(0, name.length() - 6) : name;
 				name = StringUtils.trim(name);
@@ -164,15 +177,11 @@ public class WeiboPersonInfo extends Info {
 		}
 		if (StringUtils.isEmpty(addr)) {
 			try {
-				addr = StringUtils.trim(StringUtils.replace(doc_base.getElementsByAttributeValue("class", "pf_tags bsp")
-																	.select(".tags")
-																	.text(),
-															"&nbsp;",
-															""));
+				addr = StringUtils.trim(StringUtils.replace(doc_base
+						.getElementsByAttributeValue("class", "pf_tags bsp").select(".tags").text(), "&nbsp;", ""));
 				if (StringUtils.isBlank(addr)) {
-					addr = StringUtils.trim(StringUtils.replace(doc_base.getElementsByClass("info").text(),
-																"&nbsp;",
-																""));
+					addr = StringUtils.trim(StringUtils.replace(doc_base.getElementsByClass("info").text(), "&nbsp;",
+							""));
 				}
 				addr = addr.endsWith("标签") ? addr.substring(0, addr.lastIndexOf("标签")) : addr;
 			} catch (Exception e) {
@@ -192,8 +201,7 @@ public class WeiboPersonInfo extends Info {
 				Elements eles = null;
 				try {
 					eles = _doc.getElementById("pl_profile_extraInfo")
-								.getElementsByAttributeValue("class", "pf_star_info bsp S_txt2")
-								.select("p");
+							.getElementsByAttributeValue("class", "pf_star_info bsp S_txt2").select("p");
 				} catch (Exception e) {
 				}
 				if (eles == null || eles.isEmpty()) {
@@ -228,21 +236,15 @@ public class WeiboPersonInfo extends Info {
 		if (StringUtils.isEmpty(intro)) {
 			try {
 				try {
-					intro = StringUtils.trim(StringUtils.replace(	doc_base.getElementsByAttributeValue(	"class",
-																											"pf_intro bsp")
-																			.select(".S_txt2")
-																			.text(),
-																	"&nbsp;",
-																	""));
+					intro = StringUtils.trim(StringUtils.replace(
+							doc_base.getElementsByAttributeValue("class", "pf_intro bsp").select(".S_txt2").text(),
+							"&nbsp;", ""));
 				} catch (Exception e) {
 				}
 				if (StringUtils.isBlank(intro)) {
-					intro = StringUtils.trim(StringUtils.replace(	doc_base.getElementsByAttributeValue(	"class",
-																											"tCon MIB_txtb MIB_linkb")
-																			.select("#epintro")
-																			.text(),
-																	"&nbsp;",
-																	""));
+					intro = StringUtils.trim(StringUtils.replace(
+							doc_base.getElementsByAttributeValue("class", "tCon MIB_txtb MIB_linkb").select("#epintro")
+									.text(), "&nbsp;", ""));
 				}
 				intro = intro.startsWith("简介：") ? intro.substring(3) : intro;
 				intro = intro.endsWith("更多资料>>") ? intro.substring(0, intro.length() - 6) : intro;
@@ -347,12 +349,9 @@ public class WeiboPersonInfo extends Info {
 		if (StringUtils.isEmpty(tagInfo)) {
 			Elements eles = null;
 			try {
-				eles = doc_base.getElementsByAttributeValue("class", "pf_tags bsp")
-								.first()
-								.getElementsByAttributeValue("class", "layer_menulist_tags S_line3 S_bg5")
-								.select("li")
-								.select(".S_func1")
-								.select("span");
+				eles = doc_base.getElementsByAttributeValue("class", "pf_tags bsp").first()
+						.getElementsByAttributeValue("class", "layer_menulist_tags S_line3 S_bg5").select("li")
+						.select(".S_func1").select("span");
 			} catch (Exception e) {
 			}
 			try {
@@ -437,8 +436,8 @@ public class WeiboPersonInfo extends Info {
 					} catch (Exception e1) {
 					}
 					String _url = e.attr("href");
-					_url = _url.startsWith("/") ? "http://weibo.com" + _url
-							: url.substring(0, url.lastIndexOf("/") + 1) + _url;
+					_url = _url.startsWith("/") ? "http://weibo.com" + _url : url
+							.substring(0, url.lastIndexOf("/") + 1) + _url;
 					parseRelation(_url, node, list);
 				}
 			}
