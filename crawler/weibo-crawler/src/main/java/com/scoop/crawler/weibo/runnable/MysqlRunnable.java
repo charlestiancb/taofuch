@@ -8,7 +8,6 @@ import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.entity.WeiboComment;
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.repository.DataSource;
-import com.scoop.crawler.weibo.repository.MysqlDataSource;
 import com.scoop.crawler.weibo.util.ThreadUtils;
 
 public class MysqlRunnable extends WeiboCommentRunnable {
@@ -21,11 +20,6 @@ public class MysqlRunnable extends WeiboCommentRunnable {
 		DefaultHttpClient client = ThreadUtils.allocateHttpClient();
 		try {
 			System.out.println("解析评论信息……");
-			try {
-				MysqlDataSource m = (MysqlDataSource) dataSource;
-				System.out.println("目前未释放的数据库连接数：" + m.getSessionFactory().getStatistics().getConnectCount());
-			} catch (Exception e1) {
-			}
 			// 获取所有评论信息，并进行循环处理。
 			Elements eles = weibo.getDetailDoc().getElementsByAttributeValue("class", "comment_lists").select("dd");
 			Comments comments = new Comments(weibo.getDetail());

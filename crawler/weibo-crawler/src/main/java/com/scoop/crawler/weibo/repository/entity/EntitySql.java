@@ -6,6 +6,7 @@ import java.util.List;
 public class EntitySql {
 	private String sql;
 	private List<Object> args;
+	private SqlType type;
 
 	public String getSql() {
 		return sql == null ? "" : sql.trim();
@@ -32,5 +33,17 @@ public class EntitySql {
 
 	public String toString() {
 		return "[" + getSql() + "] args: " + getArgs();
+	}
+
+	public SqlType getType() {
+		return type;
+	}
+
+	public void setType(SqlType type) {
+		this.type = type;
+	}
+
+	public enum SqlType {
+		INSERT, UPDATE, SELECT
 	}
 }

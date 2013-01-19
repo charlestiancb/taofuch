@@ -228,7 +228,7 @@ public class OneWeiboInfo extends Info {
 				publisher.setHandler(getHandler());
 				publisher.setId(userId);
 			} catch (Exception e) {
-				commentNum = "0";
+				publisher = new WeiboPersonInfo(null, null);
 			}
 		}
 		return publisher;

@@ -10,7 +10,8 @@ import edu.fudan.nlp.chinese.ner.TimeUnit;
 
 public class TimeExpUtils {
 	public static void main(String[] args) {
-		System.err.println(abstractTime("今天 20:14"));
+		System.err.println(abstractTime("今天  20:14"));
+		System.err.println(abstractTime("37分钟前"));
 	}
 
 	/**
