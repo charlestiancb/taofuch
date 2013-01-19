@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
@@ -37,20 +36,15 @@ import com.scoop.crawler.weibo.repository.mysql.Follow;
 import com.scoop.crawler.weibo.repository.mysql.User;
 import com.scoop.crawler.weibo.repository.mysql.Weibo;
 
-public class MysqlJdbcDataSource implements DataSource {
+public class JdbcDataSource extends DatabaseDataSource {
 	private Connection conn;
-	private Properties pro = new Properties();
 
 	/**
 	 * 用于操作Mysql的数据源方式！
 	 */
-	public MysqlJdbcDataSource() {
+	public JdbcDataSource() {
+		super();
 		if (conn == null) {
-			pro.put(Environment.URL, "jdbc:mysql://localhost:3306/weibo?useUnicode=true&characterEncoding=UTF-8");
-			pro.put(Environment.USER, "root");
-			pro.put(Environment.PASS, "root");
-			pro.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
-
 			connect();
 		}
 	}
@@ -292,10 +286,10 @@ public class MysqlJdbcDataSource implements DataSource {
 		weibo.setUrl("http://adfasdfasd");
 		weibo.setUserId("adfXaADSZxa-adax");
 		weibo.setWeiboId("asdfasdfDSdjgh");
-		new MysqlJdbcDataSource().executeSql(EntityManager.createInsertSQL(weibo));
+		new JdbcDataSource().executeSql(EntityManager.createInsertSQL(weibo));
 		User u = new User();
 		u.setUserId("1729014640");
-		new MysqlJdbcDataSource().query(EntityManager.createSelectSQL(u), u.getClass());
+		new JdbcDataSource().query(EntityManager.createSelectSQL(u), u.getClass());
 	}
 
 	public void saveFailedRequest(FailedRequest request) {
