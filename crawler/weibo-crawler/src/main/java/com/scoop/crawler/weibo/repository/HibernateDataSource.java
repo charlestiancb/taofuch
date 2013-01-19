@@ -3,7 +3,6 @@ package com.scoop.crawler.weibo.repository;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -30,22 +29,17 @@ import com.scoop.crawler.weibo.repository.mysql.User;
 import com.scoop.crawler.weibo.repository.mysql.Weibo;
 import com.scoop.crawler.weibo.util.ClassUtils;
 
-public class MysqlDataSource implements DataSource {
+public class HibernateDataSource extends DatabaseDataSource {
 	private SessionFactory sessionFactory;
 
 	/**
 	 * 用于操作Mysql的数据源方式！
 	 */
 	@SuppressWarnings("deprecation")
-	public MysqlDataSource() {
+	public HibernateDataSource() {
+		super();
 		if (sessionFactory == null) {
 			// Hibernate的基本配置
-			Properties pro = new Properties();
-			pro.put(Environment.URL, "jdbc:mysql://localhost:3306/weibo?useUnicode=true&characterEncoding=UTF-8");
-			pro.put(Environment.USER, "root");
-			pro.put(Environment.PASS, "root");
-
-			pro.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
 			pro.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
 			pro.put(Environment.CONNECTION_PROVIDER, DriverManagerConnectionProviderImpl.class.getName());
 
@@ -272,7 +266,7 @@ public class MysqlDataSource implements DataSource {
 		weibo.setUrl("http://adfasdfasd");
 		weibo.setUserId("adfXaADSZxa-adax");
 		weibo.setWeiboId("asdfasdfDSdjgh");
-		Session s = new MysqlDataSource().getCurrentSession();
+		Session s = new HibernateDataSource().getCurrentSession();
 		Transaction t = s.beginTransaction();
 		s.save(weibo);
 		t.commit();

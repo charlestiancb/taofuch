@@ -21,7 +21,7 @@ import com.scoop.crawler.weibo.parser.JsonStyle4CommonParser;
 import com.scoop.crawler.weibo.parser.JsonStyle4SearchParser;
 import com.scoop.crawler.weibo.parser.TempUrl;
 import com.scoop.crawler.weibo.repository.DataSource;
-import com.scoop.crawler.weibo.repository.MysqlJdbcDataSource;
+import com.scoop.crawler.weibo.repository.JdbcDataSource;
 import com.scoop.crawler.weibo.request.SinaWeiboRequest;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
 import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
@@ -62,7 +62,7 @@ public class FetchSinaWeibo extends FetchSina {
 		client = SinaWeiboRequest.getHttpClient(sinaUserName, password);
 		try {
 			if (dataSource == null) {
-				dataSource = new MysqlJdbcDataSource();
+				dataSource = new JdbcDataSource();
 			}
 			if (handler == null) {
 				handler = new RequestFailedHandler(client, dataSource);
