@@ -1,6 +1,5 @@
 package com.scoop.crawler.weibo.request;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -125,7 +124,7 @@ public class SinaWeiboRequest {
 			nvps.add(new BasicNameValuePair("encoding", "UTF-8"));
 			nvps.add(new BasicNameValuePair("returntype", "META"));
 			nvps.add(new BasicNameValuePair("url",
-					"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
+											"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
 			// if (validCode.get() != null && validCode.get().length() > 0) {
 			// String code = InputValidCodeDialog.input(null);
 			// while (StringUtils.isBlank(code)) {
@@ -231,7 +230,7 @@ public class SinaWeiboRequest {
 				System.out.println("页面信息获取成功！");
 			}
 			return html;
-		} catch (IOException e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 			return "";
 		}
@@ -282,7 +281,7 @@ public class SinaWeiboRequest {
 	}
 
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		System.err.println(URLDecoder.decode(
-				"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB", "GBK"));
+		System.err.println(URLDecoder.decode(	"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB",
+												"GBK"));
 	}
 }

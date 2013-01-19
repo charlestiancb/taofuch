@@ -31,7 +31,7 @@ import com.scoop.crawler.weibo.repository.mysql.Weibo;
 import com.scoop.crawler.weibo.util.ClassUtils;
 
 public class MysqlDataSource implements DataSource {
-	private static SessionFactory sessionFactory;
+	private SessionFactory sessionFactory;
 
 	/**
 	 * 用于操作Mysql的数据源方式！
@@ -54,7 +54,7 @@ public class MysqlDataSource implements DataSource {
 			pro.put(Environment.C3P0_MAX_SIZE, "30");
 			pro.put(Environment.C3P0_TIMEOUT, "60");// 1分钟
 			pro.put(Environment.C3P0_MAX_STATEMENTS, "50");
-			pro.put(Environment.C3P0_IDLE_TEST_PERIOD, "120");
+			pro.put(Environment.C3P0_IDLE_TEST_PERIOD, "60");
 			pro.put(Environment.C3P0_ACQUIRE_INCREMENT, "2");
 
 			pro.put(Environment.AUTO_CLOSE_SESSION, "true");
@@ -107,8 +107,10 @@ public class MysqlDataSource implements DataSource {
 			if (fi.needSave()) {
 				Session s = getCurrentSession();
 				Object obj = s.createQuery("from FetchInfo where queryStr=? and relationId=? and relationType=?")
-						.setString(0, fi.getQueryStr()).setString(1, fi.getRelationId())
-						.setString(2, fi.getRelationType()).uniqueResult();
+								.setString(0, fi.getQueryStr())
+								.setString(1, fi.getRelationId())
+								.setString(2, fi.getRelationType())
+								.uniqueResult();
 				if (obj == null) {
 					Transaction t = s.beginTransaction();
 					try {
@@ -292,8 +294,9 @@ public class MysqlDataSource implements DataSource {
 	}
 
 	public FailedRequest pop() {
-		FailedRequest req = (FailedRequest) getCurrentSession().createCriteria(FailedRequest.class).setFetchSize(1)
-				.uniqueResult();
+		FailedRequest req = (FailedRequest) getCurrentSession().createCriteria(FailedRequest.class)
+																.setFetchSize(1)
+																.uniqueResult();
 		if (req != null && req.getRecId() != null) {
 			try {
 				Session s = getCurrentSession();

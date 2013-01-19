@@ -88,6 +88,7 @@ public class ExploreRequest {
 				Thread.sleep(5 * 1000);// 等待5s
 				// 解析页面
 				driver.navigate().to(url);// 打开指定页面
+				Thread.sleep(5 * 1000);// 等待5s
 			}
 			return driver;
 		} catch (Exception e) {
