@@ -35,6 +35,7 @@ CREATE TABLE `user` (
   `fans_num` int(10) DEFAULT NULL COMMENT '粉丝数',
   `weibo_num` int(10) DEFAULT NULL COMMENT '发布微博数',
   `tag_info` varchar(300) DEFAULT NULL COMMENT '用户标签信息',
+  `has_relation` varchar(2) DEFAULT '0' COMMENT '是否已经抓取过用户关系信息，如粉丝、关注等。',
   UNIQUE KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
 

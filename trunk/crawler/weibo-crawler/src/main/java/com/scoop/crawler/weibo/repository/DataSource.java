@@ -4,6 +4,7 @@ import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.entity.WeiboComment;
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.repository.mysql.FailedRequest;
+import com.scoop.crawler.weibo.repository.mysql.User;
 import com.scoop.crawler.weibo.repository.mysql.Weibo;
 
 public interface DataSource {
@@ -55,4 +56,11 @@ public interface DataSource {
 	 * @return
 	 */
 	public FailedRequest pop();
+
+	/***
+	 * 获取一条没有抓取关系信息的用户
+	 * 
+	 * @return
+	 */
+	public User getOneUnfetchedUser();
 }

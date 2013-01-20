@@ -15,7 +15,8 @@ public class ThreadUtils {
 	private static final int THREAD_LIMIT = 5;
 	private static DefaultHttpClient client;
 	private static ExecutorService exec = Executors.newFixedThreadPool(THREAD_LIMIT);
-	private static boolean hasFetch = false;
+	private static boolean hasCommentExecuted = false;
+	private static boolean hasUserRelationExecuted = false;
 
 	public static ExecutorService getRunnaleExecutor() {
 		return exec;
@@ -33,11 +34,37 @@ public class ThreadUtils {
 	 * 
 	 * @param command
 	 */
-	public static void execute(Thread command) {
-		if (!hasFetch) {
+	public static void executeCommnet(Thread command) {
+		if (!hasCommentExecuted) {
+			hasCommentExecuted = true;
 			exec.execute(command);
-			hasFetch = true;
 		}
+	}
+
+	/**
+	 * 结束了对评论的抓取
+	 */
+	public static void finishComment() {
+		hasCommentExecuted = false;
+	}
+
+	/**
+	 * 执行一个线程
+	 * 
+	 * @param command
+	 */
+	public static void executeUserRelation(Thread command) {
+		if (!hasUserRelationExecuted) {
+			hasUserRelationExecuted = true;
+			exec.execute(command);
+		}
+	}
+
+	/**
+	 * 结束了对评论的抓取
+	 */
+	public static void finishUserRelation() {
+		hasUserRelationExecuted = false;
 	}
 
 	/**

@@ -99,6 +99,7 @@ public class CsvRunnable extends WeiboCommentRunnable {
 			}
 			// 将线程释放
 			ThreadUtils.freeThread();
+			ThreadUtils.finishComment();
 		}
 	}
 

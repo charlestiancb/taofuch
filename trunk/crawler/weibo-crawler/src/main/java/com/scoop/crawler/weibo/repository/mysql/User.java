@@ -25,6 +25,7 @@ public class User implements Serializable {
 	private Long fansNum;
 	private Long weiboNum;
 	private String tagInfo;
+	private String hasRelation;
 
 	public String getUserId() {
 		return userId;
@@ -104,5 +105,13 @@ public class User implements Serializable {
 
 	public void setTagInfo(String tagInfo) {
 		this.tagInfo = tagInfo;
+	}
+
+	public String getHasRelation() {
+		return hasRelation;
+	}
+
+	public void setHasRelation(String hasRelation) {
+		this.hasRelation = hasRelation;
 	}
 }
