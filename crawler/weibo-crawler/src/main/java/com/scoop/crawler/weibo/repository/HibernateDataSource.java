@@ -305,4 +305,24 @@ public class HibernateDataSource extends DatabaseDataSource {
 		}
 		return req;
 	}
+
+	public Weibo getOneUnfetchedWeibo() {
+		try {
+			Session s = getCurrentSession();
+			Transaction tx = s.beginTransaction();
+			try {
+				Weibo result = (Weibo) s.createQuery("from Weibo where hasComment='0' limit 1").uniqueResult();
+				if (result == null) {
+					return null;
+				} else {
+					result.setHasComment("1");
+					s.update(result);
+				}
+			} catch (Exception e) {
+			}
+			tx.commit();
+		} catch (Exception e) {
+		}
+		return null;
+	}
 }

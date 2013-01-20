@@ -369,4 +369,27 @@ public class JdbcDataSource extends DatabaseDataSource {
 		}
 		return result;
 	}
+
+	public Weibo getOneUnfetchedWeibo() {
+		Weibo w = new Weibo();
+		w.setHasComment("0");
+		EntitySql sql = EntityManager.createSelectSQL(w);
+		sql.setSql(sql.getSql() + " limit 1");
+		List<Weibo> ws = query(sql, Weibo.class);
+		Weibo result = null;
+		if (ws != null && ws.size() > 0) {
+			result = ws.get(0);
+		}
+		if (result == null) {
+			return result;
+		}
+		// 将该对象的状态置为已抓取。
+		Weibo value = new Weibo();
+		value.setHasComment("1");
+		Weibo where = new Weibo();
+		where.setWeiboId(result.getWeiboId());
+		sql = EntityManager.createUpdateSQL(value, where);
+		executeSql(sql);
+		return result;
+	}
 }

@@ -13,6 +13,7 @@ import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.entity.WeiboComment;
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.repository.mysql.FailedRequest;
+import com.scoop.crawler.weibo.repository.mysql.Weibo;
 
 public class CsvDataSource implements DataSource {
 	/** csv文件的编码 */
@@ -122,6 +123,11 @@ public class CsvDataSource implements DataSource {
 	}
 
 	public FailedRequest pop() {
+		return null;
+	}
+
+	public Weibo getOneUnfetchedWeibo() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

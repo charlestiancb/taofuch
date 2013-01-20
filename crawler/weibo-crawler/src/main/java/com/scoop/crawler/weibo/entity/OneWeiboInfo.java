@@ -199,10 +199,12 @@ public class OneWeiboInfo extends Info {
 
 	/** 微博详细信息，包括对应的评论信息 */
 	public String getDetail() {
+		requestIfNeccessory();
 		return detail;
 	}
 
 	public Document getDetailDoc() {
+		requestIfNeccessory();
 		return doc;
 	}
 

@@ -227,7 +227,7 @@ public class SinaWeiboRequest {
 				sleep();
 				return request(_client, url, handler, node);
 			} else {
-				System.out.println("页面信息获取成功！");
+				System.out.println("页面信息获取成功！" + url);
 			}
 			return html;
 		} catch (Throwable e) {
