@@ -13,6 +13,7 @@ import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.entity.WeiboComment;
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.repository.mysql.FailedRequest;
+import com.scoop.crawler.weibo.repository.mysql.User;
 import com.scoop.crawler.weibo.repository.mysql.Weibo;
 
 public class CsvDataSource implements DataSource {
@@ -127,6 +128,11 @@ public class CsvDataSource implements DataSource {
 	}
 
 	public Weibo getOneUnfetchedWeibo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public User getOneUnfetchedUser() {
 		// TODO Auto-generated method stub
 		return null;
 	}

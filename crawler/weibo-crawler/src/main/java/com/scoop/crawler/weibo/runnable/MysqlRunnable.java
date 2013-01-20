@@ -43,7 +43,6 @@ public class MysqlRunnable extends WeiboCommentRunnable {
 								comment.setWeiboId(wb.getId());
 								comment.setPerson(person);
 								dataSource.saveComment(comment);
-								// 重启线程专门存储用户关系
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -58,6 +57,7 @@ public class MysqlRunnable extends WeiboCommentRunnable {
 			} finally {
 				// 将线程释放
 				ThreadUtils.freeThread();
+				ThreadUtils.finishComment();
 			}
 		}
 	}

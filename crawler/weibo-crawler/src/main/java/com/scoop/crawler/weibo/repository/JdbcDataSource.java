@@ -392,4 +392,27 @@ public class JdbcDataSource extends DatabaseDataSource {
 		executeSql(sql);
 		return result;
 	}
+
+	public User getOneUnfetchedUser() {
+		User u = new User();
+		u.setHasRelation("0");
+		EntitySql sql = EntityManager.createSelectSQL(u);
+		sql.setSql(sql.getSql() + " limit 1");
+		List<User> ws = query(sql, User.class);
+		User result = null;
+		if (ws != null && ws.size() > 0) {
+			result = ws.get(0);
+		}
+		if (result == null) {
+			return result;
+		}
+		// 将该对象的状态置为已抓取。
+		User value = new User();
+		value.setHasRelation("1");
+		User where = new User();
+		where.setUserId(result.getUserId());
+		sql = EntityManager.createUpdateSQL(value, where);
+		executeSql(sql);
+		return result;
+	}
 }

@@ -318,6 +318,28 @@ public class HibernateDataSource extends DatabaseDataSource {
 					result.setHasComment("1");
 					s.update(result);
 				}
+				return result;
+			} catch (Exception e) {
+			}
+			tx.commit();
+		} catch (Exception e) {
+		}
+		return null;
+	}
+
+	public User getOneUnfetchedUser() {
+		try {
+			Session s = getCurrentSession();
+			Transaction tx = s.beginTransaction();
+			try {
+				User result = (User) s.createQuery("from User where hasRelation='0' limit 1").uniqueResult();
+				if (result == null) {
+					return null;
+				} else {
+					result.setHasRelation("1");
+					s.update(result);
+				}
+				return result;
 			} catch (Exception e) {
 			}
 			tx.commit();
