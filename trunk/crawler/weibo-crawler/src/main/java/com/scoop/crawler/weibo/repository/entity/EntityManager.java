@@ -32,6 +32,42 @@ public class EntityManager {
 		weibo.setWeiboId("asdfasdfDSdjgh");
 		System.out.println(createInsertSQL(weibo));
 		System.out.println(createSelectSQL(weibo));
+		Weibo where = new Weibo();
+		// where.setWeiboId("adfXaADSZxa-adax");
+		Weibo value = new Weibo();
+		value.setContent("hehe");
+		System.out.println(createUpdateSQL(value, where));
+	}
+
+	public static EntitySql createUpdateSQL(Object value, Object where) {
+		StringBuffer sql = new StringBuffer("update ");
+		Table t = value.getClass().getAnnotation(Table.class);
+		if (t != null && StringUtils.isNotBlank(t.name())) {
+			sql.append(t.name().trim());
+		} else {
+			sql.append(convertor.classToTableName(value.getClass().getName()));
+		}
+		sql.append(" set ");
+		EntitySql result = new EntitySql();
+		result.setType(SqlType.UPDATE);
+		processField(value, sql, result, "= ? , ");
+		// 判断是否有值。如果没有，则sql不正确。
+		if (result.getArgs().isEmpty()) {
+			return null;
+		} else {
+			sql = sql.replace(sql.length() - 2, sql.length(), "");
+		}
+		int paramNum = result.getArgs().size();
+		sql.append(" where ");
+		processField(where, sql, result, "=? and ");
+		if (result.getArgs().size() == paramNum) {
+			// 如果没有值，则表示没有条件，将where删除
+			result.setSql(sql.substring(0, sql.lastIndexOf(" where ")));
+		} else {
+			// 表示有值，将最后那个and删除
+			result.setSql(sql.substring(0, sql.lastIndexOf(" and ")));
+		}
+		return result;
 	}
 
 	/**
@@ -51,6 +87,18 @@ public class EntityManager {
 		sql.append(" where ");
 		EntitySql result = new EntitySql();
 		result.setType(SqlType.SELECT);
+		processField(entity, sql, result, "= ? and ");
+		if (result.getArgs().isEmpty()) {
+			// 如果没有值，则表示没有条件，将where删除
+			result.setSql(sql.substring(0, sql.lastIndexOf(" where ")));
+		} else {
+			// 表示有值，将最后那个and删除
+			result.setSql(sql.substring(0, sql.lastIndexOf(" and ")));
+		}
+		return result;
+	}
+
+	private static void processField(Object entity, StringBuffer sql, EntitySql result, String fieldCondition) {
 		Class<?> curClazz = entity.getClass();
 		while (curClazz != Object.class) {
 			Field[] fs = curClazz.getDeclaredFields();
@@ -78,21 +126,13 @@ public class EntityManager {
 						} else {
 							sql.append(convertor.classToTableName(f.getName()));
 						}
-						sql.append("= ? and ");
+						sql.append(fieldCondition);
 						result.addArg(fieldValue);
 					}
 				}
 			}
 			curClazz = curClazz.getSuperclass();
 		}
-		if (result.getArgs().isEmpty()) {
-			// 如果没有值，则表示没有条件，将where删除
-			result.setSql(sql.substring(0, sql.lastIndexOf(" where ")));
-		} else {
-			// 表示有值，将最后那个and删除
-			result.setSql(sql.substring(0, sql.lastIndexOf(" and ")));
-		}
-		return result;
 	}
 
 	public static EntitySql createInsertSQL(Object entity) {

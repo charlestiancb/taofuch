@@ -15,6 +15,7 @@ public class ThreadUtils {
 	private static final int THREAD_LIMIT = 5;
 	private static DefaultHttpClient client;
 	private static ExecutorService exec = Executors.newFixedThreadPool(THREAD_LIMIT);
+	private static boolean hasFetch = false;
 
 	public static ExecutorService getRunnaleExecutor() {
 		return exec;
@@ -33,7 +34,10 @@ public class ThreadUtils {
 	 * @param command
 	 */
 	public static void execute(Thread command) {
-		exec.execute(command);
+		if (!hasFetch) {
+			exec.execute(command);
+			hasFetch = true;
+		}
 	}
 
 	/**

@@ -85,6 +85,7 @@ CREATE TABLE `weibo_info` (
   `comment_num` int(10) DEFAULT NULL COMMENT '评论数',
   `publish_time` varchar(100) DEFAULT NULL COMMENT '微博发布时间',
   `user_id` varchar(100) DEFAULT NULL COMMENT '微博发布者',
+  `has_comment` varchar(2) DEFAULT '0' COMMENT '是否已经抓取评论信息',
   PRIMARY KEY (`weibo_id`),
   UNIQUE KEY `weibo_id` (`weibo_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

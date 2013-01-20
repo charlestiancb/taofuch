@@ -4,6 +4,7 @@ import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.entity.WeiboComment;
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.repository.mysql.FailedRequest;
+import com.scoop.crawler.weibo.repository.mysql.Weibo;
 
 public interface DataSource {
 	/**
@@ -12,6 +13,9 @@ public interface DataSource {
 	 * @param weibo
 	 */
 	public void saveWeibo(OneWeiboInfo weibo);
+
+	/** 获取一条没有抓取解析信息的微博 */
+	public Weibo getOneUnfetchedWeibo();
 
 	/**
 	 * 关闭

@@ -23,6 +23,7 @@ public class Weibo implements Serializable {
 	private Long commentNum;
 	private String publishTime;
 	private String userId;
+	private String hasComment;
 
 	public String getWeiboId() {
 		return weiboId;
@@ -86,5 +87,13 @@ public class Weibo implements Serializable {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getHasComment() {
+		return hasComment;
+	}
+
+	public void setHasComment(String hasComment) {
+		this.hasComment = hasComment;
 	}
 }
