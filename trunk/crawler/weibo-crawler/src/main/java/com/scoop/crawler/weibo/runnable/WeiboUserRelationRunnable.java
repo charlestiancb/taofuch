@@ -33,10 +33,9 @@ public class WeiboUserRelationRunnable extends Thread implements Runnable {
 				dataSource.saveFollows(person.getId(), person.getFollows());
 			} catch (Exception e) {
 				e.printStackTrace();
-			} finally {
-				ThreadUtils.freeThread();
-				ThreadUtils.finishUserRelation();
 			}
 		}
+		ThreadUtils.freeThread();
+		ThreadUtils.finishUserRelation();
 	}
 }

@@ -66,18 +66,17 @@ public class WeiboCommentRunnable extends Thread implements Runnable {
 			} catch (Exception e) {
 				System.err.println("解析微博[" + wb + "]的评论失败！");
 				e.printStackTrace();
-			} finally {
-				// 将线程释放
-				ThreadUtils.freeThread();
-				ThreadUtils.finishComment();
 			}
 		}
+		// 将线程释放
+		ThreadUtils.freeThread();
+		ThreadUtils.finishComment();
 	}
 
 	protected Elements loadNextPage(Comments comments, DefaultHttpClient client) {
 		// 这里取下一页的URL是否正确！
-		Elements eles = Jsoup.parse(comments.getCurrentPage()).getElementsByAttributeValue("class",
-				"W_pages W_pages_comment");
+		Elements eles = Jsoup.parse(comments.getCurrentPage()).getElementsByAttributeValue(	"class",
+																							"W_pages W_pages_comment");
 		if (eles != null && eles.size() > 0) {
 			eles = eles.first().getElementsMatchingOwnText("下一页");
 		}
@@ -89,8 +88,8 @@ public class WeiboCommentRunnable extends Thread implements Runnable {
 				url = url + param;
 				String html = SinaWeiboRequest.request(client, url, handler, FailedNode.COMMENT);
 				comments.setCurrentPage(JSONUtils.getSinaHtml(html));
-				eles = Jsoup.parse(comments.getCurrentPage()).getElementsByAttributeValue("class",
-						"comment_list W_linecolor clearfix");
+				eles = Jsoup.parse(comments.getCurrentPage())
+							.getElementsByAttributeValue("class", "comment_list W_linecolor clearfix");
 				if (eles != null) {
 					System.out.println("获取下一 页评论信息……");
 					return eles;
