@@ -10,7 +10,6 @@ import org.jsoup.select.Elements;
 import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
-import com.scoop.crawler.weibo.runnable.MysqlRunnable;
 import com.scoop.crawler.weibo.runnable.WeiboCommentRunnable;
 import com.scoop.crawler.weibo.runnable.WeiboUserRelationRunnable;
 import com.scoop.crawler.weibo.util.ThreadUtils;
@@ -74,7 +73,7 @@ public abstract class Parser {
 		weibo.setPublishTime(publishTime);
 		dataSource.saveWeibo(weibo);
 		// 处理评论与转发的信息、以及评论者的个人信息。
-		WeiboCommentRunnable run = new MysqlRunnable(dataSource, weibo);
+		WeiboCommentRunnable run = new WeiboCommentRunnable(dataSource, weibo.getHandler());
 		ThreadUtils.executeCommnet(run);
 		// 重启线程专门存储用户关系
 		WeiboUserRelationRunnable userRun = new WeiboUserRelationRunnable(dataSource, weibo.getHandler());
