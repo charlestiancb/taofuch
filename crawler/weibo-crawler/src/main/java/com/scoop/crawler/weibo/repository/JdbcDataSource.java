@@ -55,8 +55,9 @@ public class JdbcDataSource extends DatabaseDataSource {
 	private void connect() {
 		try {
 			Class.forName(pro.getProperty(Environment.DRIVER));
-			conn = DriverManager.getConnection(pro.getProperty(Environment.URL), pro.getProperty(Environment.USER),
-					pro.getProperty(Environment.PASS));
+			conn = DriverManager.getConnection(	pro.getProperty(Environment.URL),
+												pro.getProperty(Environment.USER),
+												pro.getProperty(Environment.PASS));
 			conn.setAutoCommit(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -88,8 +89,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 		try {
 			FetchInfo fi = new FetchInfo(Parser.getQuery(), id, weibo.name());
 			if (fi.needSave()) {
-				List<Map<String, Object>> records = (List<Map<String, Object>>) executeSql(EntityManager
-						.createSelectSQL(fi));
+				List<Map<String, Object>> records = (List<Map<String, Object>>) executeSql(EntityManager.createSelectSQL(fi));
 				if (records == null || records.isEmpty()) {
 					executeSql(EntityManager.createInsertSQL(fi));
 				}
@@ -326,7 +326,11 @@ public class JdbcDataSource extends DatabaseDataSource {
 				try {
 					Object entity = clazz.newInstance();
 					for (String key : r.keySet()) {
-						BeanUtils.setProperty(entity, columMapPro.get(key), r.get(key));
+						try {
+							BeanUtils.setProperty(entity, columMapPro.get(key.toLowerCase()), r.get(key));
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 					result.add((T) entity);
 				} catch (Exception e) {
@@ -359,7 +363,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 						} else {
 							colName = EntityManager.convertor.classToTableName(f.getName());
 						}
-						result.put(colName, f.getName());
+						result.put(colName.toLowerCase(), f.getName());
 					}
 				}
 			}
