@@ -10,24 +10,74 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import com.scoop.crawler.weibo.entity.OneWeiboInfo;
+import com.scoop.crawler.weibo.entity.WeiboComment;
+import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.repository.DataSource;
+import com.scoop.crawler.weibo.repository.mysql.Weibo;
 import com.scoop.crawler.weibo.request.SinaWeiboRequest;
+import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
 import com.scoop.crawler.weibo.util.JSONUtils;
+import com.scoop.crawler.weibo.util.ThreadUtils;
 
-public abstract class WeiboCommentRunnable extends Thread implements Runnable {
+public class WeiboCommentRunnable extends Thread implements Runnable {
 	protected DataSource dataSource;
-	protected final OneWeiboInfo weibo;
+	protected FailedHandler handler;
 
-	public WeiboCommentRunnable(DataSource dataSource, OneWeiboInfo weibo) {
+	public WeiboCommentRunnable(DataSource dataSource, FailedHandler handler) {
 		this.dataSource = dataSource;
-		this.weibo = weibo;
+		this.handler = handler;
+	}
+
+	public void run() {
+		DefaultHttpClient client = ThreadUtils.allocateHttpClient();
+		for (Weibo w = dataSource.getOneUnfetchedWeibo(); w != null; w = dataSource.getOneUnfetchedWeibo()) {
+			OneWeiboInfo wb = new OneWeiboInfo(w.getUrl(), client);
+			wb.setHandler(handler);
+			try {
+				System.out.println("解析评论信息……");
+				// 获取所有评论信息，并进行循环处理。
+				Elements eles = wb.getDetailDoc().getElementsByAttributeValue("class", "comment_lists").select("dd");
+				Comments comments = new Comments(wb.getDetail());
+				while (eles != null && eles.size() > 0) {
+					Element tmp = null;
+					for (int i = 0; i < eles.size(); i++) {
+						System.out.println("解析其中一条评论信息……");
+						tmp = eles.get(i);
+						if (tmp != null) {
+							// 获取对应的评论者主页URL。
+							try {
+								String userInfoUrl = parseToUrl(tmp, wb.getUrl());
+								WeiboPersonInfo person = new WeiboPersonInfo(userInfoUrl, client);
+								person.setHandler(wb.getHandler());
+								WeiboComment comment = new WeiboComment(tmp);
+								comment.setHandler(wb.getHandler());
+								comment.setWeiboId(wb.getId());
+								comment.setPerson(person);
+								dataSource.saveComment(comment);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}
+					// 加载下一页评论，并进行分析
+					eles = loadNextPage(comments, client);
+				}
+			} catch (Exception e) {
+				System.err.println("解析微博[" + wb + "]的评论失败！");
+				e.printStackTrace();
+			} finally {
+				// 将线程释放
+				ThreadUtils.freeThread();
+				ThreadUtils.finishComment();
+			}
+		}
 	}
 
 	protected Elements loadNextPage(Comments comments, DefaultHttpClient client) {
 		// 这里取下一页的URL是否正确！
-		Elements eles = Jsoup.parse(comments.getCurrentPage()).getElementsByAttributeValue(	"class",
-																							"W_pages W_pages_comment");
+		Elements eles = Jsoup.parse(comments.getCurrentPage()).getElementsByAttributeValue("class",
+				"W_pages W_pages_comment");
 		if (eles != null && eles.size() > 0) {
 			eles = eles.first().getElementsMatchingOwnText("下一页");
 		}
@@ -37,10 +87,10 @@ public abstract class WeiboCommentRunnable extends Thread implements Runnable {
 			String param = eles.first().attr("action-data");
 			if (param != null && param.trim().length() > 0) {
 				url = url + param;
-				String html = SinaWeiboRequest.request(client, url, weibo.getHandler(), FailedNode.COMMENT);
+				String html = SinaWeiboRequest.request(client, url, handler, FailedNode.COMMENT);
 				comments.setCurrentPage(JSONUtils.getSinaHtml(html));
-				eles = Jsoup.parse(comments.getCurrentPage())
-							.getElementsByAttributeValue("class", "comment_list W_linecolor clearfix");
+				eles = Jsoup.parse(comments.getCurrentPage()).getElementsByAttributeValue("class",
+						"comment_list W_linecolor clearfix");
 				if (eles != null) {
 					System.out.println("获取下一 页评论信息……");
 					return eles;

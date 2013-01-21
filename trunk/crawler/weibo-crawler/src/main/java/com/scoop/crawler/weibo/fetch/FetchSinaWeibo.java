@@ -178,15 +178,12 @@ public class FetchSinaWeibo extends FetchSina {
 				if (searchParser.isBelong(html)) {
 					searchParser.setHandler(handler);
 					int idx = tmpUrl.lastIndexOf("page=");
-					int curPage = idx == -1 ? 1 : NumberUtils.toInt(StringUtils.trim(tmpUrl.substring(idx
-																			+ "page=".length())),
-																	1);
+					int curPage = idx == -1 ? 1 : NumberUtils.toInt(
+							StringUtils.trim(tmpUrl.substring(idx + "page=".length())), 1);
 					while (maxLimit == -1 || curPage <= maxLimit) {
-						searchParser.parse(html);
-						boolean hasParam = weiboUrl.indexOf("?") > -1;// 判断链接中是否有参数
-						tmpUrl = weiboUrl + (hasParam ? "&" : "?") + "page=" + (++curPage);// 从当前页的下一页开始！因为当前页在上一行已经抓取过。
-						System.out.println("正在抓取页面：" + tmpUrl);
-						html = SinaWeiboRequest.request(client, tmpUrl, handler, FailedNode.MAIN);
+						String nextPageUrl = searchParser.parse(html);
+						System.out.println("正在抓取页面：" + nextPageUrl);
+						html = SinaWeiboRequest.request(client, nextPageUrl, handler, FailedNode.MAIN);
 					}
 				} else if (commonParser.isBelong(html)) {
 					commonParser.setHandler(handler);
