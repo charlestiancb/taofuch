@@ -101,10 +101,8 @@ public class HibernateDataSource extends DatabaseDataSource {
 			if (fi.needSave()) {
 				Session s = getCurrentSession();
 				Object obj = s.createQuery("from FetchInfo where queryStr=? and relationId=? and relationType=?")
-								.setString(0, fi.getQueryStr())
-								.setString(1, fi.getRelationId())
-								.setString(2, fi.getRelationType())
-								.uniqueResult();
+						.setString(0, fi.getQueryStr()).setString(1, fi.getRelationId())
+						.setString(2, fi.getRelationType()).uniqueResult();
 				if (obj == null) {
 					Transaction t = s.beginTransaction();
 					try {
@@ -142,8 +140,6 @@ public class HibernateDataSource extends DatabaseDataSource {
 	public void savePerson(WeiboPersonInfo person) {
 		// 保存发布者信息，即用户信息，先判断存不存在，如果不存在才插入！
 		saveUserIfNeccessory(person);
-		saveFans(person.getId(), person.getFans());
-		saveFollows(person.getId(), person.getFollows());
 	}
 
 	/**
@@ -151,7 +147,7 @@ public class HibernateDataSource extends DatabaseDataSource {
 	 * 
 	 * @param fans
 	 */
-	protected void saveFans(String userId, List<WeiboPersonInfo> fans) {
+	public void saveFans(String userId, List<WeiboPersonInfo> fans) {
 		userId = StringUtils.trim(userId);
 		if (StringUtils.isNotEmpty(userId) && fans != null && fans.size() > 0) {
 			for (WeiboPersonInfo fansUser : fans) {
@@ -178,7 +174,7 @@ public class HibernateDataSource extends DatabaseDataSource {
 	 * 
 	 * @param follows
 	 */
-	protected void saveFollows(String userId, List<WeiboPersonInfo> follows) {
+	public void saveFollows(String userId, List<WeiboPersonInfo> follows) {
 		userId = StringUtils.trim(userId);
 		if (StringUtils.isNotEmpty(userId) && follows != null && follows.size() > 0) {
 			for (WeiboPersonInfo followUser : follows) {
@@ -288,9 +284,8 @@ public class HibernateDataSource extends DatabaseDataSource {
 	}
 
 	public FailedRequest pop() {
-		FailedRequest req = (FailedRequest) getCurrentSession().createCriteria(FailedRequest.class)
-																.setFetchSize(1)
-																.uniqueResult();
+		FailedRequest req = (FailedRequest) getCurrentSession().createCriteria(FailedRequest.class).setFetchSize(1)
+				.uniqueResult();
 		if (req != null && req.getRecId() != null) {
 			try {
 				Session s = getCurrentSession();

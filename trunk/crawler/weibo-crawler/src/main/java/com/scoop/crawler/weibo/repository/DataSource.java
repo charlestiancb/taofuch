@@ -1,5 +1,7 @@
 package com.scoop.crawler.weibo.repository;
 
+import java.util.List;
+
 import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.entity.WeiboComment;
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
@@ -63,4 +65,8 @@ public interface DataSource {
 	 * @return
 	 */
 	public User getOneUnfetchedUser();
+
+	public void saveFans(String id, List<WeiboPersonInfo> fans);
+
+	public void saveFollows(String id, List<WeiboPersonInfo> follows);
 }
