@@ -178,8 +178,9 @@ public class FetchSinaWeibo extends FetchSina {
 				if (searchParser.isBelong(html)) {
 					searchParser.setHandler(handler);
 					int idx = tmpUrl.lastIndexOf("page=");
-					int curPage = idx == -1 ? 1 : NumberUtils.toInt(
-							StringUtils.trim(tmpUrl.substring(idx + "page=".length())), 1);
+					int curPage = idx == -1 ? 1 : NumberUtils.toInt(StringUtils.trim(tmpUrl.substring(idx
+																			+ "page=".length())),
+																	1);
 					while (maxLimit == -1 || curPage <= maxLimit) {
 						String nextPageUrl = searchParser.parse(html);
 						if (nextPageUrl == null || nextPageUrl.trim().isEmpty()) {
@@ -193,6 +194,7 @@ public class FetchSinaWeibo extends FetchSina {
 					commonParser.setCurUrl(weiboUrl);
 					commonParser.parse(html);
 				} else {
+					System.out.println("内容不符合预定的解析规则");
 					return;
 				}
 			}
