@@ -11,10 +11,8 @@ import com.scoop.crawler.weibo.request.SinaWeiboRequest;
 public class ThreadUtils {
 	/** 繁忙的线程数！ */
 	// private static ConcurrentHashMap<Type, Integer> busyCount;
-	/** 并发的线程数上限 */
-	private static final int THREAD_LIMIT = 5;
 	private static DefaultHttpClient client;
-	private static ExecutorService exec = Executors.newFixedThreadPool(THREAD_LIMIT);
+	private static ExecutorService exec = Executors.newFixedThreadPool(5);
 	private static boolean hasCommentExecuted = false;
 	private static boolean hasUserRelationExecuted = false;
 
