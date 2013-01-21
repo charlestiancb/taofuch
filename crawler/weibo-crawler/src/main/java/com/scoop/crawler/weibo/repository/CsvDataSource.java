@@ -136,4 +136,14 @@ public class CsvDataSource implements DataSource {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public void saveFans(String id, List<WeiboPersonInfo> fans) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void saveFollows(String id, List<WeiboPersonInfo> follows) {
+		// TODO Auto-generated method stub
+
+	}
 }

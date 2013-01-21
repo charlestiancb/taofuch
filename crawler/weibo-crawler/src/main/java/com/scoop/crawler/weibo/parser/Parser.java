@@ -62,7 +62,8 @@ public abstract class Parser {
 	 *            微博的发布时间
 	 * @throws IOException
 	 */
-	protected void parseWeibo(String weiboUrl, String publishTime, DefaultHttpClient client, DataSource dataSource) throws IOException {
+	protected void parseWeibo(String weiboUrl, String publishTime, DefaultHttpClient client, DataSource dataSource)
+			throws IOException {
 		OneWeiboInfo weibo = new OneWeiboInfo(weiboUrl, client);
 		weibo.setHandler(handler);
 		if (!weibo.isValid()) {
@@ -76,7 +77,7 @@ public abstract class Parser {
 		WeiboCommentRunnable run = new MysqlRunnable(dataSource, weibo);
 		ThreadUtils.executeCommnet(run);
 		// 重启线程专门存储用户关系
-		WeiboUserRelationRunnable userRun = new WeiboUserRelationRunnable(dataSource, client, weibo.getHandler());
+		WeiboUserRelationRunnable userRun = new WeiboUserRelationRunnable(dataSource, weibo.getHandler());
 		ThreadUtils.executeUserRelation(userRun);
 	}
 

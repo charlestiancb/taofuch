@@ -55,9 +55,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 	private void connect() {
 		try {
 			Class.forName(pro.getProperty(Environment.DRIVER));
-			conn = DriverManager.getConnection(	pro.getProperty(Environment.URL),
-												pro.getProperty(Environment.USER),
-												pro.getProperty(Environment.PASS));
+			conn = DriverManager.getConnection(pro.getProperty(Environment.URL), pro.getProperty(Environment.USER),
+					pro.getProperty(Environment.PASS));
 			conn.setAutoCommit(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -89,7 +88,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 		try {
 			FetchInfo fi = new FetchInfo(Parser.getQuery(), id, weibo.name());
 			if (fi.needSave()) {
-				List<Map<String, Object>> records = (List<Map<String, Object>>) executeSql(EntityManager.createSelectSQL(fi));
+				List<Map<String, Object>> records = (List<Map<String, Object>>) executeSql(EntityManager
+						.createSelectSQL(fi));
 				if (records == null || records.isEmpty()) {
 					executeSql(EntityManager.createInsertSQL(fi));
 				}
@@ -120,8 +120,6 @@ public class JdbcDataSource extends DatabaseDataSource {
 	public void savePerson(WeiboPersonInfo person) {
 		// 保存发布者信息，即用户信息，先判断存不存在，如果不存在才插入！
 		saveUserIfNeccessory(person);
-		saveFans(person.getId(), person.getFans());
-		saveFollows(person.getId(), person.getFollows());
 	}
 
 	/**
@@ -129,7 +127,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 	 * 
 	 * @param fans
 	 */
-	protected void saveFans(String userId, List<WeiboPersonInfo> fans) {
+	public void saveFans(String userId, List<WeiboPersonInfo> fans) {
 		userId = StringUtils.trim(userId);
 		if (StringUtils.isNotEmpty(userId) && fans != null && fans.size() > 0) {
 			for (WeiboPersonInfo fansUser : fans) {
@@ -150,7 +148,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 	 * 
 	 * @param follows
 	 */
-	protected void saveFollows(String userId, List<WeiboPersonInfo> follows) {
+	public void saveFollows(String userId, List<WeiboPersonInfo> follows) {
 		userId = StringUtils.trim(userId);
 		if (StringUtils.isNotEmpty(userId) && follows != null && follows.size() > 0) {
 			for (WeiboPersonInfo followUser : follows) {
