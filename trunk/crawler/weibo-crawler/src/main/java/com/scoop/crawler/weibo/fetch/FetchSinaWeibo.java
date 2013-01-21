@@ -182,6 +182,9 @@ public class FetchSinaWeibo extends FetchSina {
 							StringUtils.trim(tmpUrl.substring(idx + "page=".length())), 1);
 					while (maxLimit == -1 || curPage <= maxLimit) {
 						String nextPageUrl = searchParser.parse(html);
+						if (nextPageUrl == null || nextPageUrl.trim().isEmpty()) {
+							break;
+						}
 						System.out.println("正在抓取页面：" + nextPageUrl);
 						html = SinaWeiboRequest.request(client, nextPageUrl, handler, FailedNode.MAIN);
 					}

@@ -65,10 +65,12 @@ public class JsonStyle4SearchParser extends JsonStyleParser {
 		// 解析下一页
 		Elements eles = doc.getElementsByAttributeValue("class", "search_page clearfix");
 		if (eles != null && !eles.isEmpty()) {
-			eles = eles.select("li");
-			Element ele = eles.last();
-			if (ele.text().trim().equals("下一页")) {
-				return "http://s.weibo.com" + ele.attr("href");
+			eles = eles.select("li").select("a");
+			if (eles != null && !eles.isEmpty()) {
+				Element ele = eles.last();
+				if (ele.text().trim().equals("下一页")) {
+					return "http://s.weibo.com" + ele.attr("href");
+				}
 			}
 		}
 		return null;
