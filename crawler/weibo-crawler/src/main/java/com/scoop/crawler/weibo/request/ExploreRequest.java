@@ -1,5 +1,7 @@
 package com.scoop.crawler.weibo.request;
 
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -73,6 +75,8 @@ public class ExploreRequest {
 	 */
 	private static WebDriver loginAndRequest(WebDriver driver, String url) {
 		try {
+			driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+			driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
 			driver.get("http://www.weibo.com/");
 			// 这次访问肯定需要登录！因此登录之
 			driver.findElement(By.name("loginname")).sendKeys(LogonInfo.getLogonInfo().getUsername());
