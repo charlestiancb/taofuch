@@ -35,7 +35,7 @@ public class ThreadUtils {
 	public static void executeCommnet(Thread command) {
 		if (!hasCommentExecuted) {
 			hasCommentExecuted = true;
-			exec.execute(command);
+			command.start();
 		}
 	}
 
@@ -54,7 +54,7 @@ public class ThreadUtils {
 	public static void executeUserRelation(Thread command) {
 		if (!hasUserRelationExecuted) {
 			hasUserRelationExecuted = true;
-			exec.execute(command);
+			command.start();
 		}
 	}
 
