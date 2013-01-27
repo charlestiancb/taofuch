@@ -78,6 +78,7 @@ public class FetchSinaWeibo extends FetchSina {
 					}
 				}
 			} else {
+				System.out.println("没有词文件指定文件，使用指定的url");
 				saveBaseUrl(new TempUrl(weiboBaseUrl, weiboBaseUrl));
 				fetch(client, dataSource, weiboBaseUrl);
 				saveBaseUrl(null);
@@ -113,12 +114,14 @@ public class FetchSinaWeibo extends FetchSina {
 			File file = new File(wordsFile);
 			boolean hasFile = file.isFile();
 			if (!hasFile) {
+				System.out.println("没有词文件指定文件，使用指定的url");
 				urls.add(weiboBaseUrl);
 				return urls;
 			}
 			// 读取一行，然后将该行删除！
 			List<String> lines = FileUtils.readLines(file, "GBK");
 			if (lines == null || lines.isEmpty()) {
+				System.out.println("文件内容为空，使用指定的url");
 				urls.add(weiboBaseUrl);
 			}
 			for (String line : lines) {
@@ -130,10 +133,12 @@ public class FetchSinaWeibo extends FetchSina {
 				for (int i = 0; i < s.length; i++) {
 					url = url.replaceAll("\\{" + i + "\\}", URLEncoder.encode(s[i].trim(), "UTF-8"));
 				}
+				System.out.println("解析出需要抓取的url：" + url);
 				urls.add(url);
 			}
 			return urls;
 		} else {
+			System.out.println("指定的url中没有变量信息，不使用文件中指定的词");
 			urls.add(weiboBaseUrl);
 		}
 		return urls;
