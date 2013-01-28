@@ -18,11 +18,12 @@ public class EhcacheService implements DataService {
 
 	public void save(Object key, Object value) {
 		// TODO Auto-generated method stub
-
+		init();
 	}
 
 	public Object getByKey(Object key) {
 		// TODO Auto-generated method stub
+		init();
 		return null;
 	}
 
