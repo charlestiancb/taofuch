@@ -440,6 +440,9 @@ public class WeiboPersonInfo extends Info {
 				return;
 			}
 			eles = eles.first().getElementsByTag("li");
+			if (eles.isEmpty()) {
+				return;
+			}
 			Iterator<Element> es = eles.iterator();
 			while (es.hasNext()) {
 				String userId = es.next().attr("action-data");
