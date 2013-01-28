@@ -1,0 +1,3 @@
+<cache name="demoCache" maxElementsInMemory="10000" eternal="false"
+	overflowToDisk="true" timeToIdleSeconds="300" timeToLiveSeconds="600"
+	memoryStoreEvictionPolicy="LFU" />
