@@ -12,7 +12,7 @@ public class EhcacheService implements DataService {
 			// 使用默认配置文件创建CacheManager
 			manager = CacheManager.create();
 			// 通过manager可以生成指定名称的Cache对象
-			cache = manager.getCache("demoCache");
+			cache = manager.getCache(CacheManager.DEFAULT_NAME);
 		}
 	}
 
