@@ -4,4 +4,6 @@ public interface DataService {
 	public void save(Object key, Object value);
 
 	public Object getByKey(Object key);
+
+	public void close();
 }
