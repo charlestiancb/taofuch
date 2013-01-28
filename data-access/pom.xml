@@ -1,7 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.tfc</groupId>
-  <artifactId>data-access</artifactId>
-  <version>1.0.0</version>
-  <description>数据读写操作。主要用于大数据量操作</description>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.tfc</groupId>
+	<artifactId>data-access</artifactId>
+	<version>1.0.0</version>
+	<description>数据读写操作。主要用于大数据量操作</description>
+	<dependencies>
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>2.6.3</version>
+		</dependency>
+	</dependencies>
 </project>
