@@ -3,6 +3,8 @@ package com.tfc.word.auto.collect.study;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.tfc.word.auto.collect.config.Configuration;
+
 /**
  * 网络爬虫自动学习入口管理。
  * 
@@ -10,8 +12,7 @@ import java.util.concurrent.Executors;
  * 
  */
 public class RobotManager {
-	private static int THREAD_COUNT = 5;
-	private static ExecutorService threads = Executors.newFixedThreadPool(THREAD_COUNT);
+	private static ExecutorService threads = Executors.newFixedThreadPool(Configuration.THREAD_COUNT);
 
 	/**
 	 * @param args
