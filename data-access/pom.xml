@@ -26,11 +26,20 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
 		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.1.26</version>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
 			<id>repo</id>
 			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+		<repository>
+			<id>maven.org</id>
+			<url>http://search.maven.org/remotecontent?filepath=</url>
 		</repository>
 		<repository>
 			<id>taofucheng</id>
