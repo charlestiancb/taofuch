@@ -33,6 +33,10 @@ public class KeyValueFormatData extends AbstractFormatData {
 		return (Float) get(key, Float.class);
 	}
 
+	public double getDouble(int index) {
+		return (Double) get(index, Double.class);
+	}
+
 	public Object get(Object key, Class<?> targetElementClass) {
 		String value = LuceneDataAccess.findValueByKey(genarateKey(key));
 		return parseToObject(targetElementClass, value);
