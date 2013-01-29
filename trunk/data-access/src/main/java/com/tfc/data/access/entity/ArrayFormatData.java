@@ -25,6 +25,10 @@ public class ArrayFormatData extends AbstractFormatData {
 		this.len = len;
 	}
 
+	public void setInstanceName(String instanceName) {
+		this.instanceName = instanceName;
+	}
+
 	/**
 	 * 类似这样的定义：new int[]{1,2}
 	 * 

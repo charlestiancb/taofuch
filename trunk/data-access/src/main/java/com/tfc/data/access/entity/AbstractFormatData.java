@@ -23,4 +23,14 @@ public class AbstractFormatData {
 		return null;
 	}
 
+	public static void main(String[] args) {
+		int[][] x = new int[2][3];
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 3; j++) {
+				x[i][j] = j;
+			}
+		}
+		System.err.println(x[0].length);
+	}
+
 }
