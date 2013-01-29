@@ -33,8 +33,8 @@ public class KeyValueFormatData extends AbstractFormatData {
 		return (Float) get(key, Float.class);
 	}
 
-	public double getDouble(int index) {
-		return (Double) get(index, Double.class);
+	public double getDouble(Object key) {
+		return (Double) get(key, Double.class);
 	}
 
 	public Object get(Object key, Class<?> targetElementClass) {
@@ -44,5 +44,9 @@ public class KeyValueFormatData extends AbstractFormatData {
 
 	private String genarateKey(Object key) {
 		return prefix + "_" + instanceName + "_" + JSON.toJSONString(key);
+	}
+
+	public boolean containsKey(Object key) {
+		return LuceneDataAccess.findValueByKey(genarateKey(key)) != null;
 	}
 }

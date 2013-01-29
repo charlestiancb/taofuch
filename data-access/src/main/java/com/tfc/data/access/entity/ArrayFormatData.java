@@ -69,4 +69,8 @@ public class ArrayFormatData extends AbstractFormatData {
 	private String genarateKey(int index) {
 		return prefix + "_" + instanceName + "_" + index;
 	}
+
+	public int length() {
+		return len;
+	}
 }
