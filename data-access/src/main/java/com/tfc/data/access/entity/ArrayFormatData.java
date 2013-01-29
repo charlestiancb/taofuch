@@ -62,6 +62,10 @@ public class ArrayFormatData extends AbstractFormatData {
 		return (Float) get(index, Float.class);
 	}
 
+	public double getDouble(int index) {
+		return (Double) get(index, Double.class);
+	}
+
 	private String genarateKey(int index) {
 		return prefix + "_" + instanceName + "_" + index;
 	}
