@@ -46,4 +46,40 @@ public class ThreeDimensionalData extends AbstractFormatData {
 	private String genarateKey(int x, int y, int z) {
 		return instanceName + "_" + x + "_" + y + "_" + z;
 	}
+
+	/**
+	 * 相当于int[i][j][k]数组的int[i].length.
+	 * 
+	 * @return
+	 */
+	public int getXlen() {
+		return xLen;
+	}
+
+	/**
+	 * 相当于int[i][j][k]数组的int[i][j].length.
+	 * 
+	 * @return
+	 */
+	public int getYlen() {
+		return yLen;
+	}
+
+	/**
+	 * 获取二维数据。
+	 * 
+	 * @param index
+	 * @return
+	 */
+	public FlatFormatData getFlatData(int index) {
+		FlatFormatData flat = new FlatFormatData(instanceName, yLen, zLen);
+		flat.setInstanceName(instanceName + "_" + index);
+		return flat;
+	}
+
+	public ArrayFormatData getArrayData(int x, int y) {
+		ArrayFormatData arr = new ArrayFormatData(instanceName, zLen);
+		arr.setInstanceName(instanceName + "_" + x + "_" + y);
+		return arr;
+	}
 }

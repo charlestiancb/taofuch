@@ -35,6 +35,10 @@ public class FlatFormatData {
 		this.yLen = yLen;
 	}
 
+	public void setInstanceName(String instanceName) {
+		this.instanceName = instanceName;
+	}
+
 	/**
 	 * 保存数据到指定的点上！
 	 * 
