@@ -28,6 +28,7 @@ public class WordBase implements Serializable {
 	/** 自动学习时，统计得到的数字 */
 	private Long statNum;
 	private Date addTime;
+	private Date checkedTime;
 
 	public Long getRecId() {
 		return recId;
@@ -75,5 +76,13 @@ public class WordBase implements Serializable {
 
 	public void setAddTime(Date addTime) {
 		this.addTime = addTime;
+	}
+
+	public Date getCheckedTime() {
+		return checkedTime;
+	}
+
+	public void setCheckedTime(Date checkedTime) {
+		this.checkedTime = checkedTime;
 	}
 }

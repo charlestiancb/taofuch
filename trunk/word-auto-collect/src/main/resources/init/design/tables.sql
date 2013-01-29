@@ -12,5 +12,6 @@ CREATE TABLE `word_base` (
   `check_status` varchar(20) DEFAULT '0' COMMENT '审核状态，是否已经被审核通过。0：未审核；1：审核通过',
   `stat_num` bigint(20) DEFAULT 0 COMMENT '自动学习时，统计得到的数字',
   `add_time` DATETIME DEFAULT now() COMMENT '该词加入到表中的时间',
+  `checked_time` DATETIME DEFAULT NULL COMMENT '该词审核通过的时间',
   PRIMARY KEY (`rec_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '词语的基本信息';
