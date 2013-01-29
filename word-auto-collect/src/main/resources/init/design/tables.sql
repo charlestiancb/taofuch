@@ -2,9 +2,7 @@ SET FOREIGN_KEY_CHECKS=0;
 
 create database words;
 use words;
--- ----------------------------
--- Table structure for fetch_info
--- ----------------------------
+
 CREATE TABLE `word_base` (
   `rec_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `word` varchar(500) NOT NULL COMMENT '具体的词语内容',
@@ -13,5 +11,12 @@ CREATE TABLE `word_base` (
   `stat_num` bigint(20) DEFAULT 0 COMMENT '自动学习时，统计得到的数字',
   `add_time` DATETIME DEFAULT now() COMMENT '该词加入到表中的时间',
   `checked_time` DATETIME DEFAULT NULL COMMENT '该词审核通过的时间',
+  PRIMARY KEY (`rec_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '词语的基本信息';
+
+CREATE TABLE `fetch_url` (
+  `rec_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `url` varchar(5000) NOT NULL COMMENT '具体的url链接',
+  `add_time` DATETIME DEFAULT now() COMMENT '该url加入到表中的时间，即抓取解析的时间',
   PRIMARY KEY (`rec_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '词语的基本信息';
