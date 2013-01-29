@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 import com.tfc.data.access.LuceneDataAccess;
 
 /**
- * 二维结构的数据格式。
+ * 二维结构的数据格式。如：int[i][j]
  * 
  * @author taofucheng
  * 
@@ -30,7 +30,7 @@ public class FlatFormatData {
 		if (instanceName == null) {
 			throw new IllegalArgumentException("请指定二维数组的实例名！");
 		}
-		this.instanceName = instanceName;
+		this.instanceName = instanceName + System.nanoTime();
 		this.xLen = xLen;
 		this.yLen = yLen;
 	}
@@ -107,5 +107,9 @@ public class FlatFormatData {
 
 	public int getyLen() {
 		return yLen;
+	}
+
+	public int length() {
+		return getyLen();
 	}
 }
