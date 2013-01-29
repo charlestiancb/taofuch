@@ -3,7 +3,7 @@ package com.tfc.data.access;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 
-public class EhcacheService implements DataService {
+public class EhcacheDataAccess {
 	private CacheManager manager;
 	private Cache cache;
 
