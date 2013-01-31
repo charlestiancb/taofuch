@@ -18,7 +18,7 @@ public class SingleCnSpellDic {
 
 	public static LinkedHashMap<String, String> spellMap() {
 		if (spellMap == null) {
-			spellMap = FileDicLoader.loadToMap("classpath:classpath:/com/tfc/word/spell/dic/char_spell.dic", "UTF-8");
+			spellMap = FileDicLoader.loadToMap("classpath:/com/tfc/word/spell/dic/char_spell.dic", "UTF-8");
 			if (spellMap == null) {
 				spellMap = new LinkedHashMap<String, String>(20901);
 			}
