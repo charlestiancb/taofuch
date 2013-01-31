@@ -26,7 +26,7 @@ import com.tfc.word.spell.dic.SpellToCharsDic;
  * @author taofucheng
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class CnAndPingyinAPI {
+public class PingyinAPI {
 	/** 空的字符串数组 */
 	private static final String[] EMPTY = new String[] {};
 	/** 字母正则 */
@@ -35,6 +35,36 @@ public class CnAndPingyinAPI {
 	private static final Pattern ASCII_LETTER_PATTERN = Pattern.compile(ASCII_LETTER, Pattern.CASE_INSENSITIVE);
 	/** 转换之后的最大内容 */
 	private static final int MAX_RESULT = 15;
+
+	/**
+	 * 将给定的文本中的汉字转换为拼音首字母。其它字符不变！
+	 * 
+	 * @param cnText
+	 * @return
+	 */
+	public static String[] toFirstLetter(String cnText) {
+		if (StringUtils.isBlank(cnText)) {
+			return new String[] { cnText };
+		}
+		String[] result = new String[] {};
+		while (cnText.length() > 0) {
+			String ch = cnText.substring(0, 1);
+			cnText = cnText.substring(1);
+			String[] tmp = SingleCnToSpell.getFullSpell(ch).split(",");
+			for (int i = 0; i < tmp.length; i++) {
+				tmp[i] = tmp[i].substring(0, 1);// 取首字母
+			}
+			result = CnToSpellHelper.interbreed(result, tmp);
+		}
+		// 去除重复
+		List<String> tmp = new ArrayList<String>();
+		for (String t : result) {
+			if (!tmp.contains(t)) {
+				tmp.add(t);
+			}
+		}
+		return tmp.toArray(result);
+	}
 
 	/**
 	 * 将给定的文本中的汉字转换为拼音。
