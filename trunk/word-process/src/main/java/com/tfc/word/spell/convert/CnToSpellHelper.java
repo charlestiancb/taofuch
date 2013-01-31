@@ -5,7 +5,7 @@ package com.tfc.word.spell.convert;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,7 +44,7 @@ public class CnToSpellHelper {
 		if (arr1.length == 1 && arr2.length == 1) {
 			return new String[] { arr1[0] + arr2[0] };
 		}
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new LinkedHashSet<String>();
 		for (String t1 : arr1) {
 			for (String t2 : arr2) {
 				result.add(t1 + t2);
