@@ -55,7 +55,11 @@ public class ArrayFormatData extends AbstractFormatData {
 	}
 
 	public int getInt(int index) {
-		return (Integer) get(index, Integer.class);
+		try {
+			return (Integer) get(index, Integer.class);
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 	public String getString(int index) {
@@ -63,11 +67,19 @@ public class ArrayFormatData extends AbstractFormatData {
 	}
 
 	public float getFloat(int index) {
-		return (Float) get(index, Float.class);
+		try {
+			return (Float) get(index, Float.class);
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 	public double getDouble(int index) {
-		return (Double) get(index, Double.class);
+		try {
+			return (Double) get(index, Double.class);
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 	private String genarateKey(int index) {

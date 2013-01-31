@@ -26,15 +26,27 @@ public class KeyValueFormatData extends AbstractFormatData {
 	}
 
 	public int getInt(Object key) {
-		return (Integer) get(key, Integer.class);
+		try {
+			return (Integer) get(key, Integer.class);
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 	public float getFloat(Object key) {
-		return (Float) get(key, Float.class);
+		try {
+			return (Float) get(key, Float.class);
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 	public double getDouble(Object key) {
-		return (Double) get(key, Double.class);
+		try {
+			return (Double) get(key, Double.class);
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 	public Object get(Object key, Class<?> targetElementClass) {

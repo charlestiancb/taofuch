@@ -17,7 +17,11 @@ public class AbstractFormatData {
 			} else if (value.startsWith("[") && value.endsWith("]")) {
 				return JSON.parseArray(value, targetElementClass);
 			} else {
-				return value;
+				try {
+					return JSON.parseObject(value, targetElementClass);
+				} catch (Exception e) {
+					return value;
+				}
 			}
 		}
 		return null;

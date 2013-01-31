@@ -36,11 +36,19 @@ public class ThreeDimensionalData extends AbstractFormatData {
 	}
 
 	public Integer getInt(int x, int y, int z) {
-		return (Integer) get(x, y, z, Integer.class);
+		try {
+			return (Integer) get(x, y, z, Integer.class);
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 	public Double getDouble(int x, int y, int z) {
-		return (Double) get(x, y, z, Double.class);
+		try {
+			return (Double) get(x, y, z, Double.class);
+		} catch (Exception e) {
+			return 0.0;
+		}
 	}
 
 	private String genarateKey(int x, int y, int z) {
