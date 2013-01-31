@@ -11,19 +11,18 @@ import java.util.LinkedHashMap;
  * @author taofucheng
  */
 public class SingleCnSpellDic {
-    private static LinkedHashMap<String, String> spellMap = null;
+	private static LinkedHashMap<String, String> spellMap = null;
 
-    private SingleCnSpellDic() {
-    }
+	private SingleCnSpellDic() {
+	}
 
-    public static LinkedHashMap<String, String> spellMap() {
-        if (spellMap == null) {
-            spellMap =
-                    FileDicLoader.loadToMap("classpath:/com/focustech/abiz/search/spell/dic/char_spell.dic", "UTF-8");
-            if (spellMap == null) {
-                spellMap = new LinkedHashMap<String, String>(20901);
-            }
-        }
-        return spellMap;
-    }
+	public static LinkedHashMap<String, String> spellMap() {
+		if (spellMap == null) {
+			spellMap = FileDicLoader.loadToMap("classpath:classpath:/com/tfc/word/spell/dic/char_spell.dic", "UTF-8");
+			if (spellMap == null) {
+				spellMap = new LinkedHashMap<String, String>(20901);
+			}
+		}
+		return spellMap;
+	}
 }
