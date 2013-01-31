@@ -2,6 +2,7 @@ package com.tfc.data.access.entity;
 
 import java.text.DecimalFormat;
 
+import com.alibaba.fastjson.JSON;
 import com.tfc.data.access.LuceneDataAccess;
 
 /**
@@ -10,7 +11,7 @@ import com.tfc.data.access.LuceneDataAccess;
  * @author taofucheng
  * 
  */
-public class FlatFormatData {
+public class FlatFormatData extends AbstractFormatData {
 	private static DecimalFormat df = new DecimalFormat("0.000");
 	private String instanceName;
 	private int xLen = 0;
@@ -53,7 +54,7 @@ public class FlatFormatData {
 			// 将小数点保留到后三位即可！
 			value = df.format(value);
 		}
-		LuceneDataAccess.save(instanceName + "_" + x + "_" + y, String.valueOf(value));
+		LuceneDataAccess.save(genarateKey(x, y), JSON.toJSONString(value));
 	}
 
 	/**
@@ -66,7 +67,16 @@ public class FlatFormatData {
 	 * @return
 	 */
 	public String fetch(int x, int y) {
-		return LuceneDataAccess.findValueByKey(instanceName + "_" + x + "_" + y);
+		return (String) get(x, y, String.class);
+	}
+
+	public Object get(int x, int y, Class<?> targetElementClass) {
+		String value = LuceneDataAccess.findValueByKey(genarateKey(x, y));
+		return parseToObject(targetElementClass, value);
+	}
+
+	private String genarateKey(int x, int y) {
+		return instanceName + "_" + x + "_" + y;
 	}
 
 	/**
