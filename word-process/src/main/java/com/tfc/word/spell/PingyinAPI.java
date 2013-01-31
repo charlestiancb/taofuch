@@ -44,7 +44,7 @@ public class PingyinAPI {
 	 */
 	public static String[] toFirstLetter(String cnText) {
 		if (StringUtils.isBlank(cnText)) {
-			return new String[] { cnText };
+			return new String[] {};
 		}
 		String[] result = new String[] {};
 		while (cnText.length() > 0) {
