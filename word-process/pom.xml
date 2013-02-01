@@ -53,7 +53,7 @@
 							org.apache.commons.io*,
 							org.apache.commons.lang*
 						</Import-Package>
-						<Implementation-Title>￥{project.artifactId}</Implementation-Title>
+						<Implementation-Title>${project.artifactId}</Implementation-Title>
 						<Implementation-Version>${project.version}</Implementation-Version>
 					</instructions>
 				</configuration>
