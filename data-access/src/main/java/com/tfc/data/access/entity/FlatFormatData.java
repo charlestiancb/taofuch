@@ -133,6 +133,11 @@ public class FlatFormatData extends AbstractFormatData {
 		return yLen;
 	}
 
+	/**
+	 * 相当于s.length，其中，s=new int[x][y]
+	 * 
+	 * @return
+	 */
 	public int length() {
 		return getxLen();
 	}
