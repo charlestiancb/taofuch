@@ -56,21 +56,30 @@ public class ThreeDimensionalData extends AbstractFormatData {
 	}
 
 	/**
-	 * 相当于int[i][j][k]数组的int[i].length.
+	 * 相当于s[i][j].length，其中，s=new int[x][y][z]
 	 * 
 	 * @return
 	 */
-	public int getXlen() {
-		return xLen;
+	public int getZlen() {
+		return zLen;
 	}
 
 	/**
-	 * 相当于int[i][j][k]数组的int[i][j].length.
+	 * 相当于s[i].length，其中，s=new int[x][y][z]
 	 * 
 	 * @return
 	 */
 	public int getYlen() {
 		return yLen;
+	}
+
+	/**
+	 * 相当于s.length，其中，s=new int[x][y][z]
+	 * 
+	 * @return
+	 */
+	public int length() {
+		return xLen;
 	}
 
 	/**
@@ -89,5 +98,23 @@ public class ThreeDimensionalData extends AbstractFormatData {
 		ArrayFormatData arr = new ArrayFormatData(instanceName, zLen);
 		arr.setInstanceName(instanceName + "_" + x + "_" + y);
 		return arr;
+	}
+
+	public static void main(String[] args) {
+		String[][][] x = new String[2][3][4];
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 3; j++) {
+				for (int k = 0; k < 4; k++) {
+					x[i][j][k] = i + "_" + j + "_" + k;
+				}
+			}
+		}
+		System.out.println(x.length);// 结果2
+		System.out.println(x[1].length);// 结果3
+		System.out.println(x[1][2].length);// 结果4
+		System.out.println(JSON.toJSONString(x[1]));
+		// 上面结果：[["1_0_0","1_0_1","1_0_2","1_0_3"],["1_1_0","1_1_1","1_1_2","1_1_3"],["1_2_0","1_2_1","1_2_2","1_2_3"]]
+		System.out.println(JSON.toJSONString(x[1][2]));
+		// 上面结果：["1_2_0","1_2_1","1_2_2","1_2_3"]
 	}
 }
