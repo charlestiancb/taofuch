@@ -115,15 +115,31 @@ public class FlatFormatData extends AbstractFormatData {
 		}
 	}
 
+	/**
+	 * 相当于s.length，其中，s=new int[x][y]
+	 * 
+	 * @return
+	 */
 	public int getxLen() {
 		return xLen;
 	}
 
+	/**
+	 * 相当于s[i].length，其中，s=new int[x][y]
+	 * 
+	 * @return
+	 */
 	public int getyLen() {
 		return yLen;
 	}
 
 	public int length() {
-		return getyLen();
+		return getxLen();
+	}
+
+	public static void main(String[] args) {
+		int[][] x = new int[2][3];
+		System.out.println(x.length);// 结果2
+		System.out.println(x[1].length);// 结果3
 	}
 }
