@@ -86,6 +86,11 @@ public class ArrayFormatData extends AbstractFormatData {
 		return prefix + "_" + instanceName + "_" + index;
 	}
 
+	/**
+	 * 相当于s.length，其中，s=new int[len];
+	 * 
+	 * @return
+	 */
 	public int length() {
 		return len;
 	}
