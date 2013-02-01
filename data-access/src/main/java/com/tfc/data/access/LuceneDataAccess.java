@@ -94,7 +94,7 @@ public class LuceneDataAccess {
 			org.apache.lucene.document.Document doc = new org.apache.lucene.document.Document();
 			doc.add(new Field(KEY, key, Store.YES, Index.NOT_ANALYZED));
 			doc.add(new Field(VALUE, value, Store.YES, Index.NOT_ANALYZED));
-			System.err.println("存储：" + key + "=" + value);
+			// System.err.println("存储：" + key + "=" + value);
 			iw.addDocument(doc);
 		} catch (IOException e) {
 			e.printStackTrace();
