@@ -1,10 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.tfc</groupId>
-  <artifactId>word-process</artifactId>
-  <version>1.0.0</version>
-  <description>文字处理，如词干提取、拼音汉字互转等</description>
-  <dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.tfc</groupId>
+	<artifactId>word-process</artifactId>
+	<version>1.0.0</version>
+	<description>文字处理，如词干提取、拼音汉字互转等</description>
+	<dependencies>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
@@ -58,6 +59,49 @@
 					</instructions>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.0.4</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<source>1.6</source>
+					<target>1.6</target>
+					<debug>true</debug>
+					<optimize>true</optimize>
+					<showDeprecations>true</showDeprecations>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-source</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
+	<repositories>
+		<repository>
+			<id>repo</id>
+			<name>default repo</name>
+			<url>http://repo1.maven.org/maven2/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>opensesame</id>
+			<name>Alibaba OpenSource Repsoitory</name>
+			<url>http://code.alibabatech.com/mvn/releases/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>taofucheng</id>
+			<url>https://taofuch.googlecode.com/svn/trunk/extra-jar/</url>
+		</repository>
+	</repositories>
 </project>
