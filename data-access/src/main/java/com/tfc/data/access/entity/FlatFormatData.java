@@ -1,7 +1,5 @@
 package com.tfc.data.access.entity;
 
-import java.text.DecimalFormat;
-
 import com.alibaba.fastjson.JSON;
 import com.tfc.data.access.LuceneDataAccess;
 
@@ -12,7 +10,6 @@ import com.tfc.data.access.LuceneDataAccess;
  * 
  */
 public class FlatFormatData extends AbstractFormatData {
-	private static DecimalFormat df = new DecimalFormat("0.000");
 	private String instanceName;
 	private int xLen = 0;
 	private int yLen = 0;
@@ -50,10 +47,6 @@ public class FlatFormatData extends AbstractFormatData {
 	 * @param value
 	 */
 	public void save(int x, int y, Object value) {
-		if (value instanceof Double) {
-			// 将小数点保留到后三位即可！
-			value = df.format(value);
-		}
 		LuceneDataAccess.save(genarateKey(x, y), JSON.toJSONString(value));
 	}
 
@@ -66,7 +59,7 @@ public class FlatFormatData extends AbstractFormatData {
 	 *            纵坐标，从0开始计数
 	 * @return
 	 */
-	public String fetch(int x, int y) {
+	public String getString(int x, int y) {
 		return (String) get(x, y, String.class);
 	}
 
@@ -89,7 +82,7 @@ public class FlatFormatData extends AbstractFormatData {
 	 * @return
 	 */
 	public double getDouble(int x, int y) {
-		String r = fetch(x, y);
+		String r = getString(x, y);
 		if (r == null || r.trim().isEmpty()) {
 			return 0.0;
 		} else {
@@ -107,7 +100,7 @@ public class FlatFormatData extends AbstractFormatData {
 	 * @return
 	 */
 	public int getInt(int x, int y) {
-		String r = fetch(x, y);
+		String r = getString(x, y);
 		if (r == null || r.trim().isEmpty()) {
 			return 0;
 		} else {
