@@ -46,15 +46,42 @@ public class PingyinAPI {
 		if (StringUtils.isBlank(cnText)) {
 			return new String[] {};
 		}
+		String[] py = toPingyin(cnText);
 		String[] result = new String[] {};
-		while (cnText.length() > 0) {
-			String ch = cnText.substring(0, 1);
-			cnText = cnText.substring(1);
-			String[] tmp = SingleCnToSpell.getFullSpell(ch).split(",");
-			for (int i = 0; i < tmp.length; i++) {
-				tmp[i] = tmp[i].substring(0, 1);// 取首字母
+		if (py != null && py.length > 1) {
+			// 先取正常拼音，如果结果有多个，则使用单字实现。
+			while (cnText.length() > 0) {
+				String ch = cnText.substring(0, 1);
+				cnText = cnText.substring(1);
+				String[] tmp = SingleCnToSpell.getFullSpell(ch).split(",");
+				for (int i = 0; i < tmp.length; i++) {
+					tmp[i] = tmp[i].substring(0, 1);// 取首字母
+				}
+				result = CnToSpellHelper.interbreed(result, tmp);
 			}
-			result = CnToSpellHelper.interbreed(result, tmp);
+		} else {
+			// 如果只有一个，则将这个结果进行首字母处理
+			while (cnText.length() > 0) {
+				String ch = cnText.substring(0, 1);
+				cnText = cnText.substring(1);
+				String[] tmp = SingleCnToSpell.getFullSpell(ch).split(",");
+				for (int i = 0; i < tmp.length; i++) {
+					tmp[i] = " " + tmp[i];// 每个字的拼音之间使用空格区分
+				}
+				result = CnToSpellHelper.interbreed(result, tmp);
+			}
+			// 判断哪个拼音才是与结果的拼音接近
+			for (String p : result) {
+				if (p.replaceAll(" ", "").equals(py[0])) {
+					StringBuffer sb = new StringBuffer("");
+					for (String s : p.split(" ")) {
+						if (StringUtils.isNotBlank(s)) {
+							sb.append(s.substring(0, 1));
+						}
+					}
+					return new String[] { sb.toString() };
+				}
+			}
 		}
 		// 去除重复
 		List<String> tmp = new ArrayList<String>();
