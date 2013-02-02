@@ -30,6 +30,7 @@ public class LuceneDataAccess {
 	private static IndexWriter iw;
 	private static IndexSearcher is;
 
+	private static final String ID = "id";
 	private static final String KEY = "key";
 	private static final String VALUE = "value";
 	/** 临时存储lucene文件的目录 */
@@ -85,21 +86,34 @@ public class LuceneDataAccess {
 	 * @param key
 	 * @param value
 	 */
-	public static void save(String key, String value) {
+	public static boolean save(String id, String key, String value) {
 		try {
 			init();
 			if (iw == null) {
 				iw = new IndexWriter(mmapDir, new IndexWriterConfig(Version.LUCENE_36, null));
 			}
 			org.apache.lucene.document.Document doc = new org.apache.lucene.document.Document();
+			doc.add(new Field(ID, id, Store.YES, Index.NOT_ANALYZED));
 			doc.add(new Field(KEY, key, Store.YES, Index.NOT_ANALYZED));
 			doc.add(new Field(VALUE, value, Store.YES, Index.NOT_ANALYZED));
 			// System.err.println("存储：" + key + "=" + value);
-			iw.addDocument(doc);
+			iw.updateDocument(new Term(KEY, key), doc);
 			releaseIw();
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
+		return true;
+	}
+
+	/**
+	 * 保存键值对的数据
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public static boolean save(String key, String value) {
+		return save("0", key, value);
 	}
 
 	public static String findValueByKey(String key) {
@@ -151,6 +165,55 @@ public class LuceneDataAccess {
 		return null;
 	}
 
+	public static String findKeyById(String id) {
+		try {
+			initSearch();
+			Term t = new Term(ID, id);
+			TermQuery query = new TermQuery(t);
+			query.setBoost(1);
+			TopDocs hits = is.search(query, 1);
+			if (hits.totalHits > 0) {
+				int docId = hits.scoreDocs[0].doc;
+				org.apache.lucene.document.Document doc = is.doc(docId);
+				String ret = doc.get(KEY);
+				// System.err.println("根据id读取：" + id + "=" + ret);
+				return ret;
+			}
+		} catch (Exception e) {
+		} finally {
+			try {
+				releaseIs();
+			} catch (IOException e) {
+			}
+		}
+		return null;
+	}
+
+	public static String findValueById(String id) {
+		try {
+			initSearch();
+			Term t = new Term(ID, id);
+			TermQuery query = new TermQuery(t);
+			query.setBoost(1);
+			TopDocs hits = is.search(query, 1);
+			if (hits.totalHits > 0) {
+				int docId = hits.scoreDocs[0].doc;
+				org.apache.lucene.document.Document doc = is.doc(docId);
+				String ret = doc.get(VALUE);
+				// System.err.println("根据id读取：" + id + "=" + ret);
+				return ret;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				releaseIs();
+			} catch (IOException e) {
+			}
+		}
+		return null;
+	}
+
 	private static void releaseIs() throws IOException {
 		is.close();
 		is = null;
@@ -162,5 +225,10 @@ public class LuceneDataAccess {
 		if (is == null) {
 			is = new IndexSearcher(IndexReader.open(mmapDir));
 		}
+	}
+
+	public static void main(String[] args) {
+		save("", "hehehehe", "hahahahaha");
+		System.out.println(findValueByKey("hehehehe"));
 	}
 }
