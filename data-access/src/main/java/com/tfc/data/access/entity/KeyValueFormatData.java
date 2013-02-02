@@ -1,5 +1,8 @@
 package com.tfc.data.access.entity;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import com.alibaba.fastjson.JSON;
 import com.tfc.data.access.LuceneDataAccess;
 
@@ -9,60 +12,39 @@ import com.tfc.data.access.LuceneDataAccess;
  * @author taofucheng
  * 
  */
-public class KeyValueFormatData extends AbstractFormatData {
+public class KeyValueFormatData<K, V> extends AbstractFormatData {
 	private static final String prefix = "map";
 	private String instanceName = "";
-	private long size = 0;
-	private Object lock = new Object();
+	private Set<Entry<K, V>> entries = new LinkedHashSet<Entry<K, V>>();
+	private Class<?> valueClass = null;
 
 	public KeyValueFormatData(String instanceName) {
 		this.instanceName = instanceName + System.nanoTime();
 	}
 
-	public void put(Object key, Object value) {
-		boolean ret = LuceneDataAccess.save(genarateKey(size), genarateKey(key), JSON.toJSONString(value));
+	public void put(K key, V value) {
+		if (valueClass == null && value != null) {
+			valueClass = value.getClass();
+		}
+		boolean ret = LuceneDataAccess.save(genarateKey(key), JSON.toJSONString(value));
 		if (ret) {
-			synchronized (lock) {
-				size++;
+			synchronized (entries) {
+				entries.add(new Entry<K, V>(this, key));
 			}
 		}
 	}
 
 	public long size() {
-		return size;
+		return entries.size();
 	}
 
-	public String getString(Object key) {
-		return (String) get(key, String.class);
-	}
-
-	public int getInt(Object key) {
-		try {
-			return (Integer) get(key, Integer.class);
-		} catch (Exception e) {
-			return 0;
+	@SuppressWarnings("unchecked")
+	public V getValue(Object key) {
+		if (valueClass == null) {
+			return null;
 		}
-	}
-
-	public float getFloat(Object key) {
-		try {
-			return (Float) get(key, Float.class);
-		} catch (Exception e) {
-			return 0;
-		}
-	}
-
-	public double getDouble(Object key) {
-		try {
-			return (Double) get(key, Double.class);
-		} catch (Exception e) {
-			return 0;
-		}
-	}
-
-	public Object get(Object key, Class<?> targetElementClass) {
 		String value = LuceneDataAccess.findValueByKey(genarateKey(key));
-		return parseToObject(targetElementClass, value);
+		return (V) parseToObject(valueClass, value);
 	}
 
 	private String genarateKey(Object key) {
@@ -71,5 +53,27 @@ public class KeyValueFormatData extends AbstractFormatData {
 
 	public boolean containsKey(Object key) {
 		return LuceneDataAccess.findValueByKey(genarateKey(key)) != null;
+	}
+
+	public static class Entry<K, V> {
+		private KeyValueFormatData<K, V> instance;
+		private K key;
+
+		public Entry(KeyValueFormatData<K, V> instance, K perKey) {
+			this.key = perKey;
+			this.instance = instance;
+		}
+
+		public K getKey() {
+			return this.key;
+		}
+
+		public V getValue() {
+			return (V) instance.getValue(key);
+		}
+	}
+
+	public Set<Entry<K, V>> entrySet() {
+		return this.entries;
 	}
 }

@@ -9,10 +9,11 @@ import com.tfc.data.access.LuceneDataAccess;
  * @author taofucheng
  * 
  */
-public class ArrayFormatData extends AbstractFormatData {
+public class ArrayFormatData<T> extends AbstractFormatData {
 	private static final String prefix = "array";
 	private String instanceName;
 	private int len;
+	private Class<?> instanceClass;
 
 	/**
 	 * 类似这样的定义：new int[2]
@@ -35,7 +36,7 @@ public class ArrayFormatData extends AbstractFormatData {
 	 * @param instanceName
 	 * @param elements
 	 */
-	public ArrayFormatData(String instanceName, Object... elements) {
+	public ArrayFormatData(String instanceName, T... elements) {
 		this.instanceName = instanceName;
 		this.len = elements == null ? 0 : elements.length;
 		if (this.len > 0) {
@@ -45,41 +46,20 @@ public class ArrayFormatData extends AbstractFormatData {
 		}
 	}
 
-	public void save(int index, Object object) {
+	public void save(int index, T object) {
+		if (instanceClass == null && object != null) {
+			instanceClass = object.getClass();
+		}
 		LuceneDataAccess.save(genarateKey(index), JSON.toJSONString(object));
 	}
 
-	public Object get(int index, Class<?> targetElementClass) {
+	@SuppressWarnings("unchecked")
+	public T getValue(int index) {
+		if (instanceClass == null) {
+			return null;
+		}
 		String value = LuceneDataAccess.findValueByKey(genarateKey(index));
-		return parseToObject(targetElementClass, value);
-	}
-
-	public int getInt(int index) {
-		try {
-			return (Integer) get(index, Integer.class);
-		} catch (Exception e) {
-			return 0;
-		}
-	}
-
-	public String getString(int index) {
-		return (String) get(index, String.class);
-	}
-
-	public float getFloat(int index) {
-		try {
-			return (Float) get(index, Float.class);
-		} catch (Exception e) {
-			return 0;
-		}
-	}
-
-	public double getDouble(int index) {
-		try {
-			return (Double) get(index, Double.class);
-		} catch (Exception e) {
-			return 0;
-		}
+		return (T) parseToObject(instanceClass, value);
 	}
 
 	private String genarateKey(int index) {

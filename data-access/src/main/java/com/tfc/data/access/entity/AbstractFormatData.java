@@ -24,6 +24,9 @@ public class AbstractFormatData {
 				}
 			}
 		}
+		if (targetElementClass != null && Number.class.isAssignableFrom(targetElementClass)) {
+			return 0;
+		}
 		return null;
 	}
 

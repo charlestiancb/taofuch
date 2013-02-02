@@ -9,10 +9,11 @@ import com.tfc.data.access.LuceneDataAccess;
  * @author taofucheng
  * 
  */
-public class FlatFormatData extends AbstractFormatData {
+public class FlatFormatData<T> extends AbstractFormatData {
 	private String instanceName;
 	private int xLen = 0;
 	private int yLen = 0;
+	private Class<?> instanceClass;
 
 	/**
 	 * 定义一个矩阵结构
@@ -46,66 +47,24 @@ public class FlatFormatData extends AbstractFormatData {
 	 *            纵坐标，从0开始计数
 	 * @param value
 	 */
-	public void save(int x, int y, Object value) {
+	public void save(int x, int y, T value) {
+		if (instanceClass == null && value != null) {
+			instanceClass = value.getClass();
+		}
 		LuceneDataAccess.save(genarateKey(x, y), JSON.toJSONString(value));
 	}
 
-	/**
-	 * 获取指定平面上具体的点上的数据
-	 * 
-	 * @param x
-	 *            横坐标，从0开始计数
-	 * @param y
-	 *            纵坐标，从0开始计数
-	 * @return
-	 */
-	public String getString(int x, int y) {
-		return (String) get(x, y, String.class);
-	}
-
-	public Object get(int x, int y, Class<?> targetElementClass) {
+	@SuppressWarnings("unchecked")
+	public T getValue(int x, int y) {
+		if (instanceClass == null) {
+			return null;
+		}
 		String value = LuceneDataAccess.findValueByKey(genarateKey(x, y));
-		return parseToObject(targetElementClass, value);
+		return (T) parseToObject(instanceClass, value);
 	}
 
 	private String genarateKey(int x, int y) {
 		return instanceName + "_" + x + "_" + y;
-	}
-
-	/**
-	 * 获取指定坐标上的double类型的返回值
-	 * 
-	 * @param x
-	 *            横坐标，从0开始计数
-	 * @param y
-	 *            纵坐标，从0开始计数
-	 * @return
-	 */
-	public double getDouble(int x, int y) {
-		String r = getString(x, y);
-		if (r == null || r.trim().isEmpty()) {
-			return 0.0;
-		} else {
-			return Double.parseDouble(r);
-		}
-	}
-
-	/**
-	 * 获取指定坐标上的int类型的返回值
-	 * 
-	 * @param x
-	 *            横坐标，从0开始计数
-	 * @param y
-	 *            纵坐标，从0开始计数
-	 * @return
-	 */
-	public int getInt(int x, int y) {
-		String r = getString(x, y);
-		if (r == null || r.trim().isEmpty()) {
-			return 0;
-		} else {
-			return Integer.parseInt(r);
-		}
 	}
 
 	/**
