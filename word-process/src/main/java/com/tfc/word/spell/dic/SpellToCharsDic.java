@@ -19,13 +19,6 @@ public class SpellToCharsDic {
 	/** 拼音对应的字或词，如果一个词对应有多个拼音，则用“,”隔开。词的每个字转换为123-110这样的方式 */
 	private static Map<String, Map> spellTree = null;
 
-	static {
-		if (spellTree == null) {
-			spellTree = new HashMap<String, Map>();
-			initialize();
-		}
-	}
-
 	private SpellToCharsDic() {
 	}
 
@@ -35,6 +28,10 @@ public class SpellToCharsDic {
 	 * @return
 	 */
 	public static Map<String, Map> spellTree() {
+		if (spellTree == null) {
+			spellTree = new HashMap<String, Map>();
+			initialize();
+		}
 		return spellTree;
 	}
 
