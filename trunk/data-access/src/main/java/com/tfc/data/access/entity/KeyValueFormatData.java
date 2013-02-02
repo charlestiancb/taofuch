@@ -26,7 +26,12 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 		if (valueClass == null && value != null) {
 			valueClass = value.getClass();
 		}
-		boolean ret = LuceneDataAccess.save(genarateKey(key), JSON.toJSONString(value));
+		String store = JSON.toJSONString(value);
+		if (Number.class.isAssignableFrom(valueClass) && "NaN".equals(String.valueOf(value))) {
+			// 如果是数字，则使用String的方式存储
+			store = "NaN";
+		}
+		boolean ret = LuceneDataAccess.save(genarateKey(key), store);
 		if (ret) {
 			synchronized (entries) {
 				entries.add(new Entry<K, V>(this, key));
@@ -44,6 +49,13 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 			return null;
 		}
 		String value = LuceneDataAccess.findValueByKey(genarateKey(key));
+		if ("NaN".equals(value)) {
+			if (Double.class.isAssignableFrom(valueClass)) {
+				return (V) new Double("NaN");
+			} else if (Float.class.isAssignableFrom(valueClass)) {
+				return (V) new Float("NaN");
+			}
+		}
 		return (V) parseToObject(valueClass, value);
 	}
 
