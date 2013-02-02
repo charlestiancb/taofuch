@@ -12,7 +12,6 @@ public class FlatFormatData<T> extends AbstractFormatData {
 	private String instanceName;
 	private int xLen = 0;
 	private int yLen = 0;
-	private Class<?> instanceClass;
 
 	/**
 	 * 定义一个矩阵结构
@@ -47,8 +46,8 @@ public class FlatFormatData<T> extends AbstractFormatData {
 	 * @param value
 	 */
 	public void save(int x, int y, T value) {
-		if (instanceClass == null && value != null) {
-			instanceClass = value.getClass();
+		if (valueClass == null && value != null) {
+			valueClass = value.getClass();
 		}
 		String store = getStoreValue(value);
 		RepositoryFactory.save(genarateKey(x, y), store);
@@ -56,7 +55,7 @@ public class FlatFormatData<T> extends AbstractFormatData {
 
 	@SuppressWarnings("unchecked")
 	public T getValue(int x, int y) {
-		if (instanceClass == null) {
+		if (valueClass == null) {
 			return null;
 		}
 		String value = RepositoryFactory.findValueByKey(genarateKey(x, y));
@@ -67,7 +66,7 @@ public class FlatFormatData<T> extends AbstractFormatData {
 				return (T) new Float("NaN");
 			}
 		}
-		return (T) parseToObject(instanceClass, value);
+		return (T) parseToObject(valueClass, value);
 	}
 
 	private String genarateKey(int x, int y) {

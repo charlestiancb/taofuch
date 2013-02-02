@@ -12,7 +12,6 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 	private static final String prefix = "array";
 	private String instanceName;
 	private int len;
-	private Class<?> instanceClass;
 
 	/**
 	 * 类似这样的定义：new int[2]
@@ -46,8 +45,8 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 	}
 
 	public void save(int index, T object) {
-		if (instanceClass == null && object != null) {
-			instanceClass = object.getClass();
+		if (valueClass == null && object != null) {
+			valueClass = object.getClass();
 		}
 		String store = getStoreValue(object);
 		RepositoryFactory.save(genarateKey(index), store);
@@ -55,7 +54,7 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 
 	@SuppressWarnings("unchecked")
 	public T getValue(int index) {
-		if (instanceClass == null) {
+		if (valueClass == null) {
 			return null;
 		}
 		String value = RepositoryFactory.findValueByKey(genarateKey(index));
@@ -66,7 +65,7 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 				return (T) new Float("NaN");
 			}
 		}
-		return (T) parseToObject(instanceClass, value);
+		return (T) parseToObject(valueClass, value);
 	}
 
 	private String genarateKey(int index) {

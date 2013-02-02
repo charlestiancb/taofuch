@@ -13,7 +13,7 @@ public class AbstractFormatData {
 
 	protected String getStoreValue(Object value) {
 		String store = JSON.toJSONString(value);
-		if (Number.class.isAssignableFrom(valueClass) && "NaN".equals(String.valueOf(value))) {
+		if (valueClass != null && Number.class.isAssignableFrom(valueClass) && "NaN".equals(String.valueOf(value))) {
 			// 如果是数字，则使用String的方式存储
 			store = "NaN";
 		}
