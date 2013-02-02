@@ -83,7 +83,7 @@ public class FileDicLoader {
 					if (ls.length == 1) {
 						map.put(key, "");
 					} else {
-						map.put(key, ls[1]);
+						map.put(key, StringUtils.trim(ls[1]));
 					}
 				}
 			}
