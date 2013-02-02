@@ -85,12 +85,12 @@ public class ThreeDimensionalData extends AbstractFormatData {
 	/**
 	 * 获取二维数据。
 	 * 
-	 * @param index
+	 * @param x
 	 * @return
 	 */
-	public FlatFormatData getFlatData(int index) {
+	public FlatFormatData getFlatData(int x) {
 		FlatFormatData flat = new FlatFormatData(instanceName, yLen, zLen);
-		flat.setInstanceName(instanceName + "_" + index);
+		flat.setInstanceName(instanceName + "_" + x);
 		return flat;
 	}
 
