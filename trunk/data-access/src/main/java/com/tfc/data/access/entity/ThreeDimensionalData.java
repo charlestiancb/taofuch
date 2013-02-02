@@ -16,7 +16,7 @@ public class ThreeDimensionalData<T> extends AbstractFormatData {
 	private int zLen = 0;
 
 	public ThreeDimensionalData(String instanceName, int xLen, int yLen, int zLen) {
-		this.instanceName = instanceName + System.nanoTime();
+		this.instanceName = instanceName + System.nanoTime() + random();
 		this.xLen = xLen;
 		this.yLen = yLen;
 		this.zLen = zLen;

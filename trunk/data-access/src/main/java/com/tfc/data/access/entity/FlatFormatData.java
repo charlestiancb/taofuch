@@ -27,7 +27,7 @@ public class FlatFormatData<T> extends AbstractFormatData {
 		if (instanceName == null) {
 			throw new IllegalArgumentException("请指定二维数组的实例名！");
 		}
-		this.instanceName = instanceName + System.nanoTime();
+		this.instanceName = instanceName + System.nanoTime() + random();
 		this.xLen = xLen;
 		this.yLen = yLen;
 	}

@@ -20,7 +20,7 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 	 * @param len
 	 */
 	public ArrayFormatData(String instanceName, int len) {
-		this.instanceName = instanceName + System.nanoTime();
+		this.instanceName = instanceName + System.nanoTime() + random();
 		this.len = len;
 	}
 
