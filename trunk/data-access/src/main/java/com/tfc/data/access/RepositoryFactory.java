@@ -1,6 +1,5 @@
 package com.tfc.data.access;
 
-
 /**
  * 使用Lucence存取数据。
  * 
@@ -8,7 +7,8 @@ package com.tfc.data.access;
  * 
  */
 public class RepositoryFactory {
-	private static Repository repo = new LuceneRepository();
+	// new LuceneRepository();
+	private static Repository repo = new EhcacheRepository();
 
 	private RepositoryFactory() {
 	}
@@ -19,18 +19,8 @@ public class RepositoryFactory {
 	 * @param key
 	 * @param value
 	 */
-	public static boolean save(String id, String key, String value) {
-		return repo.save(id, key, value);
-	}
-
-	/**
-	 * 保存键值对的数据
-	 * 
-	 * @param key
-	 * @param value
-	 */
 	public static boolean save(String key, String value) {
-		return save("0", key, value);
+		return repo.save(key, value);
 	}
 
 	public static String findValueByKey(String key) {
@@ -42,15 +32,15 @@ public class RepositoryFactory {
 	}
 
 	public static String findKeyById(String id) {
-		return findKeyById(id);
+		return repo.findKeyById(id);
 	}
 
 	public static String findValueById(String id) {
-		return findValueById(id);
+		return repo.findValueById(id);
 	}
 
 	public static void main(String[] args) {
-		save("", "hehehehe", "hahahahaha");
+		save("hehehehe", "hahahahaha");
 		System.out.println(findValueByKey("hehehehe"));
 	}
 }
