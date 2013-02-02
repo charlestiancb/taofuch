@@ -96,6 +96,7 @@ public class LuceneDataAccess {
 			doc.add(new Field(VALUE, value, Store.YES, Index.NOT_ANALYZED));
 			// System.err.println("存储：" + key + "=" + value);
 			iw.addDocument(doc);
+			releaseIw();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -111,11 +112,17 @@ public class LuceneDataAccess {
 			if (hits.totalHits > 0) {
 				int docId = hits.scoreDocs[0].doc;
 				org.apache.lucene.document.Document doc = is.doc(docId);
-				return doc.get(VALUE);
+				String ret = doc.get(VALUE);
+				// System.err.println("根据key读取：" + key + "=" + ret);
+				return ret;
 			}
-			releaseIs();
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				releaseIs();
+			} catch (IOException e) {
+			}
 		}
 		return null;
 	}
@@ -130,10 +137,16 @@ public class LuceneDataAccess {
 			if (hits.totalHits > 0) {
 				int docId = hits.scoreDocs[0].doc;
 				org.apache.lucene.document.Document doc = is.doc(docId);
-				return doc.get(KEY);
+				String ret = doc.get(KEY);
+				// System.err.println("根据value读取：" + ret + "=" + value);
+				return ret;
 			}
-			releaseIs();
 		} catch (Exception e) {
+		} finally {
+			try {
+				releaseIs();
+			} catch (IOException e) {
+			}
 		}
 		return null;
 	}
@@ -144,7 +157,7 @@ public class LuceneDataAccess {
 	}
 
 	private static void initSearch() throws CorruptIndexException, IOException {
-		releaseIw();
+		// releaseIw();
 		init();
 		if (is == null) {
 			is = new IndexSearcher(IndexReader.open(mmapDir));
