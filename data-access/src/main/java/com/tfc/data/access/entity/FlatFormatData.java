@@ -1,6 +1,6 @@
 package com.tfc.data.access.entity;
 
-import com.tfc.data.access.LuceneDataAccess;
+import com.tfc.data.access.RepositoryFactory;
 
 /**
  * 二维结构的数据格式。如：int[i][j]
@@ -51,7 +51,7 @@ public class FlatFormatData<T> extends AbstractFormatData {
 			instanceClass = value.getClass();
 		}
 		String store = getStoreValue(value);
-		LuceneDataAccess.save(genarateKey(x, y), store);
+		RepositoryFactory.save(genarateKey(x, y), store);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -59,7 +59,7 @@ public class FlatFormatData<T> extends AbstractFormatData {
 		if (instanceClass == null) {
 			return null;
 		}
-		String value = LuceneDataAccess.findValueByKey(genarateKey(x, y));
+		String value = RepositoryFactory.findValueByKey(genarateKey(x, y));
 		if ("NaN".equals(value)) {
 			if (Double.class.isAssignableFrom(valueClass)) {
 				return (T) new Double("NaN");
