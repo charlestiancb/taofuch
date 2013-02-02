@@ -4,7 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
-import com.tfc.data.access.LuceneDataAccess;
+import com.tfc.data.access.RepositoryFactory;
 
 /**
  * 键值对结构的格式。如Map类型。
@@ -26,7 +26,7 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 			valueClass = value.getClass();
 		}
 		String store = getStoreValue(value);
-		boolean ret = LuceneDataAccess.save(genarateKey(key), store);
+		boolean ret = RepositoryFactory.save(genarateKey(key), store);
 		if (ret) {
 			synchronized (entries) {
 				entries.add(new Entry<K, V>(this, key));
@@ -43,7 +43,7 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 		if (valueClass == null) {
 			return null;
 		}
-		String value = LuceneDataAccess.findValueByKey(genarateKey(key));
+		String value = RepositoryFactory.findValueByKey(genarateKey(key));
 		if ("NaN".equals(value)) {
 			if (Double.class.isAssignableFrom(valueClass)) {
 				return (V) new Double("NaN");
@@ -59,7 +59,7 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 	}
 
 	public boolean containsKey(Object key) {
-		return LuceneDataAccess.findValueByKey(genarateKey(key)) != null;
+		return RepositoryFactory.findValueByKey(genarateKey(key)) != null;
 	}
 
 	public static class Entry<K, V> {

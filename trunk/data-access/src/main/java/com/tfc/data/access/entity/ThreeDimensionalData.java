@@ -1,7 +1,7 @@
 package com.tfc.data.access.entity;
 
 import com.alibaba.fastjson.JSON;
-import com.tfc.data.access.LuceneDataAccess;
+import com.tfc.data.access.RepositoryFactory;
 
 /**
  * 三维数据格式，对应于：new int[i][j][k]
@@ -28,7 +28,7 @@ public class ThreeDimensionalData<T> extends AbstractFormatData {
 			instanceClass = value.getClass();
 		}
 		String store = getStoreValue(value);
-		LuceneDataAccess.save(genarateKey(x, y, z), store);
+		RepositoryFactory.save(genarateKey(x, y, z), store);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -36,7 +36,7 @@ public class ThreeDimensionalData<T> extends AbstractFormatData {
 		if (instanceClass == null) {
 			return null;
 		}
-		String value = LuceneDataAccess.findValueByKey(genarateKey(x, y, z));
+		String value = RepositoryFactory.findValueByKey(genarateKey(x, y, z));
 		if ("NaN".equals(value)) {
 			if (Double.class.isAssignableFrom(valueClass)) {
 				return (T) new Double("NaN");

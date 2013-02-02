@@ -1,6 +1,6 @@
 package com.tfc.data.access.entity;
 
-import com.tfc.data.access.LuceneDataAccess;
+import com.tfc.data.access.RepositoryFactory;
 
 /**
  * 数组形式的格式。
@@ -50,7 +50,7 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 			instanceClass = object.getClass();
 		}
 		String store = getStoreValue(object);
-		LuceneDataAccess.save(genarateKey(index), store);
+		RepositoryFactory.save(genarateKey(index), store);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -58,7 +58,7 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 		if (instanceClass == null) {
 			return null;
 		}
-		String value = LuceneDataAccess.findValueByKey(genarateKey(index));
+		String value = RepositoryFactory.findValueByKey(genarateKey(index));
 		if ("NaN".equals(value)) {
 			if (Double.class.isAssignableFrom(valueClass)) {
 				return (T) new Double("NaN");
