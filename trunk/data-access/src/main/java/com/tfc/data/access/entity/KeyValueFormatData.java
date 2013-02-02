@@ -20,7 +20,7 @@ public class KeyValueFormatData extends AbstractFormatData {
 	}
 
 	public void put(Object key, Object value) {
-		boolean ret = LuceneDataAccess.save(genarateKey(size), JSON.toJSONString(key), JSON.toJSONString(value));
+		boolean ret = LuceneDataAccess.save(genarateKey(size), genarateKey(key), JSON.toJSONString(value));
 		if (ret) {
 			synchronized (lock) {
 				size++;
@@ -61,12 +61,12 @@ public class KeyValueFormatData extends AbstractFormatData {
 	}
 
 	public Object get(Object key, Class<?> targetElementClass) {
-		String value = LuceneDataAccess.findValueByKey(JSON.toJSONString(key));
+		String value = LuceneDataAccess.findValueByKey(genarateKey(key));
 		return parseToObject(targetElementClass, value);
 	}
 
 	private String genarateKey(Object key) {
-		return prefix + "_" + instanceName + "_" + key;
+		return prefix + "_" + instanceName + "_" + JSON.toJSONString(key);
 	}
 
 	public boolean containsKey(Object key) {
