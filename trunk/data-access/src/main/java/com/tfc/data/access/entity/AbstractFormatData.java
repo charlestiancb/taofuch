@@ -9,6 +9,16 @@ import com.alibaba.fastjson.JSON;
  * 
  */
 public class AbstractFormatData {
+	protected Class<?> valueClass = null;
+
+	protected String getStoreValue(Object value) {
+		String store = JSON.toJSONString(value);
+		if (Number.class.isAssignableFrom(valueClass) && "NaN".equals(String.valueOf(value))) {
+			// 如果是数字，则使用String的方式存储
+			store = "NaN";
+		}
+		return store;
+	}
 
 	protected Object parseToObject(Class<?> targetElementClass, String value) {
 		if (value != null) {
