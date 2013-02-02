@@ -39,6 +39,7 @@ public class CnAndPingyinAPITest extends BaseTest {
 		Assert.assertTrue(contains("通知字", PingyinAPI.toCn("TongZhi字")));
 		Assert.assertTrue(contains("同志字", PingyinAPI.toCn("TongZhi字")));
 		Assert.assertTrue(contains("统治字", PingyinAPI.toCn("TongZhi字")));
+		System.out.println(Arrays.toString(PingyinAPI.toCn("yiLiaoBaiLiao")));
 	}
 
 	@Test

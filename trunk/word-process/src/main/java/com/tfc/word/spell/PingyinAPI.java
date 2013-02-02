@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.tfc.word.spell.convert.CnToSpellHelper;
@@ -27,8 +28,6 @@ import com.tfc.word.spell.dic.SpellToCharsDic;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class PingyinAPI {
-	/** 空的字符串数组 */
-	private static final String[] EMPTY = new String[] {};
 	/** 字母正则 */
 	private static final String ASCII_LETTER = "\\w+";
 	/** 字母匹配 */
@@ -190,7 +189,7 @@ public class PingyinAPI {
 		// 将词转换为拼音，然后到拼音词库中找词，如果没有，则返回null。
 		word = StringUtils.trim(word);
 		if (StringUtils.isEmpty(word)) {
-			return EMPTY;
+			return ArrayUtils.EMPTY_STRING_ARRAY;
 		}
 		String pureWord = word.replaceAll(ASCII_LETTER, "");// 这是去除了字母之后的内容
 		String[] pinyins = toPingyin(word);
@@ -252,7 +251,7 @@ public class PingyinAPI {
 					}
 				}
 			}
-			return result.toArray(EMPTY);
+			return result.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
 		}
 		return null;
 	}

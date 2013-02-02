@@ -19,17 +19,14 @@ public class PhraseCnSpellDic {
 	/** 词对应的拼音，如果一个词对应有多个拼音，则用“,”隔开。词的每个字转换为123-110这样的方式 */
 	private static Map<String, Map> phraseTree = null;
 
-	static {
-		if (phraseTree == null) {
-			phraseTree = new HashMap<String, Map>();
-			initialize();
-		}
-	}
-
 	private PhraseCnSpellDic() {
 	}
 
 	public static Map<String, Map> phraseTree() {
+		if (phraseTree == null) {
+			phraseTree = new HashMap<String, Map>();
+			initialize();
+		}
 		return phraseTree;
 	}
 
@@ -38,8 +35,8 @@ public class PhraseCnSpellDic {
 	}
 
 	private static void initialize() {
-		LinkedHashMap<String, String> map = FileDicLoader.loadToMap(
-				"classpath:/com/tfc/word/spell/dic/phrase_multi.dic", "UTF-8");
+		LinkedHashMap<String, String> map = FileDicLoader.loadToMap("classpath:/com/tfc/word/spell/dic/phrase_multi.dic",
+																	"UTF-8");
 		if (map != null && !map.isEmpty()) {
 			for (String key : map.keySet()) {
 				putPhrase(key, map.get(key));
