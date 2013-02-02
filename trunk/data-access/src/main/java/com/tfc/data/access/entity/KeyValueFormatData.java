@@ -12,13 +12,24 @@ import com.tfc.data.access.LuceneDataAccess;
 public class KeyValueFormatData extends AbstractFormatData {
 	private static final String prefix = "map";
 	private String instanceName = "";
+	private long size = 0;
+	private Object lock = new Object();
 
 	public KeyValueFormatData(String instanceName) {
 		this.instanceName = instanceName + System.nanoTime();
 	}
 
 	public void put(Object key, Object value) {
-		LuceneDataAccess.save(genarateKey(key), JSON.toJSONString(value));
+		boolean ret = LuceneDataAccess.save(genarateKey(size), JSON.toJSONString(key), JSON.toJSONString(value));
+		if (ret) {
+			synchronized (lock) {
+				size++;
+			}
+		}
+	}
+
+	public long size() {
+		return size;
 	}
 
 	public String getString(Object key) {
@@ -50,12 +61,12 @@ public class KeyValueFormatData extends AbstractFormatData {
 	}
 
 	public Object get(Object key, Class<?> targetElementClass) {
-		String value = LuceneDataAccess.findValueByKey(genarateKey(key));
+		String value = LuceneDataAccess.findValueByKey(JSON.toJSONString(key));
 		return parseToObject(targetElementClass, value);
 	}
 
 	private String genarateKey(Object key) {
-		return prefix + "_" + instanceName + "_" + JSON.toJSONString(key);
+		return prefix + "_" + instanceName + "_" + key;
 	}
 
 	public boolean containsKey(Object key) {
