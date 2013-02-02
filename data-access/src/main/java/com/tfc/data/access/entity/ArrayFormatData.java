@@ -1,6 +1,5 @@
 package com.tfc.data.access.entity;
 
-import com.alibaba.fastjson.JSON;
 import com.tfc.data.access.LuceneDataAccess;
 
 /**
@@ -50,7 +49,8 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 		if (instanceClass == null && object != null) {
 			instanceClass = object.getClass();
 		}
-		LuceneDataAccess.save(genarateKey(index), JSON.toJSONString(object));
+		String store = getStoreValue(object);
+		LuceneDataAccess.save(genarateKey(index), store);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -59,6 +59,13 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 			return null;
 		}
 		String value = LuceneDataAccess.findValueByKey(genarateKey(index));
+		if ("NaN".equals(value)) {
+			if (Double.class.isAssignableFrom(valueClass)) {
+				return (T) new Double("NaN");
+			} else if (Float.class.isAssignableFrom(valueClass)) {
+				return (T) new Float("NaN");
+			}
+		}
 		return (T) parseToObject(instanceClass, value);
 	}
 

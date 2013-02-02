@@ -27,7 +27,8 @@ public class ThreeDimensionalData<T> extends AbstractFormatData {
 		if (instanceClass == null && value != null) {
 			instanceClass = value.getClass();
 		}
-		LuceneDataAccess.save(genarateKey(x, y, z), JSON.toJSONString(value));
+		String store = getStoreValue(value);
+		LuceneDataAccess.save(genarateKey(x, y, z), store);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -36,6 +37,13 @@ public class ThreeDimensionalData<T> extends AbstractFormatData {
 			return null;
 		}
 		String value = LuceneDataAccess.findValueByKey(genarateKey(x, y, z));
+		if ("NaN".equals(value)) {
+			if (Double.class.isAssignableFrom(valueClass)) {
+				return (T) new Double("NaN");
+			} else if (Float.class.isAssignableFrom(valueClass)) {
+				return (T) new Float("NaN");
+			}
+		}
 		return (T) parseToObject(instanceClass, value);
 	}
 

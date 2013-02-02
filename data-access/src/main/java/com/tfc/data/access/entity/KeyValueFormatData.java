@@ -16,7 +16,6 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 	private static final String prefix = "map";
 	private String instanceName = "";
 	private Set<Entry<K, V>> entries = new LinkedHashSet<Entry<K, V>>();
-	private Class<?> valueClass = null;
 
 	public KeyValueFormatData(String instanceName) {
 		this.instanceName = instanceName + System.nanoTime();
@@ -26,11 +25,7 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 		if (valueClass == null && value != null) {
 			valueClass = value.getClass();
 		}
-		String store = JSON.toJSONString(value);
-		if (Number.class.isAssignableFrom(valueClass) && "NaN".equals(String.valueOf(value))) {
-			// 如果是数字，则使用String的方式存储
-			store = "NaN";
-		}
+		String store = getStoreValue(value);
 		boolean ret = LuceneDataAccess.save(genarateKey(key), store);
 		if (ret) {
 			synchronized (entries) {
