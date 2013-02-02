@@ -18,7 +18,7 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 	private Set<Entry<K, V>> entries = new LinkedHashSet<Entry<K, V>>();
 
 	public KeyValueFormatData(String instanceName) {
-		this.instanceName = instanceName + System.nanoTime();
+		this.instanceName = instanceName + System.nanoTime() + random();
 	}
 
 	public void put(K key, V value) {
