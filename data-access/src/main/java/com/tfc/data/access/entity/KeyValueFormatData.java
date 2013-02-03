@@ -79,6 +79,7 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 			return (V) instance.getValue(key);
 		}
 
+		@SuppressWarnings("rawtypes")
 		public boolean equals(Object o) {
 			if (o instanceof Entry) {
 				String oKey = ((Entry) o).instance.instanceName + "_" + ((Entry) o).getKey();
