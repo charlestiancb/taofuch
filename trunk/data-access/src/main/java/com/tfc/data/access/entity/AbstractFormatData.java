@@ -1,7 +1,5 @@
 package com.tfc.data.access.entity;
 
-import org.apache.commons.lang.math.RandomUtils;
-
 import com.alibaba.fastjson.JSON;
 
 /**
@@ -12,13 +10,13 @@ import com.alibaba.fastjson.JSON;
  */
 public class AbstractFormatData {
 	protected Class<?> valueClass = null;
-	private static final char[] chs = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+	protected static final char[] chs = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
 
 	protected static String random() {
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < 5; i++) {
-			sb.append(chs[RandomUtils.nextInt(62)]);
-		}
+		// StringBuffer sb = new StringBuffer();
+		// for (int i = 0; i < 5; i++) {
+		// sb.append(chs[RandomUtils.nextInt(62)]);
+		// }
 		// return sb.toString();
 		return "";
 	}
