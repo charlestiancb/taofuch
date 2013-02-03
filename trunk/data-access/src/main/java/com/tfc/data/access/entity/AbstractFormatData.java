@@ -25,9 +25,9 @@ public class AbstractFormatData {
 
 	protected String getStoreValue(Object value) {
 		String store = JSON.toJSONString(value);
-		if (valueClass != null && Number.class.isAssignableFrom(valueClass) && "NaN".equals(String.valueOf(value))) {
+		if (valueClass != null && Number.class.isAssignableFrom(valueClass)) {
 			// 如果是数字，则使用String的方式存储
-			store = "NaN";
+			store = String.valueOf(value);
 		}
 		return store;
 	}
@@ -38,12 +38,17 @@ public class AbstractFormatData {
 				return JSON.parseObject(value, targetElementClass);
 			} else if (value.startsWith("[") && value.endsWith("]")) {
 				return JSON.parseArray(value, targetElementClass);
-			} else {
+			} else if (!value.startsWith("\"") && !value.endsWith("\"")) {
+				// 这就是数字啊！
 				try {
-					return JSON.parseObject(value, targetElementClass);
+					return targetElementClass.getConstructor(String.class).newInstance(value);
 				} catch (Exception e) {
-					return value;
 				}
+			}
+			try {
+				return JSON.parseObject(value, targetElementClass);
+			} catch (Exception e) {
+				return value;
 			}
 		}
 		if (targetElementClass != null && Number.class.isAssignableFrom(targetElementClass)) {
