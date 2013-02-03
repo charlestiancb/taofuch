@@ -184,7 +184,7 @@ public class SinaWeiboRequest {
 	 */
 	public static String request(DefaultHttpClient client, String url, FailedHandler handler, FailedNode node) {
 		try {
-			Thread.sleep(20 * 1000);// 每次等待20秒，模拟人有停顿
+			Thread.sleep(1 * 1000);// 每次等待1秒，模拟人有停顿
 		} catch (InterruptedException e1) {
 		}
 		try {
