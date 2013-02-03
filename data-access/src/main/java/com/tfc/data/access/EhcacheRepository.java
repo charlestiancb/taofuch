@@ -7,6 +7,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 public class EhcacheRepository extends Repository {
+	private CacheManager manager;
 	private Cache cache;
 	private File config;
 
@@ -30,7 +31,7 @@ public class EhcacheRepository extends Repository {
 	private void init() {
 		if (cache == null) {
 			// 使用默认配置文件创建CacheManager
-			CacheManager manager = CacheManager.create();
+			manager = CacheManager.create();
 			if (config != null) {
 				manager = CacheManager.create(config.getAbsolutePath());
 			}
@@ -69,4 +70,10 @@ public class EhcacheRepository extends Repository {
 		return null;
 	}
 
+	@Override
+	public void close() {
+		if (manager != null) {
+			manager.shutdown();
+		}
+	}
 }

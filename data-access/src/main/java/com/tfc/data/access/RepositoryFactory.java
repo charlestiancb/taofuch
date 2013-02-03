@@ -43,4 +43,8 @@ public class RepositoryFactory {
 		save("hehehehe", "hahahahaha");
 		System.out.println(findValueByKey("hehehehe"));
 	}
+
+	public static void close() {
+		repo.close();
+	}
 }
