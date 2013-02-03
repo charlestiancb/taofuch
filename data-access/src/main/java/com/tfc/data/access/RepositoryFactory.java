@@ -7,7 +7,7 @@ package com.tfc.data.access;
  * 
  */
 public class RepositoryFactory {
-	// new LuceneRepository();
+	// new LuceneRepository();EhcacheRepository();
 	private static Repository repo = new EhcacheRepository();
 
 	private RepositoryFactory() {
