@@ -19,8 +19,8 @@ public class AbstractFormatData {
 		for (int i = 0; i < 5; i++) {
 			sb.append(chs[RandomUtils.nextInt(62)]);
 		}
-		// return sb.toString();
-		return "";
+		return sb.toString();
+		// return "";
 	}
 
 	protected String getStoreValue(Object value) {
