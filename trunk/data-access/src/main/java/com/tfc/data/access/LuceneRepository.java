@@ -232,4 +232,14 @@ public class LuceneRepository extends Repository {
 		lr.save("", "hehehehe", "hahahahaha");
 		System.out.println(lr.findValueByKey("hehehehe"));
 	}
+
+	@Override
+	public void close() {
+		try {
+			releaseIs();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		releaseIw();
+	}
 }
