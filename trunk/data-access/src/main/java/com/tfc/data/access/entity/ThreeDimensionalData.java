@@ -86,12 +86,14 @@ public class ThreeDimensionalData<T> extends AbstractFormatData {
 	public FlatFormatData<T> getFlatData(int x) {
 		FlatFormatData<T> flat = new FlatFormatData<T>(instanceName, yLen, zLen);
 		flat.setInstanceName(instanceName + "_" + x);
+		flat.valueClass = this.valueClass;
 		return flat;
 	}
 
 	public ArrayFormatData<T> getArrayData(int x, int y) {
 		ArrayFormatData<T> arr = new ArrayFormatData<T>(instanceName, zLen);
 		arr.setInstanceName(instanceName + "_" + x + "_" + y);
+		arr.valueClass = this.valueClass;
 		return arr;
 	}
 
