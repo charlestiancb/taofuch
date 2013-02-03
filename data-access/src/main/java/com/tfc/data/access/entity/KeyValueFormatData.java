@@ -78,6 +78,14 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 		public V getValue() {
 			return (V) instance.getValue(key);
 		}
+
+		public boolean equals(Object o) {
+			if (o instanceof Entry) {
+				String oKey = ((Entry) o).instance.instanceName + "_" + ((Entry) o).getKey();
+				return oKey.equals(instance.instanceName + "_" + key);
+			}
+			return false;
+		}
 	}
 
 	public Set<Entry<K, V>> entrySet() {
