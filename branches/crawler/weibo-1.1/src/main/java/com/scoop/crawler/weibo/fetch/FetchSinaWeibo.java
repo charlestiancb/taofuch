@@ -179,10 +179,10 @@ public class FetchSinaWeibo extends FetchSina {
 				WeiboCommonParser commonParser = new WeiboCommonParser(dataSource, handler);
 				WeiboSearchParser searchParser = new WeiboSearchParser(dataSource, handler);
 				if (searchParser.isBelong(html)) {
-					searchParser.parse(html);
+					searchParser.parse(tmpUrl);
 				} else if (commonParser.isBelong(html)) {
 					commonParser.setCurUrl(weiboUrl);
-					commonParser.parse(html);
+					commonParser.parse(tmpUrl);
 				} else {
 					System.out.println("内容不符合预定的解析规则");
 					return;
