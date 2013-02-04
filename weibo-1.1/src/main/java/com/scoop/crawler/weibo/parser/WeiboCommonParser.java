@@ -18,6 +18,7 @@ import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.SinaWeiboRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
+import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
 import com.scoop.crawler.weibo.util.JSONUtils;
 
 /**
@@ -27,6 +28,16 @@ import com.scoop.crawler.weibo.util.JSONUtils;
  * 
  */
 public class WeiboCommonParser extends JsonStyleParser {
+	/**
+	 * 普通方式的微博，如：http://weibo.com/u/2675686781，这种页面的微博内容是以JSON格式组织的。
+	 * 
+	 * @param dataSource
+	 * @param handler
+	 */
+	public WeiboCommonParser(DataSource dataSource, RequestFailedHandler handler) {
+		super(dataSource, handler);
+	}
+
 	private String curUrl;
 
 	public String getCurUrl() {
@@ -38,17 +49,6 @@ public class WeiboCommonParser extends JsonStyleParser {
 	}
 
 	private String contentStart = "<script>STK && STK.pageletM && STK.pageletM.view({\"pid\":\"pl_content_hisFeed\",";
-
-	/**
-	 * 普通方式的JSON微博，如：
-	 * 
-	 * @param client
-	 * @param csvWriter
-	 * @param csvFile
-	 */
-	public WeiboCommonParser(DefaultHttpClient client, DataSource dataSource) {
-		super(client, dataSource);
-	}
 
 	@Override
 	public boolean isBelong(String html) {
@@ -83,10 +83,8 @@ public class WeiboCommonParser extends JsonStyleParser {
 					ids.add(tmp);
 				}
 				// 一条条的微博进行处理，解析每条微博的信息
-				parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-							StringUtils.trim(parseMsgPublishTime(eles.get(i))),
-							client,
-							dataSource);
+				parseWeibo(StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
+						StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
 			}
 			// 加载下一屏的内容，并进行处理
 			eles = loadNextPage(uid, ids);
@@ -131,7 +129,7 @@ public class WeiboCommonParser extends JsonStyleParser {
 			//
 			url = url + "&page=" + page + "&pre_page=" + prePage + "&max_id=" + maxId + "&end_id=" + endId + "&uid="
 					+ uid;
-			String json = SinaWeiboRequest.request(client, url, getHandler(), FailedNode.USER_WEIBO);
+			String json = SinaWeiboRequest.request(getClient(), url, getHandler(), FailedNode.USER_WEIBO);
 			String _html = (String) JSON.parseObject(json, HashMap.class).get("data");
 			return Jsoup.parse(_html).getElementsByAttributeValue("action-type", "feed_list_item");
 		} catch (Exception e) {
@@ -167,10 +165,8 @@ public class WeiboCommonParser extends JsonStyleParser {
 				}
 				// 一条条的微博进行处理，解析每条微博的信息
 				try {
-					parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-								StringUtils.trim(parseMsgPublishTime(eles.get(i))),
-								client,
-								dataSource);
+					parseWeibo(StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
+							StringUtils.trim(parseMsgPublishTime(eles.get(i))), client, dataSource);
 				} catch (IOException e) {
 				}
 			}

@@ -50,7 +50,8 @@ public class RequestFailedHandler extends FailedHandler {
 
 		public void run() {
 			// 处理每条失败的请求！
-			for (FailedRequest req = getDataSource().pop(); req != null && req.getRecId() != null; req = getDataSource().pop()) {
+			for (FailedRequest req = getDataSource().pop(); req != null && req.getRecId() != null; req = getDataSource()
+					.pop()) {
 				try {
 					if (req == null || req.getRecId() == null) {
 						// 如果没有失败记录，则等待30分钟！
@@ -75,7 +76,7 @@ public class RequestFailedHandler extends FailedHandler {
 					FetchSinaWeibo.fetch(getClient(), getDataSource(), req.getUrl());
 					break;
 				case USER_WEIBO:
-					new WeiboCommonParser(getClient(), getDataSource()).reTry(getClient(), req.getUrl(), null, fn);
+					new WeiboCommonParser(getDataSource(), this).reTry(getClient(), req.getUrl(), null, fn);
 					break;
 				case SINGLE_WEIBO:
 
