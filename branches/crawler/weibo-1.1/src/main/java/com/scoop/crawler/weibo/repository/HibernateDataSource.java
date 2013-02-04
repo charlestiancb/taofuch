@@ -17,7 +17,7 @@ import org.hibernate.service.jdbc.connections.internal.DriverManagerConnectionPr
 import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.entity.WeiboComment;
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
-import com.scoop.crawler.weibo.parser.Parser;
+import com.scoop.crawler.weibo.parser.WeiboParser;
 import com.scoop.crawler.weibo.repository.entity.FetchType;
 import com.scoop.crawler.weibo.repository.mysql.Comment;
 import com.scoop.crawler.weibo.repository.mysql.EntityTransfer;
@@ -97,7 +97,7 @@ public class HibernateDataSource extends DatabaseDataSource {
 	 */
 	private void saveFetchIfNeccessory(String id, FetchType weibo) {
 		try {
-			FetchInfo fi = new FetchInfo(Parser.getQuery(), id, weibo.name());
+			FetchInfo fi = new FetchInfo(WeiboParser.getQuery(), id, weibo.name());
 			if (fi.needSave()) {
 				Session s = getCurrentSession();
 				Object obj = s.createQuery("from FetchInfo where queryStr=? and relationId=? and relationType=?")
