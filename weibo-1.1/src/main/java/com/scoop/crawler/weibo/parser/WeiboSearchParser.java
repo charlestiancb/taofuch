@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.scoop.crawler.weibo.fetch.FetchSina;
@@ -30,7 +29,6 @@ public class WeiboSearchParser extends JsonStyleParser {
 
 	public WeiboSearchParser(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -38,10 +36,10 @@ public class WeiboSearchParser extends JsonStyleParser {
 		return html.indexOf(weiboStart) > -1 || html.indexOf(userStart) > -1;
 	}
 
-	public String parse(String html) throws IOException {
+	public void parse(String html) throws IOException {
 		// 判断是否没有查询结果！
 		if (html.indexOf("<div class=\\\"search_noresult\\\">") > -1) {
-			return null;
+			return;
 		}
 		String hit = weiboStart;
 		int idx = html.indexOf(weiboStart);
@@ -50,7 +48,7 @@ public class WeiboSearchParser extends JsonStyleParser {
 			hit = userStart;
 		}
 		if (idx == -1) {
-			return null;
+			return;
 		}
 		String targetContentList = html.substring(idx + hit.length());
 		targetContentList = targetContentList.substring(0, targetContentList.indexOf(contentEnd));
@@ -64,17 +62,7 @@ public class WeiboSearchParser extends JsonStyleParser {
 			parseUser(doc);
 		}
 		// 解析下一页
-		Elements eles = doc.getElementsByAttributeValue("class", "search_page clearfix");
-		if (eles != null && !eles.isEmpty()) {
-			eles = eles.select("li").select("a");
-			if (eles != null && !eles.isEmpty()) {
-				Element ele = eles.last();
-				if (ele.text().trim().equals("下一页")) {
-					return "http://s.weibo.com" + ele.attr("href");
-				}
-			}
-		}
-		return null;
+
 	}
 
 	/**
@@ -90,8 +78,10 @@ public class WeiboSearchParser extends JsonStyleParser {
 				saveQuery(RegUtils.parseToQuery(FetchSina.getBaseUrl()));
 				try {
 					// 一条条的微博进行处理，解析每条微博的信息
-					parseWeibo(StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-							StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
+					parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
+								StringUtils.trim(parseMsgPublishTime(eles.get(i))),
+								getClient(),
+								dataSource);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

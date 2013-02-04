@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -180,17 +179,7 @@ public class FetchSinaWeibo extends FetchSina {
 				WeiboCommonParser commonParser = new WeiboCommonParser(dataSource, handler);
 				WeiboSearchParser searchParser = new WeiboSearchParser(dataSource, handler);
 				if (searchParser.isBelong(html)) {
-					int idx = tmpUrl.lastIndexOf("page=");
-					int curPage = idx == -1 ? 1 : NumberUtils.toInt(
-							StringUtils.trim(tmpUrl.substring(idx + "page=".length())), 1);
-					while (maxLimit == -1 || curPage <= maxLimit) {
-						String nextPageUrl = searchParser.parse(html);
-						if (nextPageUrl == null || nextPageUrl.trim().isEmpty()) {
-							break;
-						}
-						System.out.println("正在抓取页面：" + nextPageUrl);
-						html = SinaWeiboRequest.request(client, nextPageUrl, handler, FailedNode.MAIN);
-					}
+					searchParser.parse(html);
 				} else if (commonParser.isBelong(html)) {
 					commonParser.setCurUrl(weiboUrl);
 					commonParser.parse(html);
