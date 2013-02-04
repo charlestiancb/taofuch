@@ -14,7 +14,7 @@ import org.openqa.selenium.WebElement;
 
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.ExploreRequest;
-import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
+import com.scoop.crawler.weibo.request.failed.FailedHandler;
 
 /**
  * 解析类似这样：http://gov.weibo.com/profile.php?uid=sciencenet&ref=链接形式中的微博内容。<br>
@@ -25,7 +25,7 @@ import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
  */
 public class WeiboCompanyParser extends WeiboParser {
 
-	public WeiboCompanyParser(DataSource dataSource, RequestFailedHandler handler) {
+	public WeiboCompanyParser(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
 	}
 
@@ -69,7 +69,7 @@ public class WeiboCompanyParser extends WeiboParser {
 	public void parse(String tmpUrl) {
 		WebDriver driver = null;
 		try {
-			driver = ExploreRequest.firefox(tmpUrl);
+			driver = ExploreRequest.getDriver(tmpUrl);
 			if (driver == null) {
 				System.out.println("页面启动失败，中止抓取！");
 				System.exit(0);

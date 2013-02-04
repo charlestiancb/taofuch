@@ -9,7 +9,7 @@ import org.jsoup.select.Elements;
 
 import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.repository.DataSource;
-import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
+import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.runnable.WeiboCommentRunnable;
 import com.scoop.crawler.weibo.runnable.WeiboUserRelationRunnable;
 import com.scoop.crawler.weibo.util.ThreadUtils;
@@ -18,7 +18,7 @@ public abstract class WeiboParser extends Parser {
 	private int curPage = 1;
 	private static ThreadLocal<String> query = new InheritableThreadLocal<String>();
 
-	public WeiboParser(DataSource dataSource, RequestFailedHandler handler) {
+	public WeiboParser(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
 	}
 

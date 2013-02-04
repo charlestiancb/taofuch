@@ -4,7 +4,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.scoop.crawler.weibo.repository.DataSource;
-import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
+import com.scoop.crawler.weibo.request.failed.FailedHandler;
 
 /**
  * json格式的页面解析器
@@ -14,7 +14,7 @@ import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
  */
 public abstract class JsonStyleParser extends WeiboParser {
 
-	public JsonStyleParser(DataSource dataSource, RequestFailedHandler handler) {
+	public JsonStyleParser(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
 	}
 
