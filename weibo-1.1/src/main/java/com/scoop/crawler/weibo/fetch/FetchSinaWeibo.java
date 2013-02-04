@@ -16,9 +16,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import com.scoop.crawler.weibo.parser.HtmlStyleParser;
-import com.scoop.crawler.weibo.parser.JsonStyle4CommonParser;
-import com.scoop.crawler.weibo.parser.JsonStyle4SearchParser;
+import com.scoop.crawler.weibo.parser.WeiboCompanyParser;
+import com.scoop.crawler.weibo.parser.WeiboCommonParser;
+import com.scoop.crawler.weibo.parser.WeiboSearchParser;
 import com.scoop.crawler.weibo.parser.TempUrl;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.JdbcDataSource;
@@ -173,13 +173,13 @@ public class FetchSinaWeibo extends FetchSina {
 			Elements eles = doc.getElementsByClass("MIB_feed_c");
 			if (eles.size() > 0 || html.indexOf("</html><!-- 以上是企业微博的iframe -->") > -1) {
 				// 如果这样的格式存在，则说明是那种HTML格式的，如：http://gov.weibo.com/profile.php?uid=sciencenet&ref=
-				HtmlStyleParser htmlParser = new HtmlStyleParser(client, dataSource);
+				WeiboCompanyParser htmlParser = new WeiboCompanyParser(client, dataSource);
 				htmlParser.setHandler(handler);
 				htmlParser.parse(tmpUrl);
 			} else {
 				// 否则就是那种js的json格式的内容方式，使用json的方式进行解析
-				JsonStyle4CommonParser commonParser = new JsonStyle4CommonParser(client, dataSource);
-				JsonStyle4SearchParser searchParser = new JsonStyle4SearchParser(client, dataSource);
+				WeiboCommonParser commonParser = new WeiboCommonParser(client, dataSource);
+				WeiboSearchParser searchParser = new WeiboSearchParser(client, dataSource);
 				if (searchParser.isBelong(html)) {
 					searchParser.setHandler(handler);
 					int idx = tmpUrl.lastIndexOf("page=");

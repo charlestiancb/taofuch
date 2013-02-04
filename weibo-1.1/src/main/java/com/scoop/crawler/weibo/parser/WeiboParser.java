@@ -14,7 +14,7 @@ import com.scoop.crawler.weibo.runnable.WeiboCommentRunnable;
 import com.scoop.crawler.weibo.runnable.WeiboUserRelationRunnable;
 import com.scoop.crawler.weibo.util.ThreadUtils;
 
-public abstract class Parser {
+public abstract class WeiboParser {
 	private int curPage = 1;
 	protected DefaultHttpClient client;
 	protected DataSource dataSource;
@@ -47,7 +47,7 @@ public abstract class Parser {
 		this.handler = handler;
 	}
 
-	public Parser(DefaultHttpClient client, DataSource dataSource) {
+	public WeiboParser(DefaultHttpClient client, DataSource dataSource) {
 		this.client = client;
 		this.dataSource = dataSource;
 	}

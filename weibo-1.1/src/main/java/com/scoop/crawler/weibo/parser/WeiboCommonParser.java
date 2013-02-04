@@ -26,7 +26,7 @@ import com.scoop.crawler.weibo.util.JSONUtils;
  * @author taofucheng
  * 
  */
-public class JsonStyle4CommonParser extends JsonStyleParser {
+public class WeiboCommonParser extends JsonStyleParser {
 	private String curUrl;
 
 	public String getCurUrl() {
@@ -46,7 +46,7 @@ public class JsonStyle4CommonParser extends JsonStyleParser {
 	 * @param csvWriter
 	 * @param csvFile
 	 */
-	public JsonStyle4CommonParser(DefaultHttpClient client, DataSource dataSource) {
+	public WeiboCommonParser(DefaultHttpClient client, DataSource dataSource) {
 		super(client, dataSource);
 	}
 

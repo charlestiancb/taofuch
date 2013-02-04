@@ -6,7 +6,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.fetch.FetchSinaWeibo;
-import com.scoop.crawler.weibo.parser.JsonStyle4CommonParser;
+import com.scoop.crawler.weibo.parser.WeiboCommonParser;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.FailedRequest;
 
@@ -75,7 +75,7 @@ public class RequestFailedHandler extends FailedHandler {
 					FetchSinaWeibo.fetch(getClient(), getDataSource(), req.getUrl());
 					break;
 				case USER_WEIBO:
-					new JsonStyle4CommonParser(getClient(), getDataSource()).reTry(getClient(), req.getUrl(), null, fn);
+					new WeiboCommonParser(getClient(), getDataSource()).reTry(getClient(), req.getUrl(), null, fn);
 					break;
 				case SINGLE_WEIBO:
 

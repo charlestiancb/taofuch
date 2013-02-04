@@ -17,15 +17,15 @@ import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.ExploreRequest;
 
 /**
- * 解析类似这样：http://gov.weibo.com/profile.php?uid=sciencenet&ref=链接形式中的微博内容。
+ * 解析类似这样：http://gov.weibo.com/profile.php?uid=sciencenet&ref=链接形式中的微博内容。<br>
  * 这个内容的组织方式是HTML的，如：加V或官方网站方式的微博
  * 
  * @author taofucheng
  * 
  */
-public class HtmlStyleParser extends Parser {
+public class WeiboCompanyParser extends WeiboParser {
 
-	public HtmlStyleParser(DefaultHttpClient client, DataSource dataSource) {
+	public WeiboCompanyParser(DefaultHttpClient client, DataSource dataSource) {
 		super(client, dataSource);
 	}
 
@@ -33,10 +33,8 @@ public class HtmlStyleParser extends Parser {
 		for (int i = 0; i < eles.size(); i++) {
 			// 一条条的微博进行处理，解析每条微博的信息
 			System.out.println("解析当前微博第" + getCurPage() + "页，第" + (i + 1) + "条微博！");
-			parseWeibo(	StringUtils.trim(parseMsgUrlFromHtmlStyle(eles.get(i))),
-						StringUtils.trim(parseMsgPublishTime(eles.get(i))),
-						client,
-						dataSource);
+			parseWeibo(StringUtils.trim(parseMsgUrlFromHtmlStyle(eles.get(i))),
+					StringUtils.trim(parseMsgPublishTime(eles.get(i))), client, dataSource);
 			System.out.println("当前微博第" + getCurPage() + "页，第" + (i + 1) + "条微博解析完毕！");
 		}
 	}
