@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.StringUtils;
+
 @Entity
 @Table(name = "USER")
 public class User implements Serializable {
@@ -28,7 +30,7 @@ public class User implements Serializable {
 	private String hasRelation;
 
 	public String getUserId() {
-		return userId;
+		return StringUtils.trim(userId);
 	}
 
 	public void setUserId(String userId) {

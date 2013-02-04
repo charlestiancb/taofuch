@@ -36,6 +36,11 @@ public class EntityTransfer {
 		user.setWeiboNum(Long.valueOf(person.getPublishNum()));
 		user.setFansNum(Long.valueOf(person.getFansNum()));
 		user.setFollowNum(Long.valueOf(person.getFollowNum()));
+		if (person.isNeedFetchRelation()) {
+			user.setHasRelation("0");// 表示需要抓取关系信息
+		} else {
+			user.setHasRelation("1");// 表示不需要抓取关系信息
+		}
 		return user;
 	}
 
