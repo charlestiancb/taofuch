@@ -6,6 +6,12 @@ import org.jsoup.select.Elements;
 
 import com.scoop.crawler.weibo.repository.DataSource;
 
+/**
+ * json格式的页面解析器
+ * 
+ * @author taofucheng
+ * 
+ */
 public abstract class JsonStyleParser extends WeiboParser {
 	public JsonStyleParser(DefaultHttpClient client, DataSource dataSource) {
 		super(client, dataSource);
