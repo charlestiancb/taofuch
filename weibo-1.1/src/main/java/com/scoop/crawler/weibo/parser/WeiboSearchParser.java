@@ -6,10 +6,14 @@ import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import com.scoop.crawler.weibo.fetch.FetchSina;
 import com.scoop.crawler.weibo.fetch.FetchSinaWeibo;
 import com.scoop.crawler.weibo.repository.DataSource;
+import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.util.JSONUtils;
 import com.scoop.crawler.weibo.util.RegUtils;
@@ -36,7 +40,26 @@ public class WeiboSearchParser extends JsonStyleParser {
 		return html.indexOf(weiboStart) > -1 || html.indexOf(userStart) > -1;
 	}
 
-	public void parse(String html) throws IOException {
+	public void parse(String url) throws IOException {
+		url = StringUtils.trim(url);
+		if (StringUtils.isEmpty(url)) {
+			return;
+		}
+		WebDriver driver = null;
+		try {
+			driver = ExploreRequest.getDriver(url);
+			parseHtmlToWeibo(driver);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (driver != null) {
+				driver.quit();
+			}
+		}
+	}
+
+	private void parseHtmlToWeibo(WebDriver driver) {
+		String html = driver.getPageSource();
 		// 判断是否没有查询结果！
 		if (html.indexOf("<div class=\\\"search_noresult\\\">") > -1) {
 			return;
@@ -62,7 +85,19 @@ public class WeiboSearchParser extends JsonStyleParser {
 			parseUser(doc);
 		}
 		// 解析下一页
-
+		WebElement ele = driver.findElement(By.className("search_page_M"));
+		if (ele != null) {
+			ele = ele.findElement(By.linkText("下一页"));
+		}
+		if (ele != null) {
+			ele.click();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			parseHtmlToWeibo(driver);
+		}
 	}
 
 	/**
