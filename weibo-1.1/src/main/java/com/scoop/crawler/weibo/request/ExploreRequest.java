@@ -2,6 +2,7 @@ package com.scoop.crawler.weibo.request;
 
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -103,5 +104,19 @@ public class ExploreRequest {
 			System.exit(0);
 		}
 		return null;
+	}
+
+	/**
+	 * 获取驱动信息。这个方法主要是方便随时切换浏览器。
+	 * 
+	 * @param url
+	 * @return
+	 */
+	public static WebDriver getDriver(String url) {
+		url = StringUtils.trim(url);
+		if (StringUtils.isEmpty(url)) {
+			return null;
+		}
+		return ie(url);
 	}
 }

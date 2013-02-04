@@ -96,4 +96,8 @@ public class Weibo implements Serializable {
 	public void setHasComment(String hasComment) {
 		this.hasComment = hasComment;
 	}
+
+	public String toString() {
+		return "weiboId=" + weiboId;
+	}
 }

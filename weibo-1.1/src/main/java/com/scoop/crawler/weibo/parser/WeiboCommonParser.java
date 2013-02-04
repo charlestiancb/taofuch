@@ -18,7 +18,6 @@ import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.SinaWeiboRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
-import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
 import com.scoop.crawler.weibo.util.JSONUtils;
 
 /**
@@ -34,7 +33,7 @@ public class WeiboCommonParser extends JsonStyleParser {
 	 * @param dataSource
 	 * @param handler
 	 */
-	public WeiboCommonParser(DataSource dataSource, RequestFailedHandler handler) {
+	public WeiboCommonParser(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
 	}
 

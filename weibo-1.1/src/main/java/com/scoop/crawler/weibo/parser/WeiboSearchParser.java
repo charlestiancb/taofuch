@@ -11,7 +11,7 @@ import org.jsoup.select.Elements;
 import com.scoop.crawler.weibo.fetch.FetchSina;
 import com.scoop.crawler.weibo.fetch.FetchSinaWeibo;
 import com.scoop.crawler.weibo.repository.DataSource;
-import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
+import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.util.JSONUtils;
 import com.scoop.crawler.weibo.util.RegUtils;
 
@@ -28,7 +28,7 @@ public class WeiboSearchParser extends JsonStyleParser {
 	private String weiboStart = common.replaceAll(replace, "pl_weibo_feedlist");
 	private String userStart = common.replaceAll(replace, "pl_user_feedlist");
 
-	public WeiboSearchParser(DataSource dataSource, RequestFailedHandler handler) {
+	public WeiboSearchParser(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
 		// TODO Auto-generated constructor stub
 	}
