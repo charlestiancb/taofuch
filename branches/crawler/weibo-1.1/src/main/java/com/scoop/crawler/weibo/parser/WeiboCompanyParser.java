@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,6 +14,7 @@ import org.openqa.selenium.WebElement;
 
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.ExploreRequest;
+import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
 
 /**
  * 解析类似这样：http://gov.weibo.com/profile.php?uid=sciencenet&ref=链接形式中的微博内容。<br>
@@ -25,8 +25,8 @@ import com.scoop.crawler.weibo.request.ExploreRequest;
  */
 public class WeiboCompanyParser extends WeiboParser {
 
-	public WeiboCompanyParser(DefaultHttpClient client, DataSource dataSource) {
-		super(client, dataSource);
+	public WeiboCompanyParser(DataSource dataSource, RequestFailedHandler handler) {
+		super(dataSource, handler);
 	}
 
 	public void parse(Elements eles) throws IOException {
@@ -34,7 +34,7 @@ public class WeiboCompanyParser extends WeiboParser {
 			// 一条条的微博进行处理，解析每条微博的信息
 			System.out.println("解析当前微博第" + getCurPage() + "页，第" + (i + 1) + "条微博！");
 			parseWeibo(StringUtils.trim(parseMsgUrlFromHtmlStyle(eles.get(i))),
-					StringUtils.trim(parseMsgPublishTime(eles.get(i))), client, dataSource);
+					StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
 			System.out.println("当前微博第" + getCurPage() + "页，第" + (i + 1) + "条微博解析完毕！");
 		}
 	}

@@ -1,10 +1,10 @@
 package com.scoop.crawler.weibo.parser;
 
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.scoop.crawler.weibo.repository.DataSource;
+import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
 
 /**
  * json格式的页面解析器
@@ -13,8 +13,9 @@ import com.scoop.crawler.weibo.repository.DataSource;
  * 
  */
 public abstract class JsonStyleParser extends WeiboParser {
-	public JsonStyleParser(DefaultHttpClient client, DataSource dataSource) {
-		super(client, dataSource);
+
+	public JsonStyleParser(DataSource dataSource, RequestFailedHandler handler) {
+		super(dataSource, handler);
 	}
 
 	/** 微博内容的JSON结束标志 */

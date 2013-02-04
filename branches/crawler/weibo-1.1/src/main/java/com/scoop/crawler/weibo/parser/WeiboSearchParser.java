@@ -3,7 +3,6 @@ package com.scoop.crawler.weibo.parser;
 import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,6 +11,7 @@ import org.jsoup.select.Elements;
 import com.scoop.crawler.weibo.fetch.FetchSina;
 import com.scoop.crawler.weibo.fetch.FetchSinaWeibo;
 import com.scoop.crawler.weibo.repository.DataSource;
+import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
 import com.scoop.crawler.weibo.util.JSONUtils;
 import com.scoop.crawler.weibo.util.RegUtils;
 
@@ -28,8 +28,9 @@ public class WeiboSearchParser extends JsonStyleParser {
 	private String weiboStart = common.replaceAll(replace, "pl_weibo_feedlist");
 	private String userStart = common.replaceAll(replace, "pl_user_feedlist");
 
-	public WeiboSearchParser(DefaultHttpClient client, DataSource dataSource) {
-		super(client, dataSource);
+	public WeiboSearchParser(DataSource dataSource, RequestFailedHandler handler) {
+		super(dataSource, handler);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -90,7 +91,7 @@ public class WeiboSearchParser extends JsonStyleParser {
 				try {
 					// 一条条的微博进行处理，解析每条微博的信息
 					parseWeibo(StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-							StringUtils.trim(parseMsgPublishTime(eles.get(i))), client, dataSource);
+							StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -111,7 +112,7 @@ public class WeiboSearchParser extends JsonStyleParser {
 				try {
 					String userUrl = eles.get(0).child(0).attr("href");
 					// 解析用户信息。
-					FetchSinaWeibo.fetch(client, dataSource, userUrl);
+					FetchSinaWeibo.fetch(getClient(), dataSource, userUrl);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

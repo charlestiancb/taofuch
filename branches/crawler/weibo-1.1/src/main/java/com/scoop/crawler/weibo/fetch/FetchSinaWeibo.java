@@ -16,10 +16,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import com.scoop.crawler.weibo.parser.WeiboCompanyParser;
-import com.scoop.crawler.weibo.parser.WeiboCommonParser;
-import com.scoop.crawler.weibo.parser.WeiboSearchParser;
 import com.scoop.crawler.weibo.parser.TempUrl;
+import com.scoop.crawler.weibo.parser.WeiboCommonParser;
+import com.scoop.crawler.weibo.parser.WeiboCompanyParser;
+import com.scoop.crawler.weibo.parser.WeiboSearchParser;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.JdbcDataSource;
 import com.scoop.crawler.weibo.request.SinaWeiboRequest;
@@ -173,19 +173,16 @@ public class FetchSinaWeibo extends FetchSina {
 			Elements eles = doc.getElementsByClass("MIB_feed_c");
 			if (eles.size() > 0 || html.indexOf("</html><!-- 以上是企业微博的iframe -->") > -1) {
 				// 如果这样的格式存在，则说明是那种HTML格式的，如：http://gov.weibo.com/profile.php?uid=sciencenet&ref=
-				WeiboCompanyParser htmlParser = new WeiboCompanyParser(client, dataSource);
-				htmlParser.setHandler(handler);
+				WeiboCompanyParser htmlParser = new WeiboCompanyParser(dataSource, handler);
 				htmlParser.parse(tmpUrl);
 			} else {
 				// 否则就是那种js的json格式的内容方式，使用json的方式进行解析
-				WeiboCommonParser commonParser = new WeiboCommonParser(client, dataSource);
-				WeiboSearchParser searchParser = new WeiboSearchParser(client, dataSource);
+				WeiboCommonParser commonParser = new WeiboCommonParser(dataSource, handler);
+				WeiboSearchParser searchParser = new WeiboSearchParser(dataSource, handler);
 				if (searchParser.isBelong(html)) {
-					searchParser.setHandler(handler);
 					int idx = tmpUrl.lastIndexOf("page=");
-					int curPage = idx == -1 ? 1 : NumberUtils.toInt(StringUtils.trim(tmpUrl.substring(idx
-																			+ "page=".length())),
-																	1);
+					int curPage = idx == -1 ? 1 : NumberUtils.toInt(
+							StringUtils.trim(tmpUrl.substring(idx + "page=".length())), 1);
 					while (maxLimit == -1 || curPage <= maxLimit) {
 						String nextPageUrl = searchParser.parse(html);
 						if (nextPageUrl == null || nextPageUrl.trim().isEmpty()) {
@@ -195,7 +192,6 @@ public class FetchSinaWeibo extends FetchSina {
 						html = SinaWeiboRequest.request(client, nextPageUrl, handler, FailedNode.MAIN);
 					}
 				} else if (commonParser.isBelong(html)) {
-					commonParser.setHandler(handler);
 					commonParser.setCurUrl(weiboUrl);
 					commonParser.parse(html);
 				} else {

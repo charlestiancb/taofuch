@@ -14,12 +14,13 @@ import com.scoop.crawler.weibo.runnable.WeiboCommentRunnable;
 import com.scoop.crawler.weibo.runnable.WeiboUserRelationRunnable;
 import com.scoop.crawler.weibo.util.ThreadUtils;
 
-public abstract class WeiboParser {
+public abstract class WeiboParser extends Parser {
 	private int curPage = 1;
-	protected DefaultHttpClient client;
-	protected DataSource dataSource;
-	private RequestFailedHandler handler;
 	private static ThreadLocal<String> query = new InheritableThreadLocal<String>();
+
+	public WeiboParser(DataSource dataSource, RequestFailedHandler handler) {
+		super(dataSource, handler);
+	}
 
 	/**
 	 * 保存用户在URL中查询的具体词语！。
@@ -39,19 +40,6 @@ public abstract class WeiboParser {
 		return query.get();
 	}
 
-	public RequestFailedHandler getHandler() {
-		return handler;
-	}
-
-	public void setHandler(RequestFailedHandler handler) {
-		this.handler = handler;
-	}
-
-	public WeiboParser(DefaultHttpClient client, DataSource dataSource) {
-		this.client = client;
-		this.dataSource = dataSource;
-	}
-
 	/**
 	 * 解析每一条微博的信息。
 	 * 
@@ -64,7 +52,7 @@ public abstract class WeiboParser {
 	protected void parseWeibo(String weiboUrl, String publishTime, DefaultHttpClient client, DataSource dataSource)
 			throws IOException {
 		OneWeiboInfo weibo = new OneWeiboInfo(weiboUrl, client);
-		weibo.setHandler(handler);
+		weibo.setHandler(getHandler());
 		if (!weibo.isValid()) {
 			// 如果不正确，则说明该微博是假的，给出提示，然后路过。
 			System.err.println("weiboUrl[" + weiboUrl + "] 对应的微博内容不正确！");
