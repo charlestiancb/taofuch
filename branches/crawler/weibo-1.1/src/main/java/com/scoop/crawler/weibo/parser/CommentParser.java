@@ -18,7 +18,6 @@ import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.Weibo;
 import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
-import com.scoop.crawler.weibo.util.ThreadUtils;
 
 /**
  * 微博评论解析器。
@@ -33,52 +32,50 @@ public class CommentParser extends Parser {
 		super(dataSource, handler);
 	}
 
-	public void fetchWeiboComments() {
-		DefaultHttpClient client = ThreadUtils.allocateHttpClient();
-		for (Weibo w = dataSource.getOneUnfetchedWeibo(); w != null; w = dataSource.getOneUnfetchedWeibo()) {
-			WebDriver driver = null;
-			try {
-				// 打开微博页面，抓取其评论信息。
-				driver = ExploreRequest.getDriver(w.getUrl());
-				if (driver == null) {
-					continue;
-				}
-				System.out.println("解析评论信息……");
-				String html = driver.getPageSource();
-				html = cut(html, detailStart);
-				Elements eles = getComments(driver);
-				// 获取所有评论信息，并进行循环处理。
-				while (eles != null && eles.size() > 0) {
-					Element tmp = null;
-					for (int i = 0; i < eles.size(); i++) {
-						System.out.println("解析其中一条评论信息……");
-						tmp = eles.get(i);
-						if (tmp != null) {
-							// 获取对应的评论者主页URL。
-							try {
-								String userInfoUrl = parseToUrl(tmp, w.getUrl());
-								WeiboPersonInfo person = new WeiboPersonInfo(userInfoUrl, client);
-								person.setHandler(getHandler());
-								WeiboComment comment = new WeiboComment(tmp);
-								comment.setWeiboId(w.getWeiboId());
-								comment.setPerson(person);
-								dataSource.saveComment(comment);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+	public void fetchWeiboComments(Weibo w, DefaultHttpClient client) {
+		WebDriver driver = null;
+		try {
+			// 打开微博页面，抓取其评论信息。
+			driver = ExploreRequest.getDriver(w.getUrl());
+			if (driver == null) {
+				return;
+			}
+			System.out.println("解析评论信息……");
+			String html = driver.getPageSource();
+			html = cut(html, detailStart);
+			Elements eles = getComments(driver);
+			// 获取所有评论信息，并进行循环处理。
+			while (eles != null && eles.size() > 0) {
+				Element tmp = null;
+				for (int i = 0; i < eles.size(); i++) {
+					System.out.println("解析其中一条评论信息……");
+					tmp = eles.get(i);
+					if (tmp != null) {
+						// 获取对应的评论者主页URL。
+						try {
+							String userInfoUrl = parseToUrl(tmp, w.getUrl());
+							WeiboPersonInfo person = new WeiboPersonInfo(userInfoUrl, client);
+							person.setHandler(getHandler());
+							WeiboComment comment = new WeiboComment(tmp);
+							comment.setWeiboId(w.getWeiboId());
+							comment.setPerson(person);
+							dataSource.saveComment(comment);
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 					}
-					// 加载下一页评论，并进行分析
-					eles = loadNextPage(driver);
 				}
-			} catch (Exception e) {
-				System.err.println("解析微博[" + w + "]的评论失败！");
-				e.printStackTrace();
+				// 加载下一页评论，并进行分析
+				eles = loadNextPage(driver);
+			}
+		} catch (Exception e) {
+			System.err.println("解析微博[" + w + "]的评论失败！");
+			e.printStackTrace();
+		} finally {
+			if (driver != null) {
+				driver.quit();
 			}
 		}
-		// 将线程释放
-		ThreadUtils.freeThread();
-		ThreadUtils.finishComment();
 	}
 
 	/**
