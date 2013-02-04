@@ -117,6 +117,6 @@ public class ExploreRequest {
 		if (StringUtils.isEmpty(url)) {
 			return null;
 		}
-		return ie(url);
+		return firefox(url);
 	}
 }
