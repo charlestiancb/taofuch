@@ -1,8 +1,10 @@
 package com.scoop.crawler.weibo.runnable;
 
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.openqa.selenium.WebDriver;
 
-import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
+import com.scoop.crawler.weibo.parser.FansParser;
+import com.scoop.crawler.weibo.parser.FollowParser;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.User;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
@@ -25,14 +27,21 @@ public class WeiboUserRelationRunnable extends Thread implements Runnable {
 
 	public void run() {
 		DefaultHttpClient client = ThreadUtils.allocateHttpClient();
+		FansParser fansp = new FansParser(dataSource, handler);
+		FollowParser followP = new FollowParser(dataSource, handler);
 		// 循环获取用户信息
 		for (User u = dataSource.getOneUnfetchedUser(); u != null; u = dataSource.getOneUnfetchedUser()) {
+			WebDriver driver = null;
 			try {
-				WeiboPersonInfo person = new WeiboPersonInfo(u.getUrl(), client);
-				dataSource.saveFans(person.getId(), person.getFans());
-				dataSource.saveFollows(person.getId(), person.getFollows());
+
+				fansp.fetchFans(u, driver, client);
+				followP.fetchFollows(u, driver, client);
 			} catch (Exception e) {
 				e.printStackTrace();
+			} finally {
+				if (driver != null) {
+					driver.quit();
+				}
 			}
 		}
 		ThreadUtils.freeThread();

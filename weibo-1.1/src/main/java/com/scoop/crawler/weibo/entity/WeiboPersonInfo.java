@@ -47,6 +47,8 @@ public class WeiboPersonInfo extends Info {
 	private List<WeiboPersonInfo> fans;
 	/** 被关注者编号 */
 	private List<WeiboPersonInfo> follows;
+	/** 是否需要抓取其粉丝与关注信息 */
+	private boolean needFetchRelation = true;
 
 	/**
 	 * 指定具体的微博信息，然后会判断内容是否存在，并将存在的微博内容请求出来备用！
@@ -481,5 +483,13 @@ public class WeiboPersonInfo extends Info {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public boolean isNeedFetchRelation() {
+		return needFetchRelation;
+	}
+
+	public void setNeedFetchRelation(boolean needFetchRelation) {
+		this.needFetchRelation = needFetchRelation;
 	}
 }
