@@ -116,4 +116,8 @@ public class User implements Serializable {
 	public void setHasRelation(String hasRelation) {
 		this.hasRelation = hasRelation;
 	}
+
+	public String toString() {
+		return "id=" + userId + "; name=" + name;
+	}
 }
