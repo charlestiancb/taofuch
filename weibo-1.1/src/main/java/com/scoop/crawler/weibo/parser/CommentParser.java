@@ -26,8 +26,6 @@ import com.scoop.crawler.weibo.request.failed.FailedHandler;
  * 
  */
 public class CommentParser extends Parser {
-	private String detailStart = "<script>STK && STK.pageletM && STK.pageletM.view({\"pid\":\"pl_content_weiboDetail\",";
-
 	public CommentParser(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
 	}
@@ -41,8 +39,6 @@ public class CommentParser extends Parser {
 				return;
 			}
 			System.out.println("解析评论信息……");
-			String html = driver.getPageSource();
-			html = cut(html, detailStart);
 			Elements eles = getComments(driver);
 			// 获取所有评论信息，并进行循环处理。
 			while (eles != null && eles.size() > 0) {
@@ -86,7 +82,7 @@ public class CommentParser extends Parser {
 	 */
 	private Elements getComments(WebDriver driver) {
 		String html = driver.getPageSource();
-		html = cut(html, detailStart);
+		// html = cut(html, detailStart);//获取是就是已经解析好的内容！
 		Elements eles = Jsoup.parse(html).getElementsByAttributeValue("class", "comment_lists");
 		if (eles != null) {
 			return eles.select("dd");
