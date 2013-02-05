@@ -16,7 +16,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import com.scoop.crawler.weibo.parser.TempUrl;
-import com.scoop.crawler.weibo.parser.WeiboCommonParser;
+import com.scoop.crawler.weibo.parser.WeiboUserParser;
 import com.scoop.crawler.weibo.parser.WeiboCompanyParser;
 import com.scoop.crawler.weibo.parser.WeiboSearchParser;
 import com.scoop.crawler.weibo.repository.DataSource;
@@ -176,7 +176,7 @@ public class FetchSinaWeibo extends FetchSina {
 				htmlParser.parse(tmpUrl);
 			} else {
 				// 否则就是那种js的json格式的内容方式，使用json的方式进行解析
-				WeiboCommonParser commonParser = new WeiboCommonParser(dataSource, handler);
+				WeiboUserParser commonParser = new WeiboUserParser(dataSource, handler);
 				WeiboSearchParser searchParser = new WeiboSearchParser(dataSource, handler);
 				if (searchParser.isBelong(html)) {
 					searchParser.parse(tmpUrl);
