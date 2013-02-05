@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.wltea.analyzer.cfg.Configuration;
+import org.wltea.analyzer.cfg.DefaultConfig;
 import org.wltea.analyzer.dic.Dictionary;
 
 /**
@@ -59,7 +60,7 @@ public final class IKSegmenter {
 	 */
 	public IKSegmenter(Reader input , boolean useSmart){
 		this.input = input;
-		this.cfg = new Configuration();
+		this.cfg = DefaultConfig.getInstance();
 		this.cfg.setUseSmart(useSmart);
 		this.init();
 	}
@@ -81,7 +82,7 @@ public final class IKSegmenter {
 	 */
 	private void init(){
 		//初始化词典单例
-		Dictionary.getInstance(this.cfg);
+		Dictionary.initial(this.cfg);
 		//初始化分词上下文
 		this.context = new AnalyzeContext(this.cfg);
 		//加载子分词器
@@ -111,10 +112,9 @@ public final class IKSegmenter {
 	 * @throws IOException
 	 */
 	public synchronized Lexeme next()throws IOException{
-		if(this.context.hasNextResult()){
-			//存在尚未输出的分词结果
-			return this.context.getNextLexeme();
-		}else{
+		Lexeme l = null;
+		
+		while((l = context.getNextLexeme()) == null){
 			/*
 			 * 从reader中读取数据，填充buffer
 			 * 如果reader是分次读入buffer的，那么buffer要进行移位处理
@@ -148,17 +148,13 @@ public final class IKSegmenter {
 			//对分词进行歧义处理
 			this.arbitrator.process(context, this.cfg.useSmart());			
 			//处理未切分CJK字符
-			context.processUnkownCJKChar();
+			context.outputToResult();
 			//记录本次分词的缓冲区位移
-			context.markBufferOffset();
-			//输出词元
-			if(this.context.hasNextResult()){
-				return this.context.getNextLexeme();
-			}
-			return null;
+			context.markBufferOffset();			
 		}
-	}
-	
+		
+		return l;
+	}	
     /**
      * 重置分词器到初始状态
      * @param input
