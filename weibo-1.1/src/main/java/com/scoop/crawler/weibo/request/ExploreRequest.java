@@ -77,26 +77,24 @@ public class ExploreRequest {
 	 */
 	private static WebDriver loginAndRequest(WebDriver driver, String url) {
 		try {
-			driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
-			driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
 			driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 			driver.get("http://www.weibo.com/");
 			// 这次访问肯定需要登录！因此登录之
 			driver.findElement(By.name("username")).sendKeys(LogonInfo.getLogonInfo().getUsername());
 			driver.findElement(By.name("password")).sendKeys(LogonInfo.getLogonInfo().getPassword());
-			Thread.sleep(2 * 1000);// 2秒
+			Thread.sleep(2 * 1000);// 2秒，等待是否有验证码出现。
 			WebElement verifycode = driver.findElement(By.name("verifycode"));
 			if (verifycode != null && verifycode.isDisplayed()) {
-				Thread.sleep(5 * 1000);// 等待5s
 				System.out.println("你也看到了，要输入验证码的，我做不了了！我撤了，拜拜~");
+				Thread.sleep(5 * 1000);// 等待5s
 				driver.quit();
 				System.exit(0);
 			} else {
 				driver.findElement(By.className("W_btn_g")).click();
-				Thread.sleep(5 * 1000);// 等待5s
+				Thread.sleep(2 * 1000);// 等待5s
 				// 解析页面
 				driver.navigate().to(url);// 打开指定页面
-				Thread.sleep(5 * 1000);// 等待5s
+				Thread.sleep(3 * 1000);// 等待5s
 			}
 			return driver;
 		} catch (Throwable e) {
