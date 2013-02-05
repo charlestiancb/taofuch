@@ -101,8 +101,10 @@ public class HibernateDataSource extends DatabaseDataSource {
 			if (fi.needSave()) {
 				Session s = getCurrentSession();
 				Object obj = s.createQuery("from FetchInfo where queryStr=? and relationId=? and relationType=?")
-						.setString(0, fi.getQueryStr()).setString(1, fi.getRelationId())
-						.setString(2, fi.getRelationType()).uniqueResult();
+								.setString(0, fi.getQueryStr())
+								.setString(1, fi.getRelationId())
+								.setString(2, fi.getRelationType())
+								.uniqueResult();
 				if (obj == null) {
 					Transaction t = s.beginTransaction();
 					try {
@@ -155,13 +157,7 @@ public class HibernateDataSource extends DatabaseDataSource {
 					Fans f = new Fans();
 					f.setUserId(userId);
 					f.setFansId(fansUser.getId());
-					Session s = getCurrentSession();
-					Transaction t = s.beginTransaction();
-					try {
-						s.save(f);
-					} catch (Exception e) {
-					}
-					t.commit();
+					saveFans(f);
 				} catch (Exception e) {
 				}
 				saveUserIfNeccessory(fansUser);
@@ -182,13 +178,7 @@ public class HibernateDataSource extends DatabaseDataSource {
 					Follow f = new Follow();
 					f.setUserId(userId);
 					f.setFollowId(followUser.getId());
-					Session s = getCurrentSession();
-					Transaction t = s.beginTransaction();
-					try {
-						s.save(f);
-					} catch (Exception e) {
-					}
-					t.commit();
+					saveFollows(f);
 				} catch (Exception e) {
 				}
 				saveUserIfNeccessory(followUser);
@@ -284,8 +274,9 @@ public class HibernateDataSource extends DatabaseDataSource {
 	}
 
 	public FailedRequest pop() {
-		FailedRequest req = (FailedRequest) getCurrentSession().createCriteria(FailedRequest.class).setFetchSize(1)
-				.uniqueResult();
+		FailedRequest req = (FailedRequest) getCurrentSession().createCriteria(FailedRequest.class)
+																.setFetchSize(1)
+																.uniqueResult();
 		if (req != null && req.getRecId() != null) {
 			try {
 				Session s = getCurrentSession();
@@ -341,5 +332,28 @@ public class HibernateDataSource extends DatabaseDataSource {
 		} catch (Exception e) {
 		}
 		return null;
+	}
+
+	public void saveFans(Fans fans) {
+		Session s = getCurrentSession();
+		Transaction t = s.beginTransaction();
+		try {
+			s.save(fans);
+		} catch (Exception e) {
+		}
+		t.commit();
+	}
+
+	public void saveFollows(Follow follow) {
+		try {
+			Session s = getCurrentSession();
+			Transaction t = s.beginTransaction();
+			try {
+				s.save(follow);
+			} catch (Exception e) {
+			}
+			t.commit();
+		} catch (Exception e) {
+		}
 	}
 }

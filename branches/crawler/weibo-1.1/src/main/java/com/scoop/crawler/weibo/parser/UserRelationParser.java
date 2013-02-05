@@ -14,6 +14,8 @@ import org.openqa.selenium.WebElement;
 
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.repository.DataSource;
+import com.scoop.crawler.weibo.repository.mysql.Fans;
+import com.scoop.crawler.weibo.repository.mysql.Follow;
 import com.scoop.crawler.weibo.repository.mysql.User;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
@@ -21,12 +23,6 @@ import com.scoop.crawler.weibo.request.failed.FailedNode;
 public class UserRelationParser extends Parser {
 	public UserRelationParser(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
-	}
-
-	protected Document parseToDoc(String html, String contentPart) {
-		String detailStart = "<script>STK && STK.pageletM && STK.pageletM.view({\"pid\":\"" + contentPart + "\",";
-		String tmp = cut(html, detailStart);
-		return StringUtils.isBlank(tmp) ? null : Jsoup.parse(tmp);
 	}
 
 	protected void fetch(User u, WebDriver driver, DefaultHttpClient client, FailedNode node) {
@@ -46,22 +42,23 @@ public class UserRelationParser extends Parser {
 					Thread.sleep(2000);// 等待1s，让页面加载完毕！
 				} catch (InterruptedException e) {
 				}
-				saveRelations(client, driver, node);
+				saveRelations(u, client, driver, node);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	protected void saveRelations(DefaultHttpClient client, WebDriver driver, FailedNode node) {
+	protected void saveRelations(User u, DefaultHttpClient client, WebDriver driver, FailedNode node) {
 		String html = driver.getPageSource();
-		Document doc = null;
+		Document doc = Jsoup.parse(html);
+		Element relations = null;
 		if (FailedNode.FANS.compareTo(node) == 0) {
-			doc = parseToDoc(html, "pl_relation_hisFans");
+			relations = doc.getElementById("pl_relation_hisFans");
 		} else {
-			doc = parseToDoc(html, "pl_relation_hisFollow");
+			relations = doc.getElementById("pl_relation_hisFollow");
 		}
-		Elements eles = doc.getElementsByAttributeValue("node-type", "userListBox");
+		Elements eles = relations.getElementsByAttributeValue("node-type", "userListBox");
 		if (eles.isEmpty()) {
 			return;
 		}
@@ -78,6 +75,17 @@ public class UserRelationParser extends Parser {
 			person.setHandler(getHandler());
 			person.setNeedFetchRelation(false);
 			dataSource.savePerson(person);
+			if (FailedNode.FANS.compareTo(node) == 0) {
+				Fans fans = new Fans();
+				fans.setUserId(u.getUserId());
+				fans.setFansId(userId);
+				dataSource.saveFans(fans);
+			} else {
+				Follow follow = new Follow();
+				follow.setUserId(u.getUserId());
+				follow.setFollowId(userId);
+				dataSource.saveFollows(follow);
+			}
 		}
 		// 获取下一页的消息
 		WebElement ele = null;
@@ -94,7 +102,7 @@ public class UserRelationParser extends Parser {
 				Thread.sleep(1000);// 等待1s，让页面加载完毕！
 			} catch (InterruptedException e) {
 			}
-			saveRelations(client, driver, node);
+			saveRelations(u, client, driver, node);
 		}
 	}
 }
