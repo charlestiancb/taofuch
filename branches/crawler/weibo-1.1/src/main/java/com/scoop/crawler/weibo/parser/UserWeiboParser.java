@@ -9,6 +9,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -70,23 +71,20 @@ public class UserWeiboParser extends JsonStyleParser {
 	}
 
 	private void parseHtmlToWeibo(WebDriver driver) throws IOException {
+		System.out.println("解析用户主页的微博");
+		// 先将所有的页面加载完毕！至少点击三次下拉，这样使所有微博加载完毕！
+		try {
+			for (int i = 0; i < 4; i++) {
+				goEnd(driver);
+			}
+		} catch (Throwable e) {
+		}
 		String html = driver.getPageSource();
 		Document doc = Jsoup.parse(html);
 		Element weibos = doc.getElementById("pl_content_hisFeed");
 		if (weibos == null) {
 			return;
 		}
-		System.out.println("解析用户主页的微博");
-		// 先将所有的页面加载完毕！至少点击三次下拉，这样使所有微博加载完毕！
-		// TODO 这里要注意：每次加载可能会覆盖上一次内容
-		try {
-			driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
-			driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
-			driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
-			driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
-		} catch (Throwable e) {
-		}
-		html = driver.getPageSource();
 		// 解析出用户编号！
 		String uid = "$CONFIG['oid'] = '";
 		uid = html.substring(html.indexOf(uid)) + uid.length();
@@ -120,6 +118,17 @@ public class UserWeiboParser extends JsonStyleParser {
 				parseHtmlToWeibo(driver);
 			}
 		}
+	}
+
+	/**
+	 * 到页面的最下方，使页面中的微博自动加载！
+	 * 
+	 * @param driver
+	 */
+	private void goEnd(WebDriver driver) {
+		WebElement ele = driver.findElement(By.className("help_link"));
+		ele = ele.findElement(By.className("S_func1"));
+		((JavascriptExecutor) driver).executeScript("window.scrollTo(1," + ele.getLocation().getY() + ")");
 	}
 
 	/**
