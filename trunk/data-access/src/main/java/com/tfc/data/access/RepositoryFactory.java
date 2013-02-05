@@ -31,14 +31,6 @@ public class RepositoryFactory {
 		return repo.findKeyByValue(value);
 	}
 
-	public static String findKeyById(String id) {
-		return repo.findKeyById(id);
-	}
-
-	public static String findValueById(String id) {
-		return repo.findValueById(id);
-	}
-
 	public static void main(String[] args) {
 		save("hehehehe", "hahahahaha");
 		System.out.println(findValueByKey("hehehehe"));
