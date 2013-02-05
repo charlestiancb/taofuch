@@ -23,14 +23,14 @@ import com.scoop.crawler.weibo.util.JSONUtils;
  * @author taofucheng
  * 
  */
-public class WeiboUserParser extends JsonStyleParser {
+public class UserWeiboParser extends JsonStyleParser {
 	/**
 	 * 普通方式的微博，如：http://weibo.com/u/2675686781，这种页面的微博内容是以JSON格式组织的。
 	 * 
 	 * @param dataSource
 	 * @param handler
 	 */
-	public WeiboUserParser(DataSource dataSource, FailedHandler handler) {
+	public UserWeiboParser(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
 	}
 
