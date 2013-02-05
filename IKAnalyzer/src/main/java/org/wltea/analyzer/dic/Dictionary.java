@@ -38,11 +38,6 @@ import org.wltea.analyzer.cfg.Configuration;
  * 词典管理类,单子模式
  */
 public class Dictionary {
-	/*
-	 * 分词器默认字典路径 
-	 */
-	private static final String PATH_DIC_MAIN = "org/wltea/analyzer/dic/main2012.dic";
-	private static final String PATH_DIC_QUANTIFIER = "org/wltea/analyzer/dic/quantifier.dic";
 
 
 	/*
@@ -84,13 +79,25 @@ public class Dictionary {
 	 * 该方法提供了一个在应用加载阶段就初始化字典的手段
 	 * @return Dictionary
 	 */
-	public static Dictionary getInstance(Configuration cfg){
+	public static Dictionary initial(Configuration cfg){
 		if(singleton == null){
 			synchronized(Dictionary.class){
 				if(singleton == null){
 					singleton = new Dictionary(cfg);
+					return singleton;
 				}
 			}
+		}
+		return singleton;
+	}
+	
+	/**
+	 * 获取词典单子实例
+	 * @return Dictionary 单例对象
+	 */
+	public static Dictionary getSingleton(){
+		if(singleton == null){
+			throw new IllegalStateException("词典尚未初始化，请先调用initial方法");
 		}
 		return singleton;
 	}
@@ -99,7 +106,7 @@ public class Dictionary {
 	 * 批量加载新词条
 	 * @param words Collection<String>词条列表
 	 */
-	public static void addWords(Collection<String> words){
+	public void addWords(Collection<String> words){
 		if(words != null){
 			for(String word : words){
 				if (word != null) {
@@ -114,7 +121,7 @@ public class Dictionary {
 	 * 批量移除（屏蔽）词条
 	 * @param words
 	 */
-	public static void disableWords(Collection<String> words){
+	public void disableWords(Collection<String> words){
 		if(words != null){
 			for(String word : words){
 				if (word != null) {
@@ -130,7 +137,7 @@ public class Dictionary {
 	 * @param charArray
 	 * @return Hit 匹配结果描述
 	 */
-	public static Hit matchInMainDict(char[] charArray){
+	public Hit matchInMainDict(char[] charArray){
 		return singleton._MainDict.match(charArray);
 	}
 	
@@ -141,7 +148,7 @@ public class Dictionary {
 	 * @param length
 	 * @return Hit 匹配结果描述
 	 */
-	public static Hit matchInMainDict(char[] charArray , int begin, int length){
+	public Hit matchInMainDict(char[] charArray , int begin, int length){
 		return singleton._MainDict.match(charArray, begin, length);
 	}
 	
@@ -152,7 +159,7 @@ public class Dictionary {
 	 * @param length
 	 * @return Hit 匹配结果描述
 	 */
-	public static Hit matchInQuantifierDict(char[] charArray , int begin, int length){
+	public Hit matchInQuantifierDict(char[] charArray , int begin, int length){
 		return singleton._QuantifierDict.match(charArray, begin, length);
 	}
 	
@@ -164,7 +171,7 @@ public class Dictionary {
 	 * @param matchedHit
 	 * @return Hit
 	 */
-	public static Hit matchWithHit(char[] charArray , int currentIndex , Hit matchedHit){
+	public Hit matchWithHit(char[] charArray , int currentIndex , Hit matchedHit){
 		DictSegment ds = matchedHit.getMatchedDictSegment();
 		return ds.match(charArray, currentIndex, 1 , matchedHit);
 	}
@@ -177,7 +184,7 @@ public class Dictionary {
 	 * @param length
 	 * @return boolean
 	 */
-	public static boolean isStopWord(char[] charArray , int begin, int length){			
+	public boolean isStopWord(char[] charArray , int begin, int length){			
 		return singleton._StopWordDict.match(charArray, begin, length).isMatch();
 	}	
 	
@@ -188,7 +195,7 @@ public class Dictionary {
 		//建立一个主词典实例
 		_MainDict = new DictSegment((char)0);
 		//读取主词典文件
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream(PATH_DIC_MAIN);
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream(cfg.getMainDictionary());
         if(is == null){
         	throw new RuntimeException("Main Dictionary not found!!!");
         }
@@ -322,7 +329,7 @@ public class Dictionary {
 		//建立一个量词典实例
 		_QuantifierDict = new DictSegment((char)0);
 		//读取量词词典文件
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream(PATH_DIC_QUANTIFIER);
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream(cfg.getQuantifierDicionary());
         if(is == null){
         	throw new RuntimeException("Quantifier Dictionary not found!!!");
         }
@@ -332,7 +339,7 @@ public class Dictionary {
 			do {
 				theWord = br.readLine();
 				if (theWord != null && !"".equals(theWord.trim())) {
-					_QuantifierDict.fillSegment(theWord.trim().toCharArray());
+					_QuantifierDict.fillSegment(theWord.trim().toLowerCase().toCharArray());
 				}
 			} while (theWord != null);
 			

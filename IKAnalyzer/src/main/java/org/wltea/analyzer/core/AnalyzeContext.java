@@ -43,9 +43,9 @@ import org.wltea.analyzer.dic.Dictionary;
 class AnalyzeContext {
 	
 	//默认缓冲区大小
-	private static final int BUFF_SIZE = 3072;
+	private static final int BUFF_SIZE = 4096;
 	//缓冲区耗尽的临界值
-	private static final int BUFF_EXHAUST_CRITICAL = 48;	
+	private static final int BUFF_EXHAUST_CRITICAL = 100;	
 	
  
 	//字符窜读取缓冲
@@ -154,7 +154,7 @@ class AnalyzeContext {
      * 并处理当前字符
      */
     boolean moveCursor(){
-    	if(this.cursor < this.available){
+    	if(this.cursor < this.available - 1){
     		this.cursor++;
         	this.segmentBuff[this.cursor] = CharacterUtil.regularize(this.segmentBuff[this.cursor]);
         	this.charTypes[this.cursor] = CharacterUtil.identifyCharType(this.segmentBuff[this.cursor]);
@@ -254,9 +254,9 @@ class AnalyzeContext {
 	/**
 	 * 处理未知类型的CJK字符
 	 */
-	void processUnkownCJKChar(){
+	void outputToResult(){
 		int index = 0;
-		for( ; index < this.available ;){
+		for( ; index <= this.cursor ;){
 			//跳过标点符号等字符
 			if(CharacterUtil.CHAR_USELESS == this.charTypes[index]){
 				index++;
@@ -295,22 +295,14 @@ class AnalyzeContext {
 	 */
 	private void outputSingleCJK(int index){
 		if(CharacterUtil.CHAR_CHINESE == this.charTypes[index]){			
-			Lexeme singleCharLexeme = new Lexeme(this.buffOffset , index , 1 , Lexeme.TYPE_CNWORD);
+			Lexeme singleCharLexeme = new Lexeme(this.buffOffset , index , 1 , Lexeme.TYPE_CNCHAR);
 			this.results.add(singleCharLexeme);
 		}else if(CharacterUtil.CHAR_OTHER_CJK == this.charTypes[index]){
 			Lexeme singleCharLexeme = new Lexeme(this.buffOffset , index , 1 , Lexeme.TYPE_OTHER_CJK);
 			this.results.add(singleCharLexeme);
 		}
 	}
-		
-	/**
-	 * 判断结果集中是否还有为输出的结果
-	 * @return
-	 */
-	boolean hasNextResult(){
-		return !this.results.isEmpty();
-	}
-	
+
 	/**
 	 * 返回lexeme 
 	 * 
@@ -323,7 +315,7 @@ class AnalyzeContext {
 		while(result != null){
     		//数量词合并
     		this.compound(result);
-    		if(Dictionary.isStopWord(this.segmentBuff ,  result.getBegin() , result.getLength())){
+    		if(Dictionary.getSingleton().isStopWord(this.segmentBuff ,  result.getBegin() , result.getLength())){
        			//是停止词继续取列表的下一个
     			result = this.results.pollFirst(); 				
     		}else{
@@ -347,6 +339,7 @@ class AnalyzeContext {
     	this.cursor = 0;
     	this.results.clear();
     	this.segmentBuff = new char[BUFF_SIZE];
+    	this.pathMap.clear();
 	}
 	
 	/**
@@ -376,7 +369,7 @@ class AnalyzeContext {
 			}
 			
 			//可能存在第二轮合并
-			if(Lexeme.TYPE_CNUM == result.getLexemeType()){
+			if(Lexeme.TYPE_CNUM == result.getLexemeType() && !this.results.isEmpty()){
 				Lexeme nextLexeme = this.results.peekFirst();
 				boolean appendOk = false;
 				 if(Lexeme.TYPE_COUNT == nextLexeme.getLexemeType()){

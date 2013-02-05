@@ -39,6 +39,8 @@ public class Lexeme implements Comparable<Lexeme>{
 	public static final int TYPE_LETTER = 3;
 	//中文词元
 	public static final int TYPE_CNWORD = 4;
+	//中文单字
+	public static final int TYPE_CNCHAR = 64;
 	//日韩文字
 	public static final int TYPE_OTHER_CJK = 8;
 	//中文数词
@@ -248,6 +250,9 @@ public class Lexeme implements Comparable<Lexeme>{
 				break;
 			case TYPE_CNWORD : 
 				strbuf.append("CN_WORD");
+				break;
+			case TYPE_CNCHAR : 
+				strbuf.append("CN_CHAR");
 				break;
 			case TYPE_OTHER_CJK :
 				strbuf.append("OTHER_CJK");
