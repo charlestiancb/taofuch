@@ -55,8 +55,9 @@ public class JdbcDataSource extends DatabaseDataSource {
 	private void connect() {
 		try {
 			Class.forName(pro.getProperty(Environment.DRIVER));
-			conn = DriverManager.getConnection(pro.getProperty(Environment.URL), pro.getProperty(Environment.USER),
-					pro.getProperty(Environment.PASS));
+			conn = DriverManager.getConnection(	pro.getProperty(Environment.URL),
+												pro.getProperty(Environment.USER),
+												pro.getProperty(Environment.PASS));
 			conn.setAutoCommit(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -88,8 +89,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 		try {
 			FetchInfo fi = new FetchInfo(WeiboParser.getQuery(), id, weibo.name());
 			if (fi.needSave()) {
-				List<Map<String, Object>> records = (List<Map<String, Object>>) executeSql(EntityManager
-						.createSelectSQL(fi));
+				List<Map<String, Object>> records = (List<Map<String, Object>>) executeSql(EntityManager.createSelectSQL(fi));
 				if (records == null || records.isEmpty()) {
 					executeSql(EntityManager.createInsertSQL(fi));
 				}
@@ -197,6 +197,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 			}
 			switch (sqlObj.getType()) {
 			case INSERT:
+				return ps.execute();
 			case UPDATE:
 				return ps.executeUpdate();
 			case SELECT:
