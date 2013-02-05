@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -15,7 +16,6 @@ import com.scoop.crawler.weibo.fetch.FetchSinaWeibo;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
-import com.scoop.crawler.weibo.util.JSONUtils;
 import com.scoop.crawler.weibo.util.RegUtils;
 
 /**
@@ -60,29 +60,20 @@ public class SearchWeiboParser extends JsonStyleParser {
 
 	private void parseHtmlToWeibo(WebDriver driver) {
 		String html = driver.getPageSource();
+		Document doc = Jsoup.parse(html);
 		// 判断是否没有查询结果！
-		if (html.indexOf("<div class=\\\"search_noresult\\\">") > -1) {
+		Elements noresult = doc.getElementsByAttributeValue("class", "search_noresult");
+		if (noresult != null && noresult.size() > 0) {
 			return;
 		}
-		String hit = weiboStart;
-		int idx = html.indexOf(weiboStart);
-		if (idx == -1) {
-			idx = html.indexOf(userStart);
-			hit = userStart;
-		}
-		if (idx == -1) {
-			return;
-		}
-		String targetContentList = html.substring(idx + hit.length());
-		targetContentList = targetContentList.substring(0, targetContentList.indexOf(contentEnd));
-		targetContentList = "{" + targetContentList;// 补齐为JSON格式
-		// 将map中的html内容拿出来！
-		targetContentList = JSONUtils.getSinaHtml(targetContentList);
-		Document doc = Jsoup.parse(targetContentList);
-		if (weiboStart.equals(hit)) {
-			parseWeibo(doc);
-		} else if (userStart.equals(hit)) {
-			parseUser(doc);
+
+		Element weibo = doc.getElementById("pl_weibo_feedlist");
+		Element user = doc.getElementById("pl_user_feedlist");
+
+		if (weibo != null) {
+			parseWeibo(weibo);
+		} else if (user != null) {
+			parseUser(user);
 		}
 		// 解析下一页
 		WebElement ele = null;
@@ -110,15 +101,17 @@ public class SearchWeiboParser extends JsonStyleParser {
 	 * @param targetContentList
 	 * @throws ParserException
 	 */
-	private void parseWeibo(Document doc) {
+	private void parseWeibo(Element doc) {
 		Elements eles = doc.getElementsByClass("feed_list");
 		if (eles.size() > 0) {
 			for (int i = 0; i < eles.size(); i++) {
 				saveQuery(RegUtils.parseToQuery(FetchSina.getBaseUrl()));
 				try {
 					// 一条条的微博进行处理，解析每条微博的信息
-					parseWeibo(StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-							StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
+					parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
+								StringUtils.trim(parseMsgPublishTime(eles.get(i))),
+								getClient(),
+								dataSource);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -132,7 +125,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 	 * @param targetContentList
 	 * @throws ParserException
 	 */
-	private void parseUser(Document doc) {
+	private void parseUser(Element doc) {
 		Elements eles = doc.getElementsByClass("person_pic");
 		if (eles.size() > 0) {
 			for (int i = 0; i < eles.size(); i++) {
