@@ -15,10 +15,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import com.scoop.crawler.weibo.parser.TempUrl;
-import com.scoop.crawler.weibo.parser.UserWeiboParser;
 import com.scoop.crawler.weibo.parser.CompanyWeiboParser;
 import com.scoop.crawler.weibo.parser.SearchWeiboParser;
+import com.scoop.crawler.weibo.parser.TempUrl;
+import com.scoop.crawler.weibo.parser.UserWeiboParser;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.JdbcDataSource;
 import com.scoop.crawler.weibo.request.SinaWeiboRequest;
@@ -59,6 +59,8 @@ public class FetchSinaWeibo extends FetchSina {
 		}
 		// 然后不停滴读取页面中的微博信息
 		client = SinaWeiboRequest.getHttpClient(sinaUserName, password);
+		// 将客户端放到池中，方便调用
+		ThreadUtils.setClient(client);
 		try {
 			if (dataSource == null) {
 				dataSource = new JdbcDataSource();
