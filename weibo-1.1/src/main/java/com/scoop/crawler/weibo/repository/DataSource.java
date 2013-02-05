@@ -6,6 +6,8 @@ import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.entity.WeiboComment;
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.repository.mysql.FailedRequest;
+import com.scoop.crawler.weibo.repository.mysql.Fans;
+import com.scoop.crawler.weibo.repository.mysql.Follow;
 import com.scoop.crawler.weibo.repository.mysql.User;
 import com.scoop.crawler.weibo.repository.mysql.Weibo;
 
@@ -69,4 +71,8 @@ public interface DataSource {
 	public void saveFans(String id, List<WeiboPersonInfo> fans);
 
 	public void saveFollows(String id, List<WeiboPersonInfo> follows);
+
+	public void saveFans(Fans fans);
+
+	public void saveFollows(Follow follow);
 }

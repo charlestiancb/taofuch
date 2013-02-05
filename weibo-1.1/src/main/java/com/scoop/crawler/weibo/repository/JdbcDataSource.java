@@ -135,7 +135,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 					Fans f = new Fans();
 					f.setUserId(userId);
 					f.setFansId(fansUser.getId());
-					executeSql(EntityManager.createInsertSQL(f));
+					saveFans(f);
 				} catch (Exception e) {
 				}
 				saveUserIfNeccessory(fansUser);
@@ -156,7 +156,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 					Follow f = new Follow();
 					f.setUserId(userId);
 					f.setFollowId(followUser.getId());
-					executeSql(EntityManager.createInsertSQL(f));
+					saveFollows(f);
 				} catch (Exception e) {
 				}
 				saveUserIfNeccessory(followUser);
@@ -419,5 +419,13 @@ public class JdbcDataSource extends DatabaseDataSource {
 		sql = EntityManager.createUpdateSQL(value, where);
 		executeSql(sql);
 		return result;
+	}
+
+	public void saveFans(Fans fans) {
+		executeSql(EntityManager.createInsertSQL(fans));
+	}
+
+	public void saveFollows(Follow follow) {
+		executeSql(EntityManager.createInsertSQL(follow));
 	}
 }

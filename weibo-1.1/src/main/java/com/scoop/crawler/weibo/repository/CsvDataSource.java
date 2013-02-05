@@ -13,6 +13,8 @@ import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.entity.WeiboComment;
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.repository.mysql.FailedRequest;
+import com.scoop.crawler.weibo.repository.mysql.Fans;
+import com.scoop.crawler.weibo.repository.mysql.Follow;
 import com.scoop.crawler.weibo.repository.mysql.User;
 import com.scoop.crawler.weibo.repository.mysql.Weibo;
 
@@ -143,6 +145,16 @@ public class CsvDataSource implements DataSource {
 	}
 
 	public void saveFollows(String id, List<WeiboPersonInfo> follows) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void saveFans(Fans fans) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void saveFollows(Follow follow) {
 		// TODO Auto-generated method stub
 
 	}
