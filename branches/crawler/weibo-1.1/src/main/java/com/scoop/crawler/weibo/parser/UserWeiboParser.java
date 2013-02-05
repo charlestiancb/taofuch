@@ -78,10 +78,13 @@ public class UserWeiboParser extends JsonStyleParser {
 		System.out.println("解析用户主页的微博");
 		// 先将所有的页面加载完毕！至少点击三次下拉，这样使所有微博加载完毕！
 		// TODO 这里要注意：每次加载可能会覆盖上一次内容
-		driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
-		driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
-		driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
-		driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
+		try {
+			driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
+			driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
+			driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
+			driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
+		} catch (Throwable e) {
+		}
 		html = driver.getPageSource();
 		String weiboList = html.substring(idx + contentStart.length());
 		weiboList = weiboList.substring(0, weiboList.indexOf(contentEnd));
@@ -104,7 +107,11 @@ public class UserWeiboParser extends JsonStyleParser {
 						StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
 			}
 			// 加载下一屏的内容
-			WebElement ele = driver.findElement(By.cssSelector("div.W_pages > a.W_btn_c > span"));
+			WebElement ele = null;
+			try {
+				ele = driver.findElement(By.cssSelector("div.W_pages > a.W_btn_c > span"));
+			} catch (Exception e) {
+			}
 			if (ele != null && ele.isEnabled()) {
 				ele.click();
 				try {

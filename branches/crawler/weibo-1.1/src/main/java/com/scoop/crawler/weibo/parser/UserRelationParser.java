@@ -80,11 +80,15 @@ public class UserRelationParser extends Parser {
 			dataSource.savePerson(person);
 		}
 		// 获取下一页的消息
-		WebElement ele = driver.findElement(By.className("W_pages_comment"));
-		if (ele != null) {
-			ele = ele.findElement(By.linkText("下一页"));
+		WebElement ele = null;
+		try {
+			ele = driver.findElement(By.className("W_pages_comment"));
+			if (ele != null) {
+				ele = ele.findElement(By.linkText("下一页"));
+			}
+		} catch (Throwable e) {
 		}
-		if (ele != null) {
+		if (ele != null && ele.isEnabled()) {
 			ele.click();
 			try {
 				Thread.sleep(1000);// 等待1s，让页面加载完毕！

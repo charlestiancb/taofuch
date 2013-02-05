@@ -99,7 +99,7 @@ public class ExploreRequest {
 				Thread.sleep(5 * 1000);// 等待5s
 			}
 			return driver;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 			driver.quit();
 			System.exit(0);
