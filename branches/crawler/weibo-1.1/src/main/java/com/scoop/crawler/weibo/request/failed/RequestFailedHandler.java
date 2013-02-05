@@ -76,7 +76,7 @@ public class RequestFailedHandler extends FailedHandler {
 					FetchSinaWeibo.fetch(getClient(), getDataSource(), req.getUrl());
 					break;
 				case USER_WEIBO:
-					new WeiboCommonParser(getDataSource(), this).reTry(getClient(), req.getUrl(), null, fn);
+					new WeiboCommonParser(getDataSource(), this).reTry(getClient(), req.getUrl(), fn);
 					break;
 				case SINGLE_WEIBO:
 
