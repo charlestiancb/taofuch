@@ -77,4 +77,8 @@ public class ThreadUtils {
 		}
 		return client;
 	}
+
+	public static void setClient(DefaultHttpClient client) {
+		ThreadUtils.client = client;
+	}
 }
