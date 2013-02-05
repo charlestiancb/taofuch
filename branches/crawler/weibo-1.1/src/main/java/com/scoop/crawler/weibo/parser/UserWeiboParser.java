@@ -25,7 +25,7 @@ import com.scoop.crawler.weibo.util.JSONUtils;
  */
 public class UserWeiboParser extends JsonStyleParser {
 	/**
-	 * 普通方式的微博，如：http://weibo.com/u/2675686781，这种页面的微博内容是以JSON格式组织的。
+	 * 普通用户的微博，如：http://weibo.com/u/2675686781，这种页面的微博内容是以JSON格式组织的。
 	 * 
 	 * @param dataSource
 	 * @param handler
