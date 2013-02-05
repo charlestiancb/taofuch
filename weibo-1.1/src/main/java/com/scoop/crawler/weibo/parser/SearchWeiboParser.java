@@ -25,13 +25,13 @@ import com.scoop.crawler.weibo.util.RegUtils;
  * @author taofucheng
  * 
  */
-public class WeiboSearchParser extends JsonStyleParser {
+public class SearchWeiboParser extends JsonStyleParser {
 	private String replace = "#REPLACE#";
 	private String common = "<script>STK && STK.pageletM && STK.pageletM.view({\"pid\":\"" + replace + "\",";
 	private String weiboStart = common.replaceAll(replace, "pl_weibo_feedlist");
 	private String userStart = common.replaceAll(replace, "pl_user_feedlist");
 
-	public WeiboSearchParser(DataSource dataSource, FailedHandler handler) {
+	public SearchWeiboParser(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
 	}
 

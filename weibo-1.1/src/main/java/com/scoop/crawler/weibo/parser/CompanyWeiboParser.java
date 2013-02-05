@@ -23,9 +23,9 @@ import com.scoop.crawler.weibo.request.failed.FailedHandler;
  * @author taofucheng
  * 
  */
-public class WeiboCompanyParser extends WeiboParser {
+public class CompanyWeiboParser extends WeiboParser {
 
-	public WeiboCompanyParser(DataSource dataSource, FailedHandler handler) {
+	public CompanyWeiboParser(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
 	}
 
