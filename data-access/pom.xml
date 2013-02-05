@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.tfc</groupId>
 	<artifactId>data-access</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<description>数据读写操作。主要用于大数据量操作</description>
 	<dependencies>
 		<dependency>
