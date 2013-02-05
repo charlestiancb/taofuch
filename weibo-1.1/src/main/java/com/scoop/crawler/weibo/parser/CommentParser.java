@@ -16,7 +16,6 @@ import com.scoop.crawler.weibo.entity.WeiboComment;
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.Weibo;
-import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 
 /**
@@ -30,14 +29,14 @@ public class CommentParser extends Parser {
 		super(dataSource, handler);
 	}
 
-	public void fetchWeiboComments(Weibo w, DefaultHttpClient client) {
-		WebDriver driver = null;
+	public void fetchWeiboComments(WebDriver driver, Weibo w, DefaultHttpClient client) {
+		if (driver == null) {
+			return;
+		}
 		try {
 			// 打开微博页面，抓取其评论信息。
-			driver = ExploreRequest.getDriver(w.getUrl());
-			if (driver == null) {
-				return;
-			}
+			driver.navigate().to(w.getUrl());
+			Thread.sleep(2000);
 			System.out.println("解析评论信息……");
 			Elements eles = getComments(driver);
 			// 获取所有评论信息，并进行循环处理。

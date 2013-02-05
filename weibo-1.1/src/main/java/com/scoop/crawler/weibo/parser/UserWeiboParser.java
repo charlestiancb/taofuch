@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -15,7 +16,6 @@ import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
-import com.scoop.crawler.weibo.util.JSONUtils;
 
 /**
  * 普通用户的微博，如：http://weibo.com/u/2675686781，这种页面的微博内容是以JSON格式组织的。
@@ -71,8 +71,9 @@ public class UserWeiboParser extends JsonStyleParser {
 
 	private void parseHtmlToWeibo(WebDriver driver) throws IOException {
 		String html = driver.getPageSource();
-		int idx = html.indexOf(contentStart);
-		if (idx == -1) {
+		Document doc = Jsoup.parse(html);
+		Element weibos = doc.getElementById("pl_content_hisFeed");
+		if (weibos == null) {
 			return;
 		}
 		System.out.println("解析用户主页的微博");
@@ -86,25 +87,22 @@ public class UserWeiboParser extends JsonStyleParser {
 		} catch (Throwable e) {
 		}
 		html = driver.getPageSource();
-		String weiboList = html.substring(idx + contentStart.length());
-		weiboList = weiboList.substring(0, weiboList.indexOf(contentEnd));
-		weiboList = "{" + weiboList;// 补齐为JSON格式
 		// 解析出用户编号！
 		String uid = "$CONFIG['oid'] = '";
 		uid = html.substring(html.indexOf(uid)) + uid.length();
 		uid = uid.substring(0, uid.indexOf("';"));
 		uid = uid.substring(uid.lastIndexOf("'") + 1);
 		// 将map中的html内容拿出来！
-		weiboList = JSONUtils.getSinaHtml(weiboList);
-		Document doc = Jsoup.parse(weiboList);
-		Elements eles = doc.getElementsByAttributeValue("action-type", "feed_list_item");
+		Elements eles = weibos.getElementsByAttributeValue("action-type", "feed_list_item");
 		if (eles != null && eles.size() > 0) {
 			// 如果这样的格式存在，则说明是那种HTML格式的
 			for (int i = 0; i < eles.size(); i++) {
 				System.out.println("解析用户主页上的每一条微博");
 				// 一条条的微博进行处理，解析每条微博的信息
-				parseWeibo(StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-						StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
+				parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
+							StringUtils.trim(parseMsgPublishTime(eles.get(i))),
+							getClient(),
+							dataSource);
 			}
 			// 加载下一屏的内容
 			WebElement ele = null;

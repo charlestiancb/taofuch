@@ -30,21 +30,19 @@ public class WeiboUserRelationRunnable extends Thread implements Runnable {
 		DefaultHttpClient client = ThreadUtils.allocateHttpClient();
 		FansParser fansp = new FansParser(dataSource, handler);
 		FollowParser followP = new FollowParser(dataSource, handler);
+		WebDriver driver = ExploreRequest.getDriver("http://weibo.com/");
 		// 循环获取用户信息
 		for (User u = dataSource.getOneUnfetchedUser(); u != null; u = dataSource.getOneUnfetchedUser()) {
-			WebDriver driver = null;
 			try {
-				driver = ExploreRequest.getDriver(u.getUrl());
 				fansp.fetchFans(u, driver, client);
 				followP.fetchFollows(u, driver, client);
 			} catch (Exception e) {
 				System.err.println("解析用户信息[" + u + "]出错！");
 				e.printStackTrace();
-			} finally {
-				if (driver != null) {
-					driver.quit();
-				}
 			}
+		}
+		if (driver != null) {
+			driver.quit();
 		}
 		ThreadUtils.freeThread();
 		ThreadUtils.finishUserRelation();
