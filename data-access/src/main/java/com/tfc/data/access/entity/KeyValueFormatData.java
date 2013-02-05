@@ -1,6 +1,8 @@
 package com.tfc.data.access.entity;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
@@ -22,6 +24,18 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 
 	public KeyValueFormatData(String instanceName) {
 		this.instanceName = instanceName + System.nanoTime() + random();
+	}
+
+	public Set<Entry<K, V>> keySet() {
+		return entries;
+	}
+
+	public List<Entry<K, V>> keyList() {
+		List<Entry<K, V>> keys = new ArrayList<KeyValueFormatData.Entry<K, V>>();
+		if (!entries.isEmpty()) {
+			keys.addAll(entries);
+		}
+		return keys;
 	}
 
 	public void put(K key, V value) {
