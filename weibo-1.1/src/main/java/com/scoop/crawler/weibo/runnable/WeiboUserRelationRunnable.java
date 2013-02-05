@@ -7,6 +7,7 @@ import com.scoop.crawler.weibo.parser.FansParser;
 import com.scoop.crawler.weibo.parser.FollowParser;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.User;
+import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.util.ThreadUtils;
 
@@ -33,10 +34,11 @@ public class WeiboUserRelationRunnable extends Thread implements Runnable {
 		for (User u = dataSource.getOneUnfetchedUser(); u != null; u = dataSource.getOneUnfetchedUser()) {
 			WebDriver driver = null;
 			try {
-
+				driver = ExploreRequest.getDriver(u.getUrl());
 				fansp.fetchFans(u, driver, client);
 				followP.fetchFollows(u, driver, client);
 			} catch (Exception e) {
+				System.err.println("解析用户信息[" + u + "]出错！");
 				e.printStackTrace();
 			} finally {
 				if (driver != null) {
