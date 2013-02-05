@@ -33,8 +33,10 @@ public class CompanyWeiboParser extends WeiboParser {
 		for (int i = 0; i < eles.size(); i++) {
 			// 一条条的微博进行处理，解析每条微博的信息
 			System.out.println("解析当前微博第" + getCurPage() + "页，第" + (i + 1) + "条微博！");
-			parseWeibo(StringUtils.trim(parseMsgUrlFromHtmlStyle(eles.get(i))),
-					StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
+			parseWeibo(	StringUtils.trim(parseMsgUrlFromHtmlStyle(eles.get(i))),
+						StringUtils.trim(parseMsgPublishTime(eles.get(i))),
+						getClient(),
+						dataSource);
 			System.out.println("当前微博第" + getCurPage() + "页，第" + (i + 1) + "条微博解析完毕！");
 		}
 	}
@@ -88,7 +90,7 @@ public class CompanyWeiboParser extends WeiboParser {
 				List<WebElement> webeles = driver.findElements(By.className("btn_numWidth"));
 				if (webeles != null && webeles.size() > 0) {
 					webeles.get(webeles.size() - 1).click();
-					Thread.sleep(5 * 1000);// 等待5秒，等页面加载完毕！
+					Thread.sleep(2 * 1000);// 等待5秒，等页面加载完毕！
 					html = driver.getPageSource();
 					setCurPage(getCurPage() + 1);
 				} else {
