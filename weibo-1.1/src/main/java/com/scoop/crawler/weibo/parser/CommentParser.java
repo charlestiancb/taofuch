@@ -102,23 +102,23 @@ public class CommentParser extends Parser {
 	 * @return
 	 */
 	private Elements loadNextPage(WebDriver driver) {
-		WebElement ele = driver.findElement(By.className("comment_lists"));
-		if (ele == null) {
-			return null;
-		}
-		ele = ele.findElement(By.className("W_pages_minibtn"));
-		if (ele == null) {
-			return null;
-		}
-		ele = ele.findElement(By.linkText("下一页"));
-		if (ele == null) {
-			return null;
-		}
-		ele.click();
 		try {
+			WebElement ele = driver.findElement(By.className("comment_lists"));
+			if (ele == null) {
+				return null;
+			}
+			ele = ele.findElement(By.className("W_pages_minibtn"));
+			if (ele == null) {
+				return null;
+			}
+			ele = ele.findElement(By.linkText("下一页"));
+			if (ele == null) {
+				return null;
+			}
+			ele.click();
 			Thread.sleep(2000);// 等待两秒，等数据加载完毕！
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		} catch (Throwable e) {
+			return null;
 		}
 		return getComments(driver);
 	}
