@@ -1,22 +1,18 @@
 package com.scoop.crawler.weibo.parser;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
-import com.alibaba.fastjson.JSON;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.ExploreRequest;
-import com.scoop.crawler.weibo.request.SinaWeiboRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
 import com.scoop.crawler.weibo.util.JSONUtils;
@@ -80,6 +76,13 @@ public class WeiboCommonParser extends JsonStyleParser {
 			return;
 		}
 		System.out.println("解析用户主页的微博");
+		// 先将所有的页面加载完毕！至少点击三次下拉，这样使所有微博加载完毕！
+		// TODO 这里要注意：每次加载可能会覆盖上一次内容
+		driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
+		driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
+		driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
+		driver.findElement(By.cssSelector("div.W_miniblog_fb")).click();
+		html = driver.getPageSource();
 		String weiboList = html.substring(idx + contentStart.length());
 		weiboList = weiboList.substring(0, weiboList.indexOf(contentEnd));
 		weiboList = "{" + weiboList;// 补齐为JSON格式
@@ -97,27 +100,20 @@ public class WeiboCommonParser extends JsonStyleParser {
 			for (int i = 0; i < eles.size(); i++) {
 				System.out.println("解析用户主页上的每一条微博");
 				// 一条条的微博进行处理，解析每条微博的信息
-				parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-							StringUtils.trim(parseMsgPublishTime(eles.get(i))),
-							getClient(),
-							dataSource);
+				parseWeibo(StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
+						StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
 			}
-			// TODO 加载下一屏的内容
-
-		}
-	}
-
-	/**
-	 * 解析给定的元素中的mid属性值
-	 * 
-	 * @param e
-	 * @return
-	 */
-	private String parseId(Element e) {
-		try {
-			return e.attr("mid");
-		} catch (Exception e1) {
-			return null;
+			// 加载下一屏的内容
+			WebElement ele = driver.findElement(By.cssSelector("div.W_pages > a.W_btn_c > span"));
+			if (ele != null && ele.isEnabled()) {
+				ele.click();
+				try {
+					Thread.sleep(1000);// 等数据加载完成！
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				parseHtmlToWeibo(driver);
+			}
 		}
 	}
 
@@ -129,35 +125,16 @@ public class WeiboCommonParser extends JsonStyleParser {
 	 * @param handler
 	 * @param node
 	 */
-	public void reTry(DefaultHttpClient client, String url, FailedHandler handler, FailedNode node) {
+	public void reTry(DefaultHttpClient client, String url, FailedNode node) {
 		int idx = url.lastIndexOf("&uid=");
 		if (idx == -1) {
 			return;
 		}
-		String uid = StringUtils.trimToEmpty(url.substring(idx + "&uid=".length()));
-		String json = SinaWeiboRequest.request(client, url, getHandler(), FailedNode.USER_WEIBO);
-		String _html = (String) JSON.parseObject(json, HashMap.class).get("data");
-		Elements eles = Jsoup.parse(_html).getElementsByAttributeValue("action-type", "feed_list_item");
-		while (eles != null && eles.size() > 0) {
-			List<String> ids = new ArrayList<String>();
-			// 如果这样的格式存在，则说明是那种HTML格式的
-			for (int i = 0; i < eles.size(); i++) {
-				System.out.println("解析用户主页上的每一条微博");
-				String tmp = parseId(eles.get(i));
-				if (StringUtils.isNotBlank(tmp)) {
-					ids.add(tmp);
-				}
-				// 一条条的微博进行处理，解析每条微博的信息
-				try {
-					parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-								StringUtils.trim(parseMsgPublishTime(eles.get(i))),
-								client,
-								dataSource);
-				} catch (IOException e) {
-				}
-			}
-			// 加载下一屏的内容，并进行处理
-			eles = loadNextPage(uid, ids);
+		setClient(client);
+		try {
+			parse(url);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
