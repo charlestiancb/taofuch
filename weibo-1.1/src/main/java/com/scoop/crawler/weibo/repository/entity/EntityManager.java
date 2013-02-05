@@ -137,7 +137,7 @@ public class EntityManager {
 		// 获取所有的属性名与属性值！
 		EntitySql result = new EntitySql();
 		result.setType(SqlType.INSERT);
-		processField(entity, sql, result, " , ");
+		processField(entity, sql, result, ",");
 		if (result.getArgs().isEmpty()) {
 			return new EntitySql();// 没有值，则说明没有属性！
 		}
