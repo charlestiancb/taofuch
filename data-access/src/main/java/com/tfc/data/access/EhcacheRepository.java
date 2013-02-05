@@ -31,12 +31,15 @@ public class EhcacheRepository extends Repository {
 	private void init() {
 		if (cache == null) {
 			// 使用默认配置文件创建CacheManager
-			manager = CacheManager.create();
+			manager = CacheManager.create(EhcacheRepository.class.getResourceAsStream("/ehcache.xml"));
 			if (config != null) {
 				manager = CacheManager.create(config.getAbsolutePath());
 			}
 			// 通过manager可以生成指定名称的Cache对象
 			cache = manager.getCache("defaultCache");
+			if (cache == null) {
+				System.err.println("不正常！没有读取到相应的配置信息！！");
+			}
 		}
 	}
 
@@ -54,18 +57,6 @@ public class EhcacheRepository extends Repository {
 
 	@Override
 	public String findKeyByValue(String value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String findKeyById(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String findValueById(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

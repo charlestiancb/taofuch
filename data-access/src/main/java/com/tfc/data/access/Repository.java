@@ -7,9 +7,5 @@ public abstract class Repository {
 
 	public abstract String findKeyByValue(String value);
 
-	public abstract String findKeyById(String id);
-
-	public abstract String findValueById(String id);
-
 	public abstract void close();
 }

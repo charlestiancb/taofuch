@@ -14,33 +14,43 @@ import com.tfc.data.access.RepositoryFactory;
  */
 public class KeyValueFormatData<K, V> extends AbstractFormatData {
 	private static final String prefix = "map";
+	/** id和key的映射关系 */
+	private static final String idKeyMap = "id";
 	private String instanceName = "";
 	private Set<Entry<K, V>> entries = new LinkedHashSet<Entry<K, V>>();
+	private Class<?> keyClass;
 
 	public KeyValueFormatData(String instanceName) {
 		this.instanceName = instanceName + System.nanoTime() + random();
 	}
 
 	public void put(K key, V value) {
+		if (keyClass == null && key != null) {
+			keyClass = key.getClass();
+		}
 		if (valueClass == null && value != null) {
 			valueClass = value.getClass();
 		}
 		String store = getStoreValue(value);
 		boolean ret = RepositoryFactory.save(genarateKey(key), store);
 		if (ret) {
-			synchronized (entries) {
-				entries.add(new Entry<K, V>(this, key));
+			store = getStoreValue(key);
+			ret = RepositoryFactory.save(genarateId(size()), store);
+			if (ret) {
+				synchronized (entries) {
+					entries.add(new Entry<K, V>(this, size()));
+				}
 			}
 		}
 	}
 
-	public long size() {
+	public int size() {
 		return entries.size();
 	}
 
 	@SuppressWarnings("unchecked")
 	public V getValue(Object key) {
-		if (valueClass == null) {
+		if (key == null || valueClass == null) {
 			return null;
 		}
 		String value = RepositoryFactory.findValueByKey(genarateKey(key));
@@ -54,8 +64,28 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 		return (V) parseToObject(valueClass, value);
 	}
 
+	@SuppressWarnings("unchecked")
+	private K getKey(int id) {
+		if (keyClass == null) {
+			return null;
+		}
+		String value = RepositoryFactory.findValueByKey(genarateId(id));
+		if ("NaN".equals(value)) {
+			if (Double.class.isAssignableFrom(keyClass)) {
+				return (K) new Double("NaN");
+			} else if (Float.class.isAssignableFrom(keyClass)) {
+				return (K) new Float("NaN");
+			}
+		}
+		return (K) parseToObject(keyClass, value);
+	}
+
 	private String genarateKey(Object key) {
 		return prefix + "_" + instanceName + "_" + JSON.toJSONString(key);
+	}
+
+	private String genarateId(long size) {
+		return idKeyMap + "_" + instanceName + "_" + size;
 	}
 
 	public boolean containsKey(Object key) {
@@ -64,26 +94,26 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 
 	public static class Entry<K, V> {
 		private KeyValueFormatData<K, V> instance;
-		private K key;
+		private int id;
 
-		public Entry(KeyValueFormatData<K, V> instance, K perKey) {
-			this.key = perKey;
+		public Entry(KeyValueFormatData<K, V> instance, int id) {
+			this.id = id;
 			this.instance = instance;
 		}
 
 		public K getKey() {
-			return this.key;
+			return instance.getKey(id);
 		}
 
 		public V getValue() {
-			return (V) instance.getValue(key);
+			return (V) instance.getValue(getKey());
 		}
 
 		@SuppressWarnings("rawtypes")
 		public boolean equals(Object o) {
 			if (o instanceof Entry) {
 				String oKey = ((Entry) o).instance.instanceName + "_" + ((Entry) o).getKey();
-				return oKey.equals(instance.instanceName + "_" + key);
+				return oKey.equals(instance.instanceName + "_" + id);
 			}
 			return false;
 		}
