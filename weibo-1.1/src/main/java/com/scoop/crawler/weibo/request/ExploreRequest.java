@@ -88,7 +88,7 @@ public class ExploreRequest {
 				System.out.println("你也看到了，要输入验证码的，我做不了了！我撤了，拜拜~");
 				Thread.sleep(5 * 1000);// 等待5s
 				driver.quit();
-				System.exit(0);
+				driver = null;
 			} else {
 				driver.findElement(By.className("W_btn_g")).click();
 				Thread.sleep(2 * 1000);// 等待5s
@@ -100,7 +100,6 @@ public class ExploreRequest {
 		} catch (Throwable e) {
 			e.printStackTrace();
 			driver.quit();
-			System.exit(0);
 		}
 		return null;
 	}
