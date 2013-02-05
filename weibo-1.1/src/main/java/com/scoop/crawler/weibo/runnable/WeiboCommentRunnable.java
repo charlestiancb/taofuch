@@ -22,13 +22,17 @@ public class WeiboCommentRunnable extends Thread implements Runnable {
 	public void run() {
 		DefaultHttpClient client = ThreadUtils.allocateHttpClient();
 		CommentParser cp = new CommentParser(dataSource, handler);
-		// 整个线程使用一个webDriver，即一个浏览器界面。防止过多的登录被新浪封闭
-		WebDriver driver = ExploreRequest.getDriver("http://weibo.com/");
-		for (Weibo w = dataSource.getOneUnfetchedWeibo(); w != null; w = dataSource.getOneUnfetchedWeibo()) {
-			cp.fetchWeiboComments(driver, w, client);
-		}
-		if (driver != null) {
-			driver.quit();
+		try {
+			// 整个线程使用一个webDriver，即一个浏览器界面。防止过多的登录被新浪封闭
+			WebDriver driver = ExploreRequest.getDriver("http://weibo.com/");
+			for (Weibo w = dataSource.getOneUnfetchedWeibo(); w != null; w = dataSource.getOneUnfetchedWeibo()) {
+				cp.fetchWeiboComments(driver, w, client);
+			}
+			if (driver != null) {
+				driver.quit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		// 将线程释放
 		ThreadUtils.freeThread();
