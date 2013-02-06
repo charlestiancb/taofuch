@@ -140,4 +140,8 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 	public Set<Entry<K, V>> entrySet() {
 		return this.entries;
 	}
+
+	public boolean isEmpty() {
+		return entries.isEmpty();
+	}
 }
