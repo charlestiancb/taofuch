@@ -32,7 +32,7 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData<V> {
 	public Set<K> keySet() {
 		Set<K> keys = new LinkedHashSet<K>();
 		for (Entry<K, V> e : entries) {
-			keys.add(e.getKey());
+			keys.add(e.fetchKey());
 		}
 		return keys;
 	}
@@ -40,7 +40,7 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData<V> {
 	public List<K> keyList() {
 		List<K> keys = new ArrayList<K>();
 		for (Entry<K, V> e : entries) {
-			keys.add(e.getKey());
+			keys.add(e.fetchKey());
 		}
 		return keys;
 	}
@@ -52,10 +52,10 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData<V> {
 		if (getValueClass() == null && value != null) {
 			setValueClass(value.getClass());
 		}
-		String store = getStoreValue(value);
+		String store = processStore(value);
 		boolean ret = RepositoryFactory.save(genarateKey(key), store);
 		if (ret) {
-			store = getStoreValue(key);
+			store = processStore(key);
 			ret = RepositoryFactory.save(genarateId(size()), store);
 			if (ret) {
 				synchronized (entries) {
@@ -69,7 +69,7 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData<V> {
 		return entries.size();
 	}
 
-	public V getValue(Object key) {
+	public V get(Object key) {
 		if (key == null || getValueClass() == null) {
 			return null;
 		}
@@ -78,7 +78,7 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData<V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	private K getKey(int id) {
+	private K fetchKey(int id) {
 		if (keyClass == null) {
 			return null;
 		}
@@ -117,12 +117,12 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData<V> {
 			this.instance = instance;
 		}
 
-		public K getKey() {
-			return instance.getKey(id);
+		public K fetchKey() {
+			return instance.fetchKey(id);
 		}
 
-		public V getValue() {
-			return (V) instance.getValue(getKey());
+		public V fetchValue() {
+			return (V) instance.get(fetchKey());
 		}
 
 		public KeyValueFormatData<K, V> getInstance() {
@@ -144,7 +144,7 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData<V> {
 		@SuppressWarnings("rawtypes")
 		public boolean equals(Object o) {
 			if (o instanceof Entry) {
-				String oKey = ((Entry) o).instance.getInstanceName() + "_" + ((Entry) o).getKey();
+				String oKey = ((Entry) o).instance.getInstanceName() + "_" + ((Entry) o).fetchKey();
 				return oKey.equals(instance.getInstanceName() + "_" + id);
 			}
 			return false;

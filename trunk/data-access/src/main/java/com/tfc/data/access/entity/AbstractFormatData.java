@@ -22,7 +22,13 @@ public class AbstractFormatData<V> {
 		return "";
 	}
 
-	protected String getStoreValue(Object value) {
+	/**
+	 * 处理成要存储的样子
+	 * 
+	 * @param value
+	 * @return
+	 */
+	protected String processStore(Object value) {
 		String store = JSON.toJSONString(value);
 		if (valueClass != null && Number.class.isAssignableFrom(valueClass)) {
 			// 如果是数字，则使用String的方式存储

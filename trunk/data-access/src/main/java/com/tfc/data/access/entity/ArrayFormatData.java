@@ -48,14 +48,14 @@ public class ArrayFormatData<T> extends AbstractFormatData<T> {
 		if (getValueClass() == null && object != null) {
 			setValueClass(object.getClass());
 		}
-		String store = getStoreValue(object);
+		String store = processStore(object);
 		boolean ret = RepositoryFactory.save(genarateKey(index), store);
 		if (ret) {
 			++curLen;
 		}
 	}
 
-	public T getValue(int index) {
+	public T get(int index) {
 		if (getValueClass() == null) {
 			return null;
 		}

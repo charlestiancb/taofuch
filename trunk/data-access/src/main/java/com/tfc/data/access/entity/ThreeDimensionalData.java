@@ -33,7 +33,7 @@ public class ThreeDimensionalData<T> extends AbstractFormatData<T> {
 		if (getValueClass() == null && value != null) {
 			setValueClass(value.getClass());
 		}
-		String store = getStoreValue(value);
+		String store = processStore(value);
 		boolean ret = RepositoryFactory.save(genarateKey(x, y, z), store);
 		if (ret) {
 			xCurLen = x > xCurLen ? x : xCurLen;
@@ -42,7 +42,7 @@ public class ThreeDimensionalData<T> extends AbstractFormatData<T> {
 		}
 	}
 
-	public T getValue(int x, int y, int z) {
+	public T get(int x, int y, int z) {
 		if (getValueClass() == null) {
 			return null;
 		}
@@ -59,7 +59,7 @@ public class ThreeDimensionalData<T> extends AbstractFormatData<T> {
 	 * 
 	 * @return
 	 */
-	public int getZlen() {
+	public int zlength() {
 		return zLen > zCurLen ? zLen : zCurLen;
 	}
 
@@ -68,7 +68,7 @@ public class ThreeDimensionalData<T> extends AbstractFormatData<T> {
 	 * 
 	 * @return
 	 */
-	public int getYlen() {
+	public int ylength() {
 		return yLen > yCurLen ? yLen : yCurLen;
 	}
 
@@ -87,15 +87,15 @@ public class ThreeDimensionalData<T> extends AbstractFormatData<T> {
 	 * @param x
 	 * @return
 	 */
-	public FlatFormatData<T> getFlatData(int x) {
-		FlatFormatData<T> flat = new FlatFormatData<T>(getInstanceName(), getYlen(), getZlen());
+	public FlatFormatData<T> fetchFlatData(int x) {
+		FlatFormatData<T> flat = new FlatFormatData<T>(getInstanceName(), ylength(), zlength());
 		flat.setInstanceName(getInstanceName() + "_" + x);
 		flat.setValueClass(this.getValueClass());
 		return flat;
 	}
 
-	public ArrayFormatData<T> getArrayData(int x, int y) {
-		ArrayFormatData<T> arr = new ArrayFormatData<T>(getInstanceName(), getZlen());
+	public ArrayFormatData<T> fetchArrayData(int x, int y) {
+		ArrayFormatData<T> arr = new ArrayFormatData<T>(getInstanceName(), zlength());
 		arr.setInstanceName(getInstanceName() + "_" + x + "_" + y);
 		arr.setValueClass(this.getValueClass());
 		return arr;
