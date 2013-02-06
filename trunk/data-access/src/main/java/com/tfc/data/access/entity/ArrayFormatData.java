@@ -8,9 +8,8 @@ import com.tfc.data.access.RepositoryFactory;
  * @author taofucheng
  * 
  */
-public class ArrayFormatData<T> extends AbstractFormatData {
+public class ArrayFormatData<T> extends AbstractFormatData<T> {
 	private static final String prefix = "array";
-	private String instanceName;
 	private int len;
 	private int curLen;
 
@@ -25,12 +24,8 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 	 * @param len
 	 */
 	public ArrayFormatData(String instanceName, int len) {
-		this.instanceName = instanceName + System.nanoTime() + random();
+		this.setInstanceName(instanceName + System.nanoTime() + random());
 		this.len = len;
-	}
-
-	public void setInstanceName(String instanceName) {
-		this.instanceName = instanceName;
 	}
 
 	/**
@@ -40,7 +35,7 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 	 * @param elements
 	 */
 	public ArrayFormatData(String instanceName, T... elements) {
-		this.instanceName = instanceName;
+		this.setInstanceName(instanceName);
 		this.len = elements == null ? 0 : elements.length;
 		if (this.len > 0) {
 			for (int i = 0; i < this.len; i++) {
@@ -50,8 +45,8 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 	}
 
 	public void save(int index, T object) {
-		if (valueClass == null && object != null) {
-			valueClass = object.getClass();
+		if (getValueClass() == null && object != null) {
+			setValueClass(object.getClass());
 		}
 		String store = getStoreValue(object);
 		boolean ret = RepositoryFactory.save(genarateKey(index), store);
@@ -60,24 +55,16 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public T getValue(int index) {
-		if (valueClass == null) {
+		if (getValueClass() == null) {
 			return null;
 		}
 		String value = RepositoryFactory.findValueByKey(genarateKey(index));
-		if ("NaN".equals(value)) {
-			if (Double.class.isAssignableFrom(valueClass)) {
-				return (T) new Double("NaN");
-			} else if (Float.class.isAssignableFrom(valueClass)) {
-				return (T) new Float("NaN");
-			}
-		}
-		return (T) parseToObject(valueClass, value);
+		return parseValue(value);
 	}
 
 	private String genarateKey(int index) {
-		return prefix + "_" + instanceName + "_" + index;
+		return prefix + "_" + getInstanceName() + "_" + index;
 	}
 
 	/**

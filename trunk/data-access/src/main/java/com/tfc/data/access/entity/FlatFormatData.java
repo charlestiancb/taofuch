@@ -8,8 +8,7 @@ import com.tfc.data.access.RepositoryFactory;
  * @author taofucheng
  * 
  */
-public class FlatFormatData<T> extends AbstractFormatData {
-	private String instanceName;
+public class FlatFormatData<T> extends AbstractFormatData<T> {
 	private int xLen = 0;
 	private int yLen = 0;
 
@@ -34,13 +33,9 @@ public class FlatFormatData<T> extends AbstractFormatData {
 		if (instanceName == null) {
 			throw new IllegalArgumentException("请指定二维数组的实例名！");
 		}
-		this.instanceName = instanceName + System.nanoTime() + random();
+		setInstanceName(instanceName + System.nanoTime() + random());
 		this.xLen = xLen;
 		this.yLen = yLen;
-	}
-
-	public void setInstanceName(String instanceName) {
-		this.instanceName = instanceName;
 	}
 
 	/**
@@ -53,8 +48,8 @@ public class FlatFormatData<T> extends AbstractFormatData {
 	 * @param value
 	 */
 	public void save(int x, int y, T value) {
-		if (valueClass == null && value != null) {
-			valueClass = value.getClass();
+		if (getValueClass() == null && value != null) {
+			setValueClass(value.getClass());
 		}
 		String store = getStoreValue(value);
 		boolean ret = RepositoryFactory.save(genarateKey(x, y), store);
@@ -64,24 +59,16 @@ public class FlatFormatData<T> extends AbstractFormatData {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public T getValue(int x, int y) {
-		if (valueClass == null) {
+		if (getValueClass() == null) {
 			return null;
 		}
 		String value = RepositoryFactory.findValueByKey(genarateKey(x, y));
-		if ("NaN".equals(value)) {
-			if (Double.class.isAssignableFrom(valueClass)) {
-				return (T) new Double("NaN");
-			} else if (Float.class.isAssignableFrom(valueClass)) {
-				return (T) new Float("NaN");
-			}
-		}
-		return (T) parseToObject(valueClass, value);
+		return parseValue(value);
 	}
 
 	private String genarateKey(int x, int y) {
-		return instanceName + "_" + x + "_" + y;
+		return getInstanceName() + "_" + x + "_" + y;
 	}
 
 	/**
