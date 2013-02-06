@@ -101,6 +101,54 @@ public class ThreeDimensionalData<T> extends AbstractFormatData<T> {
 		return arr;
 	}
 
+	public int getxLen() {
+		return xLen;
+	}
+
+	public void setxLen(int xLen) {
+		this.xLen = xLen;
+	}
+
+	public int getyLen() {
+		return yLen;
+	}
+
+	public void setyLen(int yLen) {
+		this.yLen = yLen;
+	}
+
+	public int getzLen() {
+		return zLen;
+	}
+
+	public void setzLen(int zLen) {
+		this.zLen = zLen;
+	}
+
+	public int getxCurLen() {
+		return xCurLen;
+	}
+
+	public void setxCurLen(int xCurLen) {
+		this.xCurLen = xCurLen;
+	}
+
+	public int getyCurLen() {
+		return yCurLen;
+	}
+
+	public void setyCurLen(int yCurLen) {
+		this.yCurLen = yCurLen;
+	}
+
+	public int getzCurLen() {
+		return zCurLen;
+	}
+
+	public void setzCurLen(int zCurLen) {
+		this.zCurLen = zCurLen;
+	}
+
 	public static void main(String[] args) {
 		String[][][] x = new String[2][3][4];
 		for (int i = 0; i < 2; i++) {

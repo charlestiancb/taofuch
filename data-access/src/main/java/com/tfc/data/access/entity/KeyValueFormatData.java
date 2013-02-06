@@ -125,6 +125,22 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData<V> {
 			return (V) instance.getValue(getKey());
 		}
 
+		public KeyValueFormatData<K, V> getInstance() {
+			return instance;
+		}
+
+		public void setInstance(KeyValueFormatData<K, V> instance) {
+			this.instance = instance;
+		}
+
+		public int getId() {
+			return id;
+		}
+
+		public void setId(int id) {
+			this.id = id;
+		}
+
 		@SuppressWarnings("rawtypes")
 		public boolean equals(Object o) {
 			if (o instanceof Entry) {
@@ -141,5 +157,21 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData<V> {
 
 	public boolean isEmpty() {
 		return entries.isEmpty();
+	}
+
+	public Set<Entry<K, V>> getEntries() {
+		return entries;
+	}
+
+	public void setEntries(Set<Entry<K, V>> entries) {
+		this.entries = entries;
+	}
+
+	public Class<?> getKeyClass() {
+		return keyClass;
+	}
+
+	public void setKeyClass(Class<?> keyClass) {
+		this.keyClass = keyClass;
 	}
 }
