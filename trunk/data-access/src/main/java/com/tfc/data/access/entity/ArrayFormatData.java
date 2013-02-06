@@ -12,6 +12,11 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 	private static final String prefix = "array";
 	private String instanceName;
 	private int len;
+	private int curLen;
+
+	public ArrayFormatData() {
+		this("def", 0);
+	}
 
 	/**
 	 * 类似这样的定义：new int[2]
@@ -49,7 +54,10 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 			valueClass = object.getClass();
 		}
 		String store = getStoreValue(object);
-		RepositoryFactory.save(genarateKey(index), store);
+		boolean ret = RepositoryFactory.save(genarateKey(index), store);
+		if (ret) {
+			++curLen;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -78,6 +86,6 @@ public class ArrayFormatData<T> extends AbstractFormatData {
 	 * @return
 	 */
 	public int length() {
-		return len;
+		return len > curLen ? len : curLen;
 	}
 }

@@ -15,6 +15,14 @@ public class ThreeDimensionalData<T> extends AbstractFormatData {
 	private int yLen = 0;
 	private int zLen = 0;
 
+	private int xCurLen = 0;
+	private int yCurLen = 0;
+	private int zCurLen = 0;
+
+	public ThreeDimensionalData() {
+		this("def", 0, 0, 0);
+	}
+
 	public ThreeDimensionalData(String instanceName, int xLen, int yLen, int zLen) {
 		this.instanceName = instanceName + System.nanoTime() + random();
 		this.xLen = xLen;
@@ -27,7 +35,12 @@ public class ThreeDimensionalData<T> extends AbstractFormatData {
 			valueClass = value.getClass();
 		}
 		String store = getStoreValue(value);
-		RepositoryFactory.save(genarateKey(x, y, z), store);
+		boolean ret = RepositoryFactory.save(genarateKey(x, y, z), store);
+		if (ret) {
+			xCurLen = x > xCurLen ? x : xCurLen;
+			yCurLen = y > yCurLen ? y : yCurLen;
+			zCurLen = z > zCurLen ? z : zCurLen;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -56,7 +69,7 @@ public class ThreeDimensionalData<T> extends AbstractFormatData {
 	 * @return
 	 */
 	public int getZlen() {
-		return zLen;
+		return zLen > zCurLen ? zLen : zCurLen;
 	}
 
 	/**
@@ -65,7 +78,7 @@ public class ThreeDimensionalData<T> extends AbstractFormatData {
 	 * @return
 	 */
 	public int getYlen() {
-		return yLen;
+		return yLen > yCurLen ? yLen : yCurLen;
 	}
 
 	/**
@@ -74,7 +87,7 @@ public class ThreeDimensionalData<T> extends AbstractFormatData {
 	 * @return
 	 */
 	public int length() {
-		return xLen;
+		return xLen > xCurLen ? xLen : xCurLen;
 	}
 
 	/**
@@ -84,14 +97,14 @@ public class ThreeDimensionalData<T> extends AbstractFormatData {
 	 * @return
 	 */
 	public FlatFormatData<T> getFlatData(int x) {
-		FlatFormatData<T> flat = new FlatFormatData<T>(instanceName, yLen, zLen);
+		FlatFormatData<T> flat = new FlatFormatData<T>(instanceName, getYlen(), getZlen());
 		flat.setInstanceName(instanceName + "_" + x);
 		flat.valueClass = this.valueClass;
 		return flat;
 	}
 
 	public ArrayFormatData<T> getArrayData(int x, int y) {
-		ArrayFormatData<T> arr = new ArrayFormatData<T>(instanceName, zLen);
+		ArrayFormatData<T> arr = new ArrayFormatData<T>(instanceName, getZlen());
 		arr.setInstanceName(instanceName + "_" + x + "_" + y);
 		arr.valueClass = this.valueClass;
 		return arr;
