@@ -51,7 +51,7 @@ public class FlatFormatData<T> extends AbstractFormatData<T> {
 		if (getValueClass() == null && value != null) {
 			setValueClass(value.getClass());
 		}
-		String store = getStoreValue(value);
+		String store = processStore(value);
 		boolean ret = RepositoryFactory.save(genarateKey(x, y), store);
 		if (ret) {
 			xCurLen = x > xCurLen ? x : xCurLen;
@@ -59,7 +59,7 @@ public class FlatFormatData<T> extends AbstractFormatData<T> {
 		}
 	}
 
-	public T getValue(int x, int y) {
+	public T get(int x, int y) {
 		if (getValueClass() == null) {
 			return null;
 		}
