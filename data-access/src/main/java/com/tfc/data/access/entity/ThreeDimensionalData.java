@@ -9,8 +9,7 @@ import com.tfc.data.access.RepositoryFactory;
  * @author taofucheng
  * 
  */
-public class ThreeDimensionalData<T> extends AbstractFormatData {
-	private String instanceName;
+public class ThreeDimensionalData<T> extends AbstractFormatData<T> {
 	private int xLen = 0;
 	private int yLen = 0;
 	private int zLen = 0;
@@ -24,15 +23,15 @@ public class ThreeDimensionalData<T> extends AbstractFormatData {
 	}
 
 	public ThreeDimensionalData(String instanceName, int xLen, int yLen, int zLen) {
-		this.instanceName = instanceName + System.nanoTime() + random();
+		setInstanceName(instanceName + System.nanoTime() + random());
 		this.xLen = xLen;
 		this.yLen = yLen;
 		this.zLen = zLen;
 	}
 
 	public void save(int x, int y, int z, T value) {
-		if (valueClass == null && value != null) {
-			valueClass = value.getClass();
+		if (getValueClass() == null && value != null) {
+			setValueClass(value.getClass());
 		}
 		String store = getStoreValue(value);
 		boolean ret = RepositoryFactory.save(genarateKey(x, y, z), store);
@@ -43,24 +42,16 @@ public class ThreeDimensionalData<T> extends AbstractFormatData {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public T getValue(int x, int y, int z) {
-		if (valueClass == null) {
+		if (getValueClass() == null) {
 			return null;
 		}
 		String value = RepositoryFactory.findValueByKey(genarateKey(x, y, z));
-		if ("NaN".equals(value)) {
-			if (Double.class.isAssignableFrom(valueClass)) {
-				return (T) new Double("NaN");
-			} else if (Float.class.isAssignableFrom(valueClass)) {
-				return (T) new Float("NaN");
-			}
-		}
-		return (T) parseToObject(valueClass, value);
+		return parseValue(value);
 	}
 
 	private String genarateKey(int x, int y, int z) {
-		return instanceName + "_" + x + "_" + y + "_" + z;
+		return getInstanceName() + "_" + x + "_" + y + "_" + z;
 	}
 
 	/**
@@ -97,16 +88,16 @@ public class ThreeDimensionalData<T> extends AbstractFormatData {
 	 * @return
 	 */
 	public FlatFormatData<T> getFlatData(int x) {
-		FlatFormatData<T> flat = new FlatFormatData<T>(instanceName, getYlen(), getZlen());
-		flat.setInstanceName(instanceName + "_" + x);
-		flat.valueClass = this.valueClass;
+		FlatFormatData<T> flat = new FlatFormatData<T>(getInstanceName(), getYlen(), getZlen());
+		flat.setInstanceName(getInstanceName() + "_" + x);
+		flat.setValueClass(this.getValueClass());
 		return flat;
 	}
 
 	public ArrayFormatData<T> getArrayData(int x, int y) {
-		ArrayFormatData<T> arr = new ArrayFormatData<T>(instanceName, getZlen());
-		arr.setInstanceName(instanceName + "_" + x + "_" + y);
-		arr.valueClass = this.valueClass;
+		ArrayFormatData<T> arr = new ArrayFormatData<T>(getInstanceName(), getZlen());
+		arr.setInstanceName(getInstanceName() + "_" + x + "_" + y);
+		arr.setValueClass(this.getValueClass());
 		return arr;
 	}
 

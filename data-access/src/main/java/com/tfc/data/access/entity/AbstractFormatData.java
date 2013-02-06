@@ -8,8 +8,9 @@ import com.alibaba.fastjson.JSON;
  * @author taofucheng
  * 
  */
-public class AbstractFormatData {
-	protected Class<?> valueClass = null;
+public class AbstractFormatData<V> {
+	private Class<?> valueClass = null;
+	private String instanceName;
 	protected static final char[] chs = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
 
 	protected static String random() {
@@ -31,6 +32,9 @@ public class AbstractFormatData {
 	}
 
 	protected Object parseToObject(Class<?> targetElementClass, String value) {
+		if (targetElementClass == null) {
+			return null;
+		}
 		if (value != null) {
 			if (value.startsWith("{") && value.endsWith("}")) {
 				return JSON.parseObject(value, targetElementClass);
@@ -55,6 +59,34 @@ public class AbstractFormatData {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
+	protected V parseValue(String value) {
+		if ("NaN".equals(value)) {
+			if (Double.class.isAssignableFrom(getValueClass())) {
+				return (V) new Double("NaN");
+			} else if (Float.class.isAssignableFrom(getValueClass())) {
+				return (V) new Float("NaN");
+			}
+		}
+		return (V) parseToObject(getValueClass(), value);
+	}
+
+	public String getInstanceName() {
+		return instanceName;
+	}
+
+	public void setInstanceName(String instanceName) {
+		this.instanceName = instanceName;
+	}
+
+	public Class<?> getValueClass() {
+		return valueClass;
+	}
+
+	public void setValueClass(Class<?> valueClass) {
+		this.valueClass = valueClass;
+	}
+
 	public static void main(String[] args) {
 		int[][] x = new int[2][3];
 		for (int i = 0; i < 2; i++) {
@@ -65,5 +97,4 @@ public class AbstractFormatData {
 		System.err.println(x[0].length);
 		System.out.println(random());
 	}
-
 }
