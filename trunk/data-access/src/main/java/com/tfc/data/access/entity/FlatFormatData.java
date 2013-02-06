@@ -98,6 +98,30 @@ public class FlatFormatData<T> extends AbstractFormatData<T> {
 		return getxLen();
 	}
 
+	public int getxCurLen() {
+		return xCurLen;
+	}
+
+	public void setxCurLen(int xCurLen) {
+		this.xCurLen = xCurLen;
+	}
+
+	public int getyCurLen() {
+		return yCurLen;
+	}
+
+	public void setyCurLen(int yCurLen) {
+		this.yCurLen = yCurLen;
+	}
+
+	public void setxLen(int xLen) {
+		this.xLen = xLen;
+	}
+
+	public void setyLen(int yLen) {
+		this.yLen = yLen;
+	}
+
 	public static void main(String[] args) {
 		int[][] x = new int[2][3];
 		System.out.println(x.length);// 结果2

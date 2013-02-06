@@ -75,4 +75,20 @@ public class ArrayFormatData<T> extends AbstractFormatData<T> {
 	public int length() {
 		return len > curLen ? len : curLen;
 	}
+
+	public int getLen() {
+		return len;
+	}
+
+	public void setLen(int len) {
+		this.len = len;
+	}
+
+	public int getCurLen() {
+		return curLen;
+	}
+
+	public void setCurLen(int curLen) {
+		this.curLen = curLen;
+	}
 }
