@@ -13,6 +13,13 @@ public class FlatFormatData<T> extends AbstractFormatData {
 	private int xLen = 0;
 	private int yLen = 0;
 
+	private int xCurLen = 0;
+	private int yCurLen = 0;
+
+	public FlatFormatData() {
+		this("def", 0, 0);
+	}
+
 	/**
 	 * 定义一个矩阵结构
 	 * 
@@ -50,7 +57,11 @@ public class FlatFormatData<T> extends AbstractFormatData {
 			valueClass = value.getClass();
 		}
 		String store = getStoreValue(value);
-		RepositoryFactory.save(genarateKey(x, y), store);
+		boolean ret = RepositoryFactory.save(genarateKey(x, y), store);
+		if (ret) {
+			xCurLen = x > xCurLen ? x : xCurLen;
+			yCurLen = y > yCurLen ? y : yCurLen;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -79,7 +90,7 @@ public class FlatFormatData<T> extends AbstractFormatData {
 	 * @return
 	 */
 	public int getxLen() {
-		return xLen;
+		return xLen > xCurLen ? xLen : xCurLen;
 	}
 
 	/**
@@ -88,7 +99,7 @@ public class FlatFormatData<T> extends AbstractFormatData {
 	 * @return
 	 */
 	public int getyLen() {
-		return yLen;
+		return yLen > yCurLen ? yLen : yCurLen;
 	}
 
 	/**
