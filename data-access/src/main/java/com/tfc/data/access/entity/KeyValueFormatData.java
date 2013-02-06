@@ -118,6 +118,9 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 		private KeyValueFormatData<K, V> instance;
 		private int id;
 
+		public Entry() {
+		}
+
 		public Entry(KeyValueFormatData<K, V> instance, int id) {
 			this.id = id;
 			this.instance = instance;
