@@ -26,14 +26,18 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData {
 		this.instanceName = instanceName + System.nanoTime() + random();
 	}
 
-	public Set<Entry<K, V>> keySet() {
-		return entries;
+	public Set<K> keySet() {
+		Set<K> keys = new LinkedHashSet<K>();
+		for (Entry<K, V> e : entries) {
+			keys.add(e.getKey());
+		}
+		return keys;
 	}
 
-	public List<Entry<K, V>> keyList() {
-		List<Entry<K, V>> keys = new ArrayList<KeyValueFormatData.Entry<K, V>>();
-		if (!entries.isEmpty()) {
-			keys.addAll(entries);
+	public List<K> keyList() {
+		List<K> keys = new ArrayList<K>();
+		for (Entry<K, V> e : entries) {
+			keys.add(e.getKey());
 		}
 		return keys;
 	}
