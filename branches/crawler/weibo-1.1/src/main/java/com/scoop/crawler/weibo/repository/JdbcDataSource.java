@@ -71,11 +71,11 @@ public class JdbcDataSource extends DatabaseDataSource {
 		try {
 			if (!isWeiboExists(weibo.getId())) {
 				executeSql(EntityManager.createInsertSQL(EntityTransfer.parseWeibo(weibo)));
+				saveFetchIfNeccessory(weibo.getId(), FetchType.weibo);
+				saveUserIfNeccessory(weibo.getPublisher());
 			}
 		} catch (Exception e) {
 		}
-		saveFetchIfNeccessory(weibo.getId(), FetchType.weibo);
-		saveUserIfNeccessory(weibo.getPublisher());
 	}
 
 	/**
@@ -111,10 +111,10 @@ public class JdbcDataSource extends DatabaseDataSource {
 		try {
 			if (!isCommentExists(comment.getId())) {
 				executeSql(EntityManager.createInsertSQL(EntityTransfer.parseComment(comment)));
+				savePerson(comment.getPerson());
 			}
 		} catch (Exception e) {
 		}
-		savePerson(comment.getPerson());
 	}
 
 	public void savePerson(WeiboPersonInfo person) {

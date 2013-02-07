@@ -24,6 +24,8 @@ import com.scoop.crawler.weibo.repository.JdbcDataSource;
 import com.scoop.crawler.weibo.request.SinaWeiboRequest;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
 import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
+import com.scoop.crawler.weibo.runnable.WeiboCommentRunnable;
+import com.scoop.crawler.weibo.runnable.WeiboUserRelationRunnable;
 import com.scoop.crawler.weibo.util.ThreadUtils;
 
 /**
@@ -84,6 +86,15 @@ public class FetchSinaWeibo extends FetchSina {
 				fetch(client, dataSource, weiboBaseUrl);
 				saveBaseUrl(null);
 			}
+			// 微博抓取完毕之后同时抓取评论与用户信息。
+			// 处理评论与转发的信息、以及评论者的个人信息。
+			WeiboCommentRunnable run = new WeiboCommentRunnable(dataSource, handler);
+			run.run();
+			// ThreadUtils.executeCommnet(run);
+			// 重启线程专门存储用户关系
+			WeiboUserRelationRunnable userRun = new WeiboUserRelationRunnable(dataSource, handler);
+			userRun.run();
+			// ThreadUtils.executeUserRelation(userRun);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -174,17 +185,17 @@ public class FetchSinaWeibo extends FetchSina {
 			Elements eles = doc.getElementsByClass("MIB_feed_c");
 			if (eles.size() > 0 || html.indexOf("</html><!-- 以上是企业微博的iframe -->") > -1) {
 				// 如果这样的格式存在，则说明是那种HTML格式的，如：http://gov.weibo.com/profile.php?uid=sciencenet&ref=
-				CompanyWeiboParser htmlParser = new CompanyWeiboParser(dataSource, handler);
-				htmlParser.parse(tmpUrl);
+				CompanyWeiboParser userParser = new CompanyWeiboParser(dataSource, handler);
+				userParser.parse(tmpUrl);
 			} else {
 				// 否则就是那种js的json格式的内容方式，使用json的方式进行解析
-				UserWeiboParser commonParser = new UserWeiboParser(dataSource, handler);
+				UserWeiboParser userParser = new UserWeiboParser(dataSource, handler);
 				SearchWeiboParser searchParser = new SearchWeiboParser(dataSource, handler);
 				if (searchParser.isBelong(html)) {
 					searchParser.parse(tmpUrl);
-				} else if (commonParser.isBelong(html)) {
-					commonParser.setCurUrl(weiboUrl);
-					commonParser.parse(tmpUrl);
+				} else if (userParser.isBelong(html)) {
+					userParser.setCurUrl(weiboUrl);
+					userParser.parse(tmpUrl);
 				} else {
 					System.out.println("内容不符合预定的解析规则");
 					return;
