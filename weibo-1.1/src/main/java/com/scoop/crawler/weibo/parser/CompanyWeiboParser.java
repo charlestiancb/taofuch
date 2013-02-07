@@ -80,6 +80,7 @@ public class CompanyWeiboParser extends WeiboParser {
 			String html = driver.getPageSource();
 			setCurPage(1);
 			while (StringUtils.isNotBlank(html)) {
+				goEnd(driver);
 				Document doc = Jsoup.parse(html);
 				// 将一条条的微博根据标签的特征统一取出来
 				Elements eles = doc.getElementsByClass("MIB_feed_c");

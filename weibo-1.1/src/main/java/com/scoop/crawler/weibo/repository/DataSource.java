@@ -72,7 +72,17 @@ public interface DataSource {
 
 	public void saveFollows(String id, List<WeiboPersonInfo> follows);
 
+	/**
+	 * 只保存user_fans表中记录。不需要同时保存用户信息
+	 * 
+	 * @param fans
+	 */
 	public void saveFans(Fans fans);
 
+	/**
+	 * 只保存user_follow表中记录。不需要同时保存用户信息
+	 * 
+	 * @param follow
+	 */
 	public void saveFollows(Follow follow);
 }

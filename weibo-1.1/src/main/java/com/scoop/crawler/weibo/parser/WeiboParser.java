@@ -6,13 +6,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 
 import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
-import com.scoop.crawler.weibo.runnable.WeiboCommentRunnable;
-import com.scoop.crawler.weibo.runnable.WeiboUserRelationRunnable;
-import com.scoop.crawler.weibo.util.ThreadUtils;
 
 public abstract class WeiboParser extends Parser {
 	private int curPage = 1;
@@ -49,8 +48,7 @@ public abstract class WeiboParser extends Parser {
 	 *            微博的发布时间
 	 * @throws IOException
 	 */
-	protected void parseWeibo(String weiboUrl, String publishTime, DefaultHttpClient client, DataSource dataSource)
-			throws IOException {
+	protected void parseWeibo(String weiboUrl, String publishTime, DefaultHttpClient client, DataSource dataSource) throws IOException {
 		OneWeiboInfo weibo = new OneWeiboInfo(weiboUrl, client);
 		weibo.setHandler(getHandler());
 		if (!weibo.isValid()) {
@@ -60,12 +58,14 @@ public abstract class WeiboParser extends Parser {
 		}
 		weibo.setPublishTime(publishTime);
 		dataSource.saveWeibo(weibo);
-		// 处理评论与转发的信息、以及评论者的个人信息。
-		WeiboCommentRunnable run = new WeiboCommentRunnable(dataSource, weibo.getHandler());
-		ThreadUtils.executeCommnet(run);
-		// 重启线程专门存储用户关系
-		WeiboUserRelationRunnable userRun = new WeiboUserRelationRunnable(dataSource, weibo.getHandler());
-		ThreadUtils.executeUserRelation(userRun);
+		// // 处理评论与转发的信息、以及评论者的个人信息。
+		// WeiboCommentRunnable run = new WeiboCommentRunnable(dataSource,
+		// weibo.getHandler());
+		// ThreadUtils.executeCommnet(run);
+		// // 重启线程专门存储用户关系
+		// WeiboUserRelationRunnable userRun = new
+		// WeiboUserRelationRunnable(dataSource, weibo.getHandler());
+		// ThreadUtils.executeUserRelation(userRun);
 	}
 
 	/**
@@ -84,6 +84,15 @@ public abstract class WeiboParser extends Parser {
 			return StringUtils.trim(date);
 		}
 		return "";
+	}
+
+	/**
+	 * 到页面的最下方，使页面中的微博自动加载！
+	 * 
+	 * @param driver
+	 */
+	protected void goEnd(WebDriver driver) {
+		((JavascriptExecutor) driver).executeScript("window.scrollTo(1,10000)");
 	}
 
 	public int getCurPage() {
