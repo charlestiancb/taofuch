@@ -9,6 +9,7 @@ import com.tfc.data.access.RepositoryFactory;
  * 
  */
 public class FlatFormatData<T> extends AbstractFormatData<T> {
+	private static final long serialVersionUID = 8216122918524465126L;
 	private int xLen = 0;
 	private int yLen = 0;
 

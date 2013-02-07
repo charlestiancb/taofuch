@@ -10,6 +10,7 @@ import com.tfc.data.access.RepositoryFactory;
  * 
  */
 public class ThreeDimensionalData<T> extends AbstractFormatData<T> {
+	private static final long serialVersionUID = -4712909737319754282L;
 	private int xLen = 0;
 	private int yLen = 0;
 	private int zLen = 0;

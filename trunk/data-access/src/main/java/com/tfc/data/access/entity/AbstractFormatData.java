@@ -1,5 +1,7 @@
 package com.tfc.data.access.entity;
 
+import java.io.Serializable;
+
 import com.alibaba.fastjson.JSON;
 
 /**
@@ -8,7 +10,8 @@ import com.alibaba.fastjson.JSON;
  * @author taofucheng
  * 
  */
-public class AbstractFormatData<V> {
+public class AbstractFormatData<V> implements Serializable {
+	private static final long serialVersionUID = 4325097034202337802L;
 	private Class<?> valueClass = null;
 	private String instanceName;
 	protected static final char[] chs = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
