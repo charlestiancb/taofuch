@@ -15,6 +15,7 @@ import com.tfc.data.access.RepositoryFactory;
  * 
  */
 public class KeyValueFormatData<K, V> extends AbstractFormatData<V> {
+	private static final long serialVersionUID = 298567781895600062L;
 	private static final String prefix = "map";
 	/** id和key的映射关系 */
 	private static final String idKeyMap = "id";

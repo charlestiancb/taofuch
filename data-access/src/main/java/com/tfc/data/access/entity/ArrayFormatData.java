@@ -9,6 +9,7 @@ import com.tfc.data.access.RepositoryFactory;
  * 
  */
 public class ArrayFormatData<T> extends AbstractFormatData<T> {
+	private static final long serialVersionUID = 8836924284059589348L;
 	private static final String prefix = "array";
 	private int len;
 	private int curLen;
