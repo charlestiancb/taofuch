@@ -25,6 +25,10 @@ public class WeiboCommentRunnable extends Thread implements Runnable {
 		try {
 			// 整个线程使用一个webDriver，即一个浏览器界面。防止过多的登录被新浪封闭
 			WebDriver driver = ExploreRequest.getDriver("http://weibo.com/");
+			if (driver == null) {
+				System.out.println("浏览器打开失败！停止运行！");
+				System.exit(0);
+			}
 			for (Weibo w = dataSource.getOneUnfetchedWeibo(); w != null; w = dataSource.getOneUnfetchedWeibo()) {
 				cp.fetchWeiboComments(driver, w, client);
 			}

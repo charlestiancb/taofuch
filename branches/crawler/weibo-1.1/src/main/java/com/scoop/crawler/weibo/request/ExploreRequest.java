@@ -91,7 +91,7 @@ public class ExploreRequest {
 				driver = null;
 			} else {
 				driver.findElement(By.className("W_btn_g")).click();
-				Thread.sleep(2 * 1000);// 等待5s
+				Thread.sleep(5 * 1000);// 等待5s
 				// 解析页面
 				driver.navigate().to(url);// 打开指定页面
 				Thread.sleep(3 * 1000);// 等待5s

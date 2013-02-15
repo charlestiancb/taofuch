@@ -32,6 +32,10 @@ public class WeiboUserRelationRunnable extends Thread implements Runnable {
 		FollowParser followP = new FollowParser(dataSource, handler);
 		try {
 			WebDriver driver = ExploreRequest.getDriver("http://weibo.com/");
+			if (driver == null) {
+				System.out.println("浏览器打开失败！停止运行！");
+				System.exit(0);
+			}
 			// 循环获取用户信息
 			for (User u = dataSource.getOneUnfetchedUser(); u != null; u = dataSource.getOneUnfetchedUser()) {
 				try {

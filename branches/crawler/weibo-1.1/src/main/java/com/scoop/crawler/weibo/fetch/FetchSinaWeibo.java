@@ -185,8 +185,8 @@ public class FetchSinaWeibo extends FetchSina {
 			Elements eles = doc.getElementsByClass("MIB_feed_c");
 			if (eles.size() > 0 || html.indexOf("</html><!-- 以上是企业微博的iframe -->") > -1) {
 				// 如果这样的格式存在，则说明是那种HTML格式的，如：http://gov.weibo.com/profile.php?uid=sciencenet&ref=
-				CompanyWeiboParser userParser = new CompanyWeiboParser(dataSource, handler);
-				userParser.parse(tmpUrl);
+				CompanyWeiboParser companyParser = new CompanyWeiboParser(dataSource, handler);
+				companyParser.parse(tmpUrl);
 			} else {
 				// 否则就是那种js的json格式的内容方式，使用json的方式进行解析
 				UserWeiboParser userParser = new UserWeiboParser(dataSource, handler);
