@@ -76,14 +76,14 @@ public class FetchSinaWeibo extends FetchSina {
 					Set<String> urls = parseUrls(weiboBaseUrl, wordsFile);
 					for (String url : urls) {
 						saveBaseUrl(new TempUrl(weiboBaseUrl, url));
-						fetch(client, dataSource, url);
+						fetch(client, dataSource, url, wordsFiles);
 						saveBaseUrl(null);
 					}
 				}
 			} else {
 				System.out.println("没有词文件指定文件，使用指定的url");
 				saveBaseUrl(new TempUrl(weiboBaseUrl, weiboBaseUrl));
-				fetch(client, dataSource, weiboBaseUrl);
+				fetch(client, dataSource, weiboBaseUrl, null);
 				saveBaseUrl(null);
 			}
 			// 微博抓取完毕之后同时抓取评论与用户信息。
@@ -164,7 +164,12 @@ public class FetchSinaWeibo extends FetchSina {
 	 * @param weiboUrl
 	 * @param csvFile
 	 */
-	public static void fetch(DefaultHttpClient client, DataSource dataSource, String weiboUrl) {
+	public static void fetch(DefaultHttpClient client, DataSource dataSource, String weiboUrl, String[] wordsFiles) {
+		if (weiboUrl.startsWith("http://s.weibo.com/") || weiboUrl.startsWith("https://s.weibo.com/")
+				|| weiboUrl.startsWith("s.weibo.com/")) {
+			SearchWeiboParser weiboParser = new SearchWeiboParser(dataSource, handler);
+			weiboParser.parse(wordsFiles);
+		}
 		String tmpUrl = getRealUrl(weiboUrl);
 		if (tmpUrl.isEmpty()) {
 			System.out.println("指定的抓取url为空！不处理！");
