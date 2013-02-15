@@ -172,11 +172,15 @@ public class SearchWeiboParser extends JsonStyleParser {
 						if (StringUtils.isBlank(word)) {
 							continue;
 						} else {
-							// TODO 输入到输入框中，然后点击查询，并开始解析！
+							// 输入到输入框中，然后点击查询，并开始解析！
+							driver.findElements(By.className("searchInp_form")).get(0).sendKeys(word);
+							driver.findElements(By.className("searchBtn")).get(0).click();
+							Thread.sleep(2000);
 							parseHtmlToWeibo(driver);
 						}
 					}
 				} catch (Throwable t) {
+					// t.printStackTrace();
 				}
 			}
 		}
