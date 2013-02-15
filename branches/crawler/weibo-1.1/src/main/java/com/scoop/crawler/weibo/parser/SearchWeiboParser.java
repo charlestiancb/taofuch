@@ -1,6 +1,9 @@
 package com.scoop.crawler.weibo.parser;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
@@ -136,9 +139,44 @@ public class SearchWeiboParser extends JsonStyleParser {
 				try {
 					String userUrl = eles.get(0).child(0).attr("href");
 					// 解析用户信息。
-					FetchSinaWeibo.fetch(getClient(), dataSource, userUrl);
+					FetchSinaWeibo.fetch(getClient(), dataSource, userUrl, null);
 				} catch (Exception e) {
 					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	/**
+	 * 根据指定的文件中每行指定的词进行搜索！
+	 * 
+	 * @param wordsFiles
+	 */
+	@SuppressWarnings("resource")
+	public void parse(String[] wordsFiles) {
+		// 循环读取每行中的词，如果词不为空，则读取并进行查询！
+		if (wordsFiles != null && wordsFiles.length > 0) {
+			WebDriver driver = ExploreRequest.getDriver("http://s.weibo.com/weibo/AI");
+			if (driver == null) {
+				System.out.println("打开浏览器失败！停止工作！");
+			}
+			for (String file : wordsFiles) {
+
+				file = StringUtils.trim(file);
+				if (StringUtils.isEmpty(file)) {
+					continue;
+				}
+				try {
+					BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "GBK"));
+					for (String word = br.readLine(); word != null; word = br.readLine()) {
+						if (StringUtils.isBlank(word)) {
+							continue;
+						} else {
+							// TODO 输入到输入框中，然后点击查询，并开始解析！
+							parseHtmlToWeibo(driver);
+						}
+					}
+				} catch (Throwable t) {
 				}
 			}
 		}
