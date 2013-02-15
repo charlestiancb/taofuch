@@ -173,6 +173,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 							continue;
 						} else {
 							// 输入到输入框中，然后点击查询，并开始解析！
+							driver.findElements(By.className("searchInp_form")).get(0).clear();
 							driver.findElements(By.className("searchInp_form")).get(0).sendKeys(word);
 							driver.findElements(By.className("searchBtn")).get(0).click();
 							Thread.sleep(2000);
