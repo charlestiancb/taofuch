@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.UnreachableBrowserException;
 
 import com.scoop.crawler.weibo.entity.LogonInfo;
 
@@ -97,6 +98,9 @@ public class ExploreRequest {
 				Thread.sleep(3 * 1000);// 等待5s
 			}
 			return driver;
+		} catch (UnreachableBrowserException e) {
+			// 超时的情况不鸟它！
+			System.out.println("页面中有超时的链接，应该不影响结果，继续操作！");
 		} catch (Throwable e) {
 			e.printStackTrace();
 			driver.quit();
