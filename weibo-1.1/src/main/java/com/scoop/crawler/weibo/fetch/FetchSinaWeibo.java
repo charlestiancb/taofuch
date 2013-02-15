@@ -71,6 +71,12 @@ public class FetchSinaWeibo extends FetchSina {
 				handler = new RequestFailedHandler(client, dataSource);
 			}
 			handler.reTry();
+			if (weiboBaseUrl.startsWith("http://s.weibo.com/") || weiboBaseUrl.startsWith("https://s.weibo.com/")
+					|| weiboBaseUrl.startsWith("s.weibo.com/")) {
+				SearchWeiboParser weiboParser = new SearchWeiboParser(dataSource, handler);
+				weiboParser.parse(wordsFiles);
+				return true;
+			}
 			if (wordsFiles != null && wordsFiles.length > 0) {
 				for (String wordsFile : wordsFiles) {
 					Set<String> urls = parseUrls(weiboBaseUrl, wordsFile);
@@ -165,11 +171,6 @@ public class FetchSinaWeibo extends FetchSina {
 	 * @param csvFile
 	 */
 	public static void fetch(DefaultHttpClient client, DataSource dataSource, String weiboUrl, String[] wordsFiles) {
-		if (weiboUrl.startsWith("http://s.weibo.com/") || weiboUrl.startsWith("https://s.weibo.com/")
-				|| weiboUrl.startsWith("s.weibo.com/")) {
-			SearchWeiboParser weiboParser = new SearchWeiboParser(dataSource, handler);
-			weiboParser.parse(wordsFiles);
-		}
 		String tmpUrl = getRealUrl(weiboUrl);
 		if (tmpUrl.isEmpty()) {
 			System.out.println("指定的抓取url为空！不处理！");
