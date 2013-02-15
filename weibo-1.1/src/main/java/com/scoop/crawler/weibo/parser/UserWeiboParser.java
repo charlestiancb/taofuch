@@ -59,6 +59,10 @@ public class UserWeiboParser extends JsonStyleParser {
 		WebDriver driver = null;
 		try {
 			driver = ExploreRequest.getDriver(url);
+			if (driver == null) {
+				System.out.println("浏览器打开失败！停止运行！");
+				System.exit(0);
+			}
 			parseHtmlToWeibo(driver);
 		} catch (Exception e) {
 			e.printStackTrace();
