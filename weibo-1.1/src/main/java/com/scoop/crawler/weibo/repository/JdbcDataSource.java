@@ -82,12 +82,12 @@ public class JdbcDataSource extends DatabaseDataSource {
 	 * 保存抓取信息
 	 * 
 	 * @param id
-	 * @param weibo
+	 * @param type
 	 */
 	@SuppressWarnings("unchecked")
-	private void saveFetchIfNeccessory(String id, FetchType weibo) {
+	private void saveFetchIfNeccessory(String id, FetchType type) {
 		try {
-			FetchInfo fi = new FetchInfo(WeiboParser.getQuery(), id, weibo.name());
+			FetchInfo fi = new FetchInfo(WeiboParser.getQuery(), id, type.name());
 			if (fi.needSave()) {
 				List<Map<String, Object>> records = (List<Map<String, Object>>) executeSql(EntityManager.createSelectSQL(fi));
 				if (records == null || records.isEmpty()) {

@@ -17,7 +17,6 @@ import org.jsoup.select.Elements;
 
 import com.scoop.crawler.weibo.parser.CompanyWeiboParser;
 import com.scoop.crawler.weibo.parser.SearchWeiboParser;
-import com.scoop.crawler.weibo.parser.TempUrl;
 import com.scoop.crawler.weibo.parser.UserWeiboParser;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.JdbcDataSource;
@@ -72,26 +71,20 @@ public class FetchSinaWeibo extends FetchSina {
 				handler = new RequestFailedHandler(client, dataSource);
 			}
 			handler.reTry();
-			if (weiboBaseUrl.startsWith("http://s.weibo.com/") || weiboBaseUrl.startsWith("https://s.weibo.com/")
-					|| weiboBaseUrl.startsWith("s.weibo.com/")) {
+			if (weiboBaseUrl.startsWith("http://s.weibo.com") || weiboBaseUrl.startsWith("https://s.weibo.com")
+					|| weiboBaseUrl.startsWith("s.weibo.com")) {
 				SearchWeiboParser weiboParser = new SearchWeiboParser(dataSource, handler);
 				weiboParser.parse(wordsFiles);
-				return true;
-			}
-			if (wordsFiles != null && wordsFiles.length > 0) {
+			} else if (wordsFiles != null && wordsFiles.length > 0) {
 				for (String wordsFile : wordsFiles) {
 					Set<String> urls = parseUrls(weiboBaseUrl, wordsFile);
 					for (String url : urls) {
-						saveBaseUrl(new TempUrl(weiboBaseUrl, url));
 						fetch(client, dataSource, url, wordsFiles);
-						saveBaseUrl(null);
 					}
 				}
 			} else {
 				System.out.println("没有词文件指定文件，使用指定的url");
-				saveBaseUrl(new TempUrl(weiboBaseUrl, weiboBaseUrl));
 				fetch(client, dataSource, weiboBaseUrl, null);
-				saveBaseUrl(null);
 			}
 			// 微博抓取完毕之后同时抓取评论与用户信息。
 			// 处理评论与转发的信息、以及评论者的个人信息。
