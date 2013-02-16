@@ -14,12 +14,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import com.scoop.crawler.weibo.fetch.FetchSina;
 import com.scoop.crawler.weibo.fetch.FetchSinaWeibo;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
-import com.scoop.crawler.weibo.util.RegUtils;
 
 /**
  * 微博搜索结果方式的微博，如：http://s.weibo.com/weibo/%25E7%25AF%25AE%25E7%2590%2583?topnav
@@ -112,13 +110,10 @@ public class SearchWeiboParser extends JsonStyleParser {
 		Elements eles = doc.getElementsByClass("feed_list");
 		if (eles.size() > 0) {
 			for (int i = 0; i < eles.size(); i++) {
-				saveQuery(RegUtils.parseToQuery(FetchSina.getBaseUrl()));
 				try {
 					// 一条条的微博进行处理，解析每条微博的信息
-					parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-								StringUtils.trim(parseMsgPublishTime(eles.get(i))),
-								getClient(),
-								dataSource);
+					parseWeibo(StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
+							StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -161,7 +156,6 @@ public class SearchWeiboParser extends JsonStyleParser {
 				System.out.println("打开浏览器失败！停止工作！");
 			}
 			for (String file : wordsFiles) {
-
 				file = StringUtils.trim(file);
 				if (StringUtils.isEmpty(file)) {
 					continue;
@@ -172,6 +166,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 						if (StringUtils.isBlank(word)) {
 							continue;
 						} else {
+							saveQuery(word);
 							// 输入到输入框中，然后点击查询，并开始解析！
 							driver.findElements(By.className("searchInp_form")).get(0).clear();
 							driver.findElements(By.className("searchInp_form")).get(0).sendKeys(word);
@@ -181,8 +176,10 @@ public class SearchWeiboParser extends JsonStyleParser {
 						}
 					}
 				} catch (Throwable t) {
+					System.out.println("当前文件[" + file + "]处理过程中出现问题，继续下一个文件操作！");
 					// t.printStackTrace();
 				}
+				saveQuery(null);
 			}
 		}
 	}

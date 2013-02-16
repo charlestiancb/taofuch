@@ -4,8 +4,6 @@ import java.net.URLDecoder;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.scoop.crawler.weibo.parser.TempUrl;
-
 public class RegUtils {
 	/**
 	 * 根据指定的带有变量的url解析出当前查询的url的内容！
@@ -34,12 +32,5 @@ public class RegUtils {
 		} catch (Exception e) {
 		}
 		return StringUtils.isBlank(queryUrl) ? origUrl : queryUrl;
-	}
-
-	public static String parseToQuery(TempUrl baseUrl) {
-		if (baseUrl == null) {
-			return "【没有内容】";
-		}
-		return parseToQuery(baseUrl.getOrigUrl(), baseUrl.getReqUrl());
 	}
 }

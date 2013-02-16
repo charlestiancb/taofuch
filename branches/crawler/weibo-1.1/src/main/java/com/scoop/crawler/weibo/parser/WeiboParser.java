@@ -22,7 +22,7 @@ public abstract class WeiboParser extends Parser {
 	}
 
 	/**
-	 * 保存用户在URL中查询的具体词语！。
+	 * 保存用户查询的具体词语！。
 	 * 
 	 * @param url
 	 */
@@ -31,7 +31,7 @@ public abstract class WeiboParser extends Parser {
 	}
 
 	/**
-	 * 获取用户给定的当前URL。
+	 * 获取用户给定的查询词语。
 	 * 
 	 * @return
 	 */
@@ -48,7 +48,8 @@ public abstract class WeiboParser extends Parser {
 	 *            微博的发布时间
 	 * @throws IOException
 	 */
-	protected void parseWeibo(String weiboUrl, String publishTime, DefaultHttpClient client, DataSource dataSource) throws IOException {
+	protected void parseWeibo(String weiboUrl, String publishTime, DefaultHttpClient client, DataSource dataSource)
+			throws IOException {
 		OneWeiboInfo weibo = new OneWeiboInfo(weiboUrl, client);
 		weibo.setHandler(getHandler());
 		if (!weibo.isValid()) {
