@@ -58,8 +58,6 @@ public class FetchSinaWeibo extends FetchSina {
 		if (StringUtils.isBlank(weiboBaseUrl)) {
 			return false;
 		}
-		// TODO 开始的过程需要优化、记录搜索的词与对应的微博功能需要优化
-		// 然后不停滴读取页面中的微博信息
 		client = SinaWeiboRequest.getHttpClient(sinaUserName, password);
 		// 将客户端放到池中，方便调用
 		ThreadUtils.setClient(client);
