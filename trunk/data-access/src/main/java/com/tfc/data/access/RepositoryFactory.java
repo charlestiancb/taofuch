@@ -7,8 +7,8 @@ package com.tfc.data.access;
  * 
  */
 public class RepositoryFactory {
-	// new LuceneRepository();EhcacheRepository();
-	private static Repository repo = new EhcacheRepository();
+	// new LuceneRepository();EhcacheRepository();MysqlRepository();
+	private static Repository repo = new MysqlRepository();
 
 	private RepositoryFactory() {
 	}
