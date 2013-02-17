@@ -12,7 +12,7 @@ public class ArrayFormatData<T> extends AbstractFormatData<T> {
 	private static final long serialVersionUID = 8836924284059589348L;
 	private static final String prefix = "array";
 	private int len;
-	private int curLen;
+	private int curLen = 0;
 
 	public ArrayFormatData() {
 		this("def", 0);
@@ -91,5 +91,14 @@ public class ArrayFormatData<T> extends AbstractFormatData<T> {
 
 	public void setCurLen(int curLen) {
 		this.curLen = curLen;
+	}
+
+	public boolean contains(T obj) {
+		String store = processStore(obj);
+		return RepositoryFactory.findKeyByValue(store) != null;
+	}
+
+	public void add(T obj) {
+		save(curLen, obj);
 	}
 }

@@ -32,10 +32,12 @@ public class AbstractFormatData<V> implements Serializable {
 	 * @return
 	 */
 	protected String processStore(Object value) {
-		String store = JSON.toJSONString(value);
+		String store = null;
 		if (valueClass != null && Number.class.isAssignableFrom(valueClass)) {
 			// 如果是数字，则使用String的方式存储
 			store = String.valueOf(value);
+		} else {
+			store = JSON.toJSONString(value);
 		}
 		return store;
 	}
