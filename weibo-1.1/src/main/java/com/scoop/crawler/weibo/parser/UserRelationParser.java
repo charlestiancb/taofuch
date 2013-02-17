@@ -58,6 +58,9 @@ public class UserRelationParser extends Parser {
 		} else {
 			relations = doc.getElementById("pl_relation_hisFollow");
 		}
+		if (relations == null) {
+			return;
+		}
 		Elements eles = relations.getElementsByAttributeValue("node-type", "userListBox");
 		if (eles.isEmpty()) {
 			return;
