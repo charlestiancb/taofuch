@@ -59,7 +59,7 @@ public class OneWeiboInfo extends Info {
 			contentHtml = SinaWeiboRequest.request(client, url, getHandler(), FailedNode.SINGLE_WEIBO);
 			parseWeiboDetail();
 		} catch (Exception e) {
-			valid = false;
+			throw new IllegalStateException(e);
 		}
 	}
 
@@ -142,14 +142,12 @@ public class OneWeiboInfo extends Info {
 		if (rwNum == null || "".equals(rwNum)) {
 			requestIfNeccessory();
 			try {
-				Elements eles = doc.getElementsByAttributeValue("class", "WB_handle")
-									.first()
-									.getElementsByAttributeValue("node-type", "forward_counter");
+				Elements eles = doc.getElementsByAttributeValue("class", "WB_handle").first()
+						.getElementsByAttributeValue("node-type", "forward_counter");
 				if (eles == null || eles.isEmpty()) {
 					// 兼容升级以前的
-					eles = doc.getElementsByAttributeValue("class", "tab_c W_textb")
-								.first()
-								.getElementsByAttributeValue("node-type", "forward_counter");
+					eles = doc.getElementsByAttributeValue("class", "tab_c W_textb").first()
+							.getElementsByAttributeValue("node-type", "forward_counter");
 				}
 				if (eles != null && eles.size() > 0) {
 					rwNum = eles.get(eles.size() - 1).text();
@@ -172,13 +170,11 @@ public class OneWeiboInfo extends Info {
 		if (commentNum == null || "".equals(commentNum)) {
 			requestIfNeccessory();
 			try {
-				Elements eles = doc.getElementsByAttributeValue("class", "WB_handle")
-									.first()
-									.getElementsByAttributeValue("node-type", "comment_counter");
+				Elements eles = doc.getElementsByAttributeValue("class", "WB_handle").first()
+						.getElementsByAttributeValue("node-type", "comment_counter");
 				if (eles == null || eles.isEmpty()) {
-					eles = doc.getElementsByAttributeValue("class", "tab_c W_textb")
-								.first()
-								.getElementsByAttributeValue("node-type", "comment_counter");
+					eles = doc.getElementsByAttributeValue("class", "tab_c W_textb").first()
+							.getElementsByAttributeValue("node-type", "comment_counter");
 				}
 				if (eles != null && eles.size() > 0) {
 					commentNum = eles.get(eles.size() - 1).text();
