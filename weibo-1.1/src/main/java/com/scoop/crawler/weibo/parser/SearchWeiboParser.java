@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
@@ -109,9 +110,9 @@ public class SearchWeiboParser extends JsonStyleParser {
 		// 解析下一页
 		WebElement ele = null;
 		try {
-			ele = driver.findElement(By.className("search_page_M"));
-			if (ele != null) {
-				ele = ele.findElement(By.linkText("下一页"));
+			List<WebElement> eles = driver.findElements(By.className("search_page_M"));
+			if (eles != null && !eles.isEmpty()) {
+				ele = eles.get(0).findElement(By.linkText("下一页"));
 			}
 		} catch (Throwable e) {
 		}
@@ -120,7 +121,6 @@ public class SearchWeiboParser extends JsonStyleParser {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
 			parseHtmlToWeibo(driver);
 		}
