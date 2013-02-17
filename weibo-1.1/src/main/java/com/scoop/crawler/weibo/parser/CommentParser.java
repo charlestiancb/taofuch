@@ -66,10 +66,6 @@ public class CommentParser extends Parser {
 		} catch (Exception e) {
 			System.err.println("解析微博[" + w + "]的评论失败！");
 			e.printStackTrace();
-		} finally {
-			if (driver != null) {
-				driver.quit();
-			}
 		}
 	}
 
