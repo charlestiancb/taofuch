@@ -211,7 +211,7 @@ public class SinaWeiboRequest {
 				String msg = new Date() + "：你妹的，还请求有问题[code:" + res.getStatusLine().getStatusCode() + "]！页面内容："
 						+ EntityUtils.toString(res.getEntity(), "UTF-8");
 				System.out.println(msg);
-				if (handler != null) {
+				if (handler != null && res.getStatusLine().getStatusCode() >= 500) {
 					handler.record(new FailedRequest(url, node, msg));
 				}
 				return "";
