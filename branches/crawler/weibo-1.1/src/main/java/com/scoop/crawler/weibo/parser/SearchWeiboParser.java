@@ -18,6 +18,7 @@ import com.scoop.crawler.weibo.fetch.FetchSinaWeibo;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
+import com.scoop.crawler.weibo.util.JSONUtils;
 
 /**
  * 微博搜索结果方式的微博，如：http://s.weibo.com/weibo/%25E7%25AF%25AE%25E7%2590%2583?topnav
@@ -71,9 +72,34 @@ public class SearchWeiboParser extends JsonStyleParser {
 		if (noresult != null && noresult.size() > 0) {
 			return;
 		}
-
 		Element weibo = doc.getElementById("pl_weibo_feedlist");
 		Element user = doc.getElementById("pl_user_feedlist");
+
+		if ((weibo == null && user == null) || (StringUtils.isEmpty(weibo.text()) && StringUtils.isEmpty(user.text()))) {
+			weibo = null;
+			user = null;
+			html = "";// 将其中的html转义字符转换成正常的字符！
+			String hit = weiboStart;
+			int idx = html.indexOf(weiboStart);
+			if (idx == -1) {
+				idx = html.indexOf(userStart);
+				hit = userStart;
+			}
+			if (idx == -1) {
+				return;
+			}
+			String targetContentList = html.substring(idx + hit.length());
+			targetContentList = targetContentList.substring(0, targetContentList.indexOf(contentEnd));
+			targetContentList = "{" + targetContentList;// 补齐为JSON格式
+			// 将map中的html内容拿出来！
+			targetContentList = JSONUtils.getSinaHtml(targetContentList);
+			doc = Jsoup.parse(targetContentList);
+			if (weiboStart.equals(hit)) {
+				parseWeibo(doc);
+			} else if (userStart.equals(hit)) {
+				parseUser(doc);
+			}
+		}
 
 		if (weibo != null) {
 			parseWeibo(weibo);
@@ -181,6 +207,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 				}
 				saveQuery(null);
 			}
+			driver.quit();
 		}
 	}
 }

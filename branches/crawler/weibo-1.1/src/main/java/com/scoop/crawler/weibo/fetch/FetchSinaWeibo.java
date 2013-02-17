@@ -71,8 +71,9 @@ public class FetchSinaWeibo extends FetchSina {
 			handler.reTry();
 			if (weiboBaseUrl.startsWith("http://s.weibo.com") || weiboBaseUrl.startsWith("https://s.weibo.com")
 					|| weiboBaseUrl.startsWith("s.weibo.com")) {
-				SearchWeiboParser weiboParser = new SearchWeiboParser(dataSource, handler);
-				weiboParser.parse(wordsFiles);
+				SearchWeiboParser searchParser = new SearchWeiboParser(dataSource, handler);
+				searchParser.setClient(client);
+				searchParser.parse(wordsFiles);
 			} else if (wordsFiles != null && wordsFiles.length > 0) {
 				for (String wordsFile : wordsFiles) {
 					Set<String> urls = parseUrls(weiboBaseUrl, wordsFile);
