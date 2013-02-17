@@ -8,11 +8,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -29,6 +33,8 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 @SuppressWarnings("restriction")
 public class SinaWeiboRequest {
 	private static ThreadLocal<String> validCode = new ThreadLocal<String>();
+	/** 是否已经判断过代理情况！ */
+	private static boolean hasProcProxy = false;
 	private static final String INPUT_CODE_TIP = "%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB";
 	private static final String CODE_ERR_TIP = "%CA%E4%C8%EB%B5%C4%D1%E9%D6%A4%C2%EB%B2%BB%D5%FD%C8%B7";
 	private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 5.1; rv:14.0) Gecko/20100101 Firefox/14.0.1";
@@ -92,10 +98,8 @@ public class SinaWeiboRequest {
 	public static DefaultHttpClient getHttpClient(String username, String password) {
 		try {
 			// httpClient实例
-			DefaultHttpClient client = new DefaultHttpClient();
+			DefaultHttpClient client = newProxy();
 
-			// 连接超时设置5000
-			client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
 			// 新浪微博登录js地址
 			HttpPost post = new HttpPost("http://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.3.17)");
 
@@ -124,7 +128,7 @@ public class SinaWeiboRequest {
 			nvps.add(new BasicNameValuePair("encoding", "UTF-8"));
 			nvps.add(new BasicNameValuePair("returntype", "META"));
 			nvps.add(new BasicNameValuePair("url",
-											"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
+					"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
 			// if (validCode.get() != null && validCode.get().length() > 0) {
 			// String code = InputValidCodeDialog.input(null);
 			// while (StringUtils.isBlank(code)) {
@@ -163,8 +167,9 @@ public class SinaWeiboRequest {
 			// 登录新浪微博
 			HttpGet loginMethod = new HttpGet(url);
 			res = client.execute(loginMethod);
-			System.err.println("登录结果：" + EntityUtils.toString(res.getEntity(), "UTF-8"));
+			System.out.println("登录结果：" + EntityUtils.toString(res.getEntity(), "UTF-8"));
 			LogonInfo.store(username, password);
+			System.out.println("程序登录成功！开始工作！");
 			return client;
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e);
@@ -201,15 +206,7 @@ public class SinaWeiboRequest {
 					}
 				}
 			}
-			DefaultHttpClient _client = new DefaultHttpClient();
-			List<Cookie> cs = client.getCookieStore().getCookies();
-			if (cs != null && cs.size() > 0) {
-				_client.getCookieStore().clear();
-				for (Cookie c : cs) {
-					_client.getCookieStore().addCookie(c);
-				}
-			}
-			HttpResponse res = _client.execute(weiBoMethod);
+			HttpResponse res = client.execute(weiBoMethod);
 			if (res.getStatusLine().getStatusCode() != 200) {
 				String msg = new Date() + "：你妹的，还请求有问题[code:" + res.getStatusLine().getStatusCode() + "]！页面内容："
 						+ EntityUtils.toString(res.getEntity(), "UTF-8");
@@ -225,7 +222,7 @@ public class SinaWeiboRequest {
 				// 如果存在这样的提示信息，则表示账号不能正常访问，所以，应该提示并等待！
 				System.out.println("账号无法进行正常使用，被封了！休息一会儿！");
 				sleep();
-				return request(_client, url, handler, node);
+				return request(client, url, handler, node);
 			} else {
 				System.out.println("页面信息获取成功！" + url);
 			}
@@ -280,8 +277,41 @@ public class SinaWeiboRequest {
 		}
 	}
 
+	/**
+	 * 判断是否需要代理访问网络！因为我是在公司开发，公司访问网络是需要代理的！
+	 */
+	private static DefaultHttpClient newProxy() {
+		DefaultHttpClient client = new DefaultHttpClient();
+		// 连接超时设置5000
+		client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
+		if (hasProcProxy) {
+			setProxy(client);
+		} else {
+			try {
+				HttpResponse response = client.execute(new HttpGet("http://www.cnki.net/"));
+				String charset = "UTF-8";
+				String html = EntityUtils.toString(response.getEntity(), charset);
+				if (response.getStatusLine().getStatusCode() == 403
+						&& html.indexOf("http://oa.vemic.com/system_support/trouble_ticket_add.php") > -1) {
+					setProxy(client);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			hasProcProxy = true;
+		}
+		return client;
+	}
+
+	private static void setProxy(DefaultHttpClient client) {
+		// 代理方式访问网络
+		client.getCredentialsProvider().setCredentials(new AuthScope("192.168.16.187", 8080),
+				new UsernamePasswordCredentials("taofucheng", "taofuchok"));
+		client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, new HttpHost("192.168.16.187", 8080));
+	}
+
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		System.err.println(URLDecoder.decode(	"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB",
-												"GBK"));
+		System.err.println(URLDecoder.decode(
+				"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB", "GBK"));
 	}
 }
