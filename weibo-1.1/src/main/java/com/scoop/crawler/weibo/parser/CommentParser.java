@@ -39,6 +39,9 @@ public class CommentParser extends Parser {
 			Thread.sleep(2000);
 			System.out.println("解析评论信息……");
 			Elements eles = getComments(driver);
+			if (eles == null || eles.isEmpty()) {
+				System.out.println("当前微博没有评论信息！");
+			}
 			// 获取所有评论信息，并进行循环处理。
 			while (eles != null && eles.size() > 0) {
 				Element tmp = null;
