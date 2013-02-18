@@ -70,7 +70,7 @@ public class WeiboPersonInfo extends Info {
 			parseBaseInfo();
 			parseStatisticInfo();
 		} catch (Exception e) {
-			valid = false;
+			throw new IllegalStateException(e);
 		}
 	}
 
@@ -152,16 +152,14 @@ public class WeiboPersonInfo extends Info {
 		if (StringUtils.isEmpty(name)) {
 			try {
 				try {
-					name = StringUtils.trimToEmpty(doc_base.getElementsByAttributeValue("class", "pf_name bsp clearfix")
-															.select(".name")
-															.text());
+					name = StringUtils.trimToEmpty(doc_base
+							.getElementsByAttributeValue("class", "pf_name bsp clearfix").select(".name").text());
 				} catch (Exception e1) {
 				}
 				if (StringUtils.isBlank(name)) {
 					try {
-						name = StringUtils.trimToEmpty(doc_base.getElementsByAttributeValue("class", "tit_prf clearFix")
-																.select(".lf")
-																.text());
+						name = StringUtils.trimToEmpty(doc_base
+								.getElementsByAttributeValue("class", "tit_prf clearFix").select(".lf").text());
 					} catch (Exception e) {
 					}
 				}
@@ -188,19 +186,15 @@ public class WeiboPersonInfo extends Info {
 		if (StringUtils.isEmpty(addr)) {
 			try {
 				try {
-					addr = StringUtils.trim(StringUtils.replace(doc_base.getElementsByAttributeValue(	"class",
-																										"pf_tags bsp")
-																		.select(".tags")
-																		.text(),
-																"&nbsp;",
-																""));
+					addr = StringUtils.trim(StringUtils.replace(
+							doc_base.getElementsByAttributeValue("class", "pf_tags bsp").select(".tags").text(),
+							"&nbsp;", ""));
 				} catch (Exception e) {
 				}
 				if (StringUtils.isBlank(addr)) {
 					try {
 						addr = StringUtils.trim(StringUtils.replace(doc_base.getElementsByClass("info").text(),
-																	"&nbsp;",
-																	""));
+								"&nbsp;", ""));
 					} catch (Exception e) {
 					}
 				}
@@ -222,14 +216,13 @@ public class WeiboPersonInfo extends Info {
 				Elements eles = null;
 				try {
 					eles = _doc.getElementById("pl_profile_extraInfo")
-								.getElementsByAttributeValue("class", "pf_star_info bsp S_txt2")
-								.select("p");
+							.getElementsByAttributeValue("class", "pf_star_info bsp S_txt2").select("p");
 				} catch (Exception e) {
 				}
 				if (eles == null || eles.isEmpty()) {
 					try {
 						eles = doc_stat.getElementsByAttributeValue("class", "pf_verified_info bsp S_txt2")
-										.select("dd");
+								.select("dd");
 					} catch (Exception e) {
 					}
 				}
@@ -262,22 +255,16 @@ public class WeiboPersonInfo extends Info {
 		if (StringUtils.isEmpty(intro)) {
 			try {
 				try {
-					intro = StringUtils.trim(StringUtils.replace(	doc_base.getElementsByAttributeValue(	"class",
-																											"pf_intro bsp")
-																			.select(".S_txt2")
-																			.text(),
-																	"&nbsp;",
-																	""));
+					intro = StringUtils.trim(StringUtils.replace(
+							doc_base.getElementsByAttributeValue("class", "pf_intro bsp").select(".S_txt2").text(),
+							"&nbsp;", ""));
 				} catch (Exception e) {
 				}
 				if (StringUtils.isBlank(intro)) {
 					try {
-						intro = StringUtils.trim(StringUtils.replace(	doc_base.getElementsByAttributeValue(	"class",
-																												"tCon MIB_txtb MIB_linkb")
-																				.select("#epintro")
-																				.text(),
-																		"&nbsp;",
-																		""));
+						intro = StringUtils.trim(StringUtils.replace(
+								doc_base.getElementsByAttributeValue("class", "tCon MIB_txtb MIB_linkb")
+										.select("#epintro").text(), "&nbsp;", ""));
 					} catch (Exception e) {
 					}
 				}
@@ -384,12 +371,9 @@ public class WeiboPersonInfo extends Info {
 		if (StringUtils.isEmpty(tagInfo)) {
 			Elements eles = null;
 			try {
-				eles = doc_base.getElementsByAttributeValue("class", "pf_tags bsp")
-								.first()
-								.getElementsByAttributeValue("class", "layer_menulist_tags S_line3 S_bg5")
-								.select("li")
-								.select(".S_func1")
-								.select("span");
+				eles = doc_base.getElementsByAttributeValue("class", "pf_tags bsp").first()
+						.getElementsByAttributeValue("class", "layer_menulist_tags S_line3 S_bg5").select("li")
+						.select(".S_func1").select("span");
 			} catch (Exception e) {
 			}
 			try {
