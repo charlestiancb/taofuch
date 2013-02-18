@@ -2,11 +2,13 @@
 	xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="true"
 	monitoring="autodetect" dynamicConfig="true">
 	<diskStore path="java.io.tmpdir" />
-	<cache name="defaultCache" maxEntriesLocalHeap="1000000" eternal="true"
-		timeToIdleSeconds="3600000" timeToLiveSeconds="3600000"
-		diskSpoolBufferSizeMB="30" maxEntriesLocalDisk="2147483646"
-		diskExpiryThreadIntervalSeconds="3600000" memoryStoreEvictionPolicy="LRU"
-		statistics="false">
-		<persistence strategy="localTempSwap" />
+	<cache name="defaultCache" 
+			maxElementsInMemory="2000"
+            eternal="false"
+            timeToIdleSeconds="120"
+            timeToLiveSeconds="120"
+            maxElementsOnDisk="10000"
+            diskExpiryThreadIntervalSeconds="120"
+            memoryStoreEvictionPolicy="LRU">
 	</cache>
 </ehcache>
