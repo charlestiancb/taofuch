@@ -195,16 +195,20 @@ public class SearchWeiboParser extends JsonStyleParser {
 				try {
 					BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "GBK"));
 					for (String word = br.readLine(); word != null; word = br.readLine()) {
-						if (StringUtils.isBlank(word)) {
-							continue;
-						} else {
-							saveQuery(word);
-							// 输入到输入框中，然后点击查询，并开始解析！
-							driver.findElements(By.className("searchInp_form")).get(0).clear();
-							driver.findElements(By.className("searchInp_form")).get(0).sendKeys(word);
-							driver.findElements(By.className("searchBtn")).get(0).click();
-							Thread.sleep(2000);
-							parseHtmlToWeibo(driver);
+						try {
+							if (StringUtils.isBlank(word)) {
+								continue;
+							} else {
+								saveQuery(word);
+								// 输入到输入框中，然后点击查询，并开始解析！
+								driver.findElements(By.className("searchInp_form")).get(0).clear();
+								driver.findElements(By.className("searchInp_form")).get(0).sendKeys(word);
+								driver.findElements(By.className("searchBtn")).get(0).click();
+								Thread.sleep(2000);
+								parseHtmlToWeibo(driver);
+							}
+						} catch (Throwable t) {
+							System.out.println("当前文件[" + file + "]中的词[" + word + "]出现问题，继续下一个词语搜索！");
 						}
 					}
 				} catch (Throwable t) {
