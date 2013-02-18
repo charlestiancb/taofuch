@@ -1,5 +1,7 @@
 package com.tfc.data.access;
 
+import com.tfc.data.access.Repository.SaveType;
+
 /**
  * 使用Lucence存取数据。
  * 
@@ -19,7 +21,7 @@ public class RepositoryFactory {
 	 * @param key
 	 * @param value
 	 */
-	public static boolean save(String key, String value) {
+	public static SaveType save(String key, String value) {
 		return repo.save(key, value);
 	}
 
