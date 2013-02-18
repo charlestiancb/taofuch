@@ -88,7 +88,7 @@ public class LuceneRepository extends Repository {
 	 * @param key
 	 * @param value
 	 */
-	public boolean save(String id, String key, String value) {
+	public SaveType save(String id, String key, String value) {
 		try {
 			init();
 			if (iw == null) {
@@ -104,9 +104,9 @@ public class LuceneRepository extends Repository {
 			releaseIw();
 		} catch (IOException e) {
 			e.printStackTrace();
-			return false;
+			return null;
 		}
-		return true;
+		return SaveType.save;
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class LuceneRepository extends Repository {
 	 * @param key
 	 * @param value
 	 */
-	public boolean save(String key, String value) {
+	public SaveType save(String key, String value) {
 		return save("0", key, value);
 	}
 

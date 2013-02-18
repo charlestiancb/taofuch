@@ -1,5 +1,6 @@
 package com.tfc.data.access.entity;
 
+import com.tfc.data.access.Repository.SaveType;
 import com.tfc.data.access.RepositoryFactory;
 
 /**
@@ -50,8 +51,8 @@ public class ArrayFormatData<T> extends AbstractFormatData<T> {
 			setValueClass(object.getClass());
 		}
 		String store = processStore(object);
-		boolean ret = RepositoryFactory.save(genarateKey(index), store);
-		if (ret) {
+		SaveType ret = RepositoryFactory.save(genarateKey(index), store);
+		if (ret != null && ret.compareTo(SaveType.save) == 0) {
 			++curLen;
 		}
 	}

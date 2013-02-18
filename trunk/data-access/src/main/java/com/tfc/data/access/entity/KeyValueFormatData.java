@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
+import com.tfc.data.access.Repository.SaveType;
 import com.tfc.data.access.RepositoryFactory;
 
 /**
@@ -30,6 +31,13 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData<V> {
 		setInstanceName(instanceName + System.nanoTime() + random());
 	}
 
+	/**
+	 * 这个效率可能会很慢，且可能存在内存溢出问题！慎用！
+	 * 
+	 * @return
+	 * @deprecated 请使用key(int index)方法与size()方法联合方式。
+	 */
+	@Deprecated
 	public Set<K> keySet() {
 		Set<K> keys = new LinkedHashSet<K>();
 		for (Entry<K, V> e : entries) {
@@ -38,6 +46,34 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData<V> {
 		return keys;
 	}
 
+	/**
+	 * 获取指定位置的key名称
+	 * 
+	 * @param index
+	 *            从0开始
+	 * @return
+	 */
+	public K key(int index) {
+		if (index < 0 || index > entries.size()) {
+			return null;
+		}
+		int i = 0;
+		for (Entry<K, V> e : entries) {
+			if (i == index) {
+				return e.fetchKey();
+			}
+			i++;
+		}
+		return null;
+	}
+
+	/**
+	 * 这个效率可能会很慢，且可能存在内存溢出问题！慎用！
+	 * 
+	 * @return
+	 * @deprecated
+	 */
+	@Deprecated
 	public List<K> keyList() {
 		List<K> keys = new ArrayList<K>();
 		for (Entry<K, V> e : entries) {
@@ -54,11 +90,11 @@ public class KeyValueFormatData<K, V> extends AbstractFormatData<V> {
 			setValueClass(value.getClass());
 		}
 		String store = processStore(value);
-		boolean ret = RepositoryFactory.save(genarateKey(key), store);
-		if (ret) {
+		SaveType ret = RepositoryFactory.save(genarateKey(key), store);
+		if (ret != null && ret.compareTo(SaveType.save) == 0) {
 			store = processStore(key);
 			ret = RepositoryFactory.save(genarateId(size()), store);
-			if (ret) {
+			if (ret != null && ret.compareTo(SaveType.save) == 0) {
 				synchronized (entries) {
 					entries.add(new Entry<K, V>(this, size()));
 				}

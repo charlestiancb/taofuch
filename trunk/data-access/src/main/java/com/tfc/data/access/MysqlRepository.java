@@ -61,17 +61,18 @@ public class MysqlRepository extends Repository {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean save(String key, String value) {
+	public SaveType save(String key, String value) {
 		ehcache.save(key, value);
 		List<Map<String, Object>> record = (List<Map<String, Object>>) executeSql(selectByKeySql, SqlType.select, key);
 		if (record == null || record.isEmpty()) {
 			// 如果不存在，则新增
 			executeSql(insertSql, SqlType.insert, key, value);
+			return SaveType.save;
 		} else {
 			// 否则更新之
 			executeSql(updateSql, SqlType.update, value, key);
+			return SaveType.update;
 		}
-		return true;
 	}
 
 	@SuppressWarnings("unchecked")

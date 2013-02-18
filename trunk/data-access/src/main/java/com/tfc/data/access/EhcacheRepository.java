@@ -62,9 +62,9 @@ public class EhcacheRepository extends Repository {
 	}
 
 	@Override
-	public boolean save(String key, String value) {
+	public SaveType save(String key, String value) {
 		cache.put(new Element(key, value));
-		return true;
+		return SaveType.save;
 	}
 
 	@Override

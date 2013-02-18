@@ -1,6 +1,7 @@
 package com.tfc.data.access.entity;
 
 import com.alibaba.fastjson.JSON;
+import com.tfc.data.access.Repository.SaveType;
 import com.tfc.data.access.RepositoryFactory;
 
 /**
@@ -35,8 +36,8 @@ public class ThreeDimensionalData<T> extends AbstractFormatData<T> {
 			setValueClass(value.getClass());
 		}
 		String store = processStore(value);
-		boolean ret = RepositoryFactory.save(genarateKey(x, y, z), store);
-		if (ret) {
+		SaveType ret = RepositoryFactory.save(genarateKey(x, y, z), store);
+		if (ret != null && ret.compareTo(SaveType.save) == 0) {
 			xCurLen = x > xCurLen ? x : xCurLen;
 			yCurLen = y > yCurLen ? y : yCurLen;
 			zCurLen = z > zCurLen ? z : zCurLen;
