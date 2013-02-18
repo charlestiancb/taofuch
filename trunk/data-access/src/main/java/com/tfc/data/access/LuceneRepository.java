@@ -24,6 +24,8 @@ public class LuceneRepository extends Repository {
 	private IndexWriter iw;
 	private IndexSearcher is;
 
+	private EhcacheRepository ehcache = new EhcacheRepository(true);
+
 	private static final String ID = "id";
 	private static final String KEY = "key";
 	private static final String VALUE = "value";
@@ -92,6 +94,7 @@ public class LuceneRepository extends Repository {
 			if (iw == null) {
 				iw = new IndexWriter(mmapDir, new IndexWriterConfig(Version.LUCENE_36, null));
 			}
+			ehcache.save(key, value);
 			org.apache.lucene.document.Document doc = new org.apache.lucene.document.Document();
 			doc.add(new Field(ID, id, Store.YES, Index.NOT_ANALYZED));
 			doc.add(new Field(KEY, key, Store.YES, Index.NOT_ANALYZED));
@@ -119,6 +122,10 @@ public class LuceneRepository extends Repository {
 	public String findValueByKey(String key) {
 		try {
 			initSearch();
+			String result = ehcache.findValueByKey(key);
+			if (result != null) {
+				return result;
+			}
 			Term t = new Term(KEY, key);
 			TermQuery query = new TermQuery(t);
 			query.setBoost(1);
@@ -128,6 +135,7 @@ public class LuceneRepository extends Repository {
 				org.apache.lucene.document.Document doc = is.doc(docId);
 				String ret = doc.get(VALUE);
 				// System.err.println("根据key读取：" + key + "=" + ret);
+				ehcache.save(key, ret);
 				return ret;
 			}
 		} catch (Exception e) {
