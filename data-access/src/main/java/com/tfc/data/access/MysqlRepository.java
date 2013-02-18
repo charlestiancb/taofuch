@@ -23,6 +23,8 @@ public class MysqlRepository extends Repository {
 		System.out.println(er.findValueByKey("hehehe"));
 	}
 
+	private EhcacheRepository ehcache = new EhcacheRepository(true);
+
 	private Connection conn = DbConfig.openConn();
 	private static String tableName = "database_access_temp_table";
 	private static final String insertSql = "insert into " + tableName + "(id,content) values (?,?)";
@@ -60,6 +62,7 @@ public class MysqlRepository extends Repository {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean save(String key, String value) {
+		ehcache.save(key, value);
 		List<Map<String, Object>> record = (List<Map<String, Object>>) executeSql(selectByKeySql, SqlType.select, key);
 		if (record == null || record.isEmpty()) {
 			// 如果不存在，则新增
@@ -74,11 +77,17 @@ public class MysqlRepository extends Repository {
 	@SuppressWarnings("unchecked")
 	@Override
 	public String findValueByKey(String key) {
+		String result = ehcache.findValueByKey(key);
+		if (result != null) {
+			return result;
+		}
 		List<Map<String, Object>> record = (List<Map<String, Object>>) executeSql(selectByKeySql, SqlType.select, key);
 		if (record == null || record.isEmpty()) {
 			return null;
 		} else {
-			return (String) record.get(0).get("content");
+			result = (String) record.get(0).get("content");
+			ehcache.save(key, result);
+			return result;
 		}
 	}
 
@@ -97,6 +106,7 @@ public class MysqlRepository extends Repository {
 	@Override
 	public void close() {
 		try {
+			ehcache.close();
 			conn.close();
 		} catch (Exception e) {
 		}

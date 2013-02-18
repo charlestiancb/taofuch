@@ -1,6 +1,9 @@
 package com.tfc.data.access;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -9,7 +12,8 @@ import net.sf.ehcache.Element;
 public class EhcacheRepository extends Repository {
 	private CacheManager manager;
 	private Cache cache;
-	private File config;
+	/** 使用cache默认的配置 */
+	private boolean defaultConfig = false;
 
 	public static void main(String[] args) {
 		EhcacheRepository er = new EhcacheRepository();
@@ -20,20 +24,34 @@ public class EhcacheRepository extends Repository {
 	}
 
 	public EhcacheRepository() {
-		this(null);
+		init(null);
+	}
+
+	public EhcacheRepository(boolean defaultConfig) {
+		this.defaultConfig = defaultConfig;
+		init(null);
 	}
 
 	public EhcacheRepository(File config) {
-		this.config = config;
-		init();
+		try {
+			init(new FileInputStream(config));
+		} catch (FileNotFoundException e) {
+		}
 	}
 
-	private void init() {
+	public EhcacheRepository(InputStream config) {
+		init(config);
+	}
+
+	private void init(InputStream is) {
 		if (cache == null) {
-			// 使用默认配置文件创建CacheManager
-			manager = CacheManager.create(EhcacheRepository.class.getResourceAsStream("/ehcache.xml"));
-			if (config != null) {
-				manager = CacheManager.create(config.getAbsolutePath());
+			if (defaultConfig) {
+				manager = CacheManager.create();
+			} else if (is != null) {
+				manager = CacheManager.create(is);
+			} else {
+				// 使用默认配置文件创建CacheManager
+				manager = CacheManager.create(EhcacheRepository.class.getResourceAsStream("/ehcache-repo.xml"));
 			}
 			// 通过manager可以生成指定名称的Cache对象
 			cache = manager.getCache("defaultCache");
