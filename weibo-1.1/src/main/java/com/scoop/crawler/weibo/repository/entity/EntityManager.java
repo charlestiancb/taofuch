@@ -168,7 +168,7 @@ public class EntityManager {
 		}
 		EntitySql result = createWhere(entity, sql);
 		if (result != null) {
-			result.setType(SqlType.SELECT);
+			result.setType(SqlType.DELETE);
 		}
 		return result;
 	}
