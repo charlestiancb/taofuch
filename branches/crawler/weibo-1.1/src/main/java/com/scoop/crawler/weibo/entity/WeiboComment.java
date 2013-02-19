@@ -92,7 +92,7 @@ public class WeiboComment extends Info {
 			String commentId = tmp.getElementsMatchingOwnText("回复").last().attr("action-data");
 			commentId = commentId.substring(commentId.indexOf("&cid=") + "&cid=".length());
 			commentId = commentId.substring(0, commentId.indexOf("&"));
-			id = commentId;
+			id = weiboId + "$" + commentId;// weiboId将commentID固定成唯一的！
 		}
 		return id;
 	}
