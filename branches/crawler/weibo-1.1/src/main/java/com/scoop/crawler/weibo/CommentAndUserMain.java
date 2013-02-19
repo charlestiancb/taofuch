@@ -29,7 +29,7 @@ public class CommentAndUserMain {
 		if (handler == null) {
 			handler = new RequestFailedHandler(client, dataSource);
 		}
-
+		handler.reTry();
 		// 微博抓取完毕之后同时抓取评论与用户信息。
 		// 处理评论与转发的信息、以及评论者的个人信息。
 		WeiboCommentRunnable run = new WeiboCommentRunnable(dataSource, handler);
