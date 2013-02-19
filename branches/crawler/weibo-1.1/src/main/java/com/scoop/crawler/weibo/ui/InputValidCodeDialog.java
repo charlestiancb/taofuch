@@ -11,6 +11,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.scoop.crawler.weibo.util.Logger;
+
 /**
  * 输入验证码的对话框。
  * 
@@ -68,7 +70,7 @@ public class InputValidCodeDialog extends JFrame {
 	static class Click implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			instance.dispose();
-			System.out.println(input.getText());
+			Logger.log(input.getText());
 		}
 	}
 

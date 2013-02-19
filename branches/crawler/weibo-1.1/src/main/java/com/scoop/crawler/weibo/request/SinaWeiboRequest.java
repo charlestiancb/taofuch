@@ -28,6 +28,7 @@ import com.scoop.crawler.weibo.entity.LogonInfo;
 import com.scoop.crawler.weibo.repository.mysql.FailedRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
+import com.scoop.crawler.weibo.util.Logger;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 @SuppressWarnings("restriction")
@@ -167,9 +168,9 @@ public class SinaWeiboRequest {
 			// 登录新浪微博
 			HttpGet loginMethod = new HttpGet(url);
 			res = client.execute(loginMethod);
-			System.out.println("登录结果：" + EntityUtils.toString(res.getEntity(), "UTF-8"));
+			Logger.log("登录结果：" + EntityUtils.toString(res.getEntity(), "UTF-8"));
 			LogonInfo.store(username, password);
-			System.out.println("程序登录成功！开始工作！");
+			Logger.log("程序登录成功！开始工作！");
 			return client;
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e);
@@ -210,7 +211,7 @@ public class SinaWeiboRequest {
 			if (res.getStatusLine().getStatusCode() != 200) {
 				String msg = new Date() + "：你妹的，还请求有问题[code:" + res.getStatusLine().getStatusCode() + "]！页面内容："
 						+ EntityUtils.toString(res.getEntity(), "UTF-8");
-				System.out.println(msg);
+				Logger.log(msg);
 				if (handler != null && res.getStatusLine().getStatusCode() >= 500) {
 					handler.record(new FailedRequest(url, node, msg));
 				}
@@ -220,11 +221,11 @@ public class SinaWeiboRequest {
 			String html = EntityUtils.toString(res.getEntity(), "UTF-8");
 			if (html.indexOf("<p class=\\\"code_tit\\\">\\u4f60\\u7684\\u884c\\u4e3a\\u6709\\u4e9b\\u5f02\\u5e38\\uff0c\\u8bf7\\u8f93\\u5165\\u9a8c\\u8bc1\\u7801\\uff1a<\\/p>\\n") > -1) {
 				// 如果存在这样的提示信息，则表示账号不能正常访问，所以，应该提示并等待！
-				System.out.println("账号无法进行正常使用，被封了！休息一会儿！");
+				Logger.log("账号无法进行正常使用，被封了！休息一会儿！");
 				sleep();
 				return request(client, url, handler, node);
 			} else {
-				System.out.println("页面信息获取成功！" + url);
+				Logger.log("页面信息获取成功！" + url);
 			}
 			return html;
 		} catch (Throwable e) {
@@ -235,9 +236,9 @@ public class SinaWeiboRequest {
 
 	private static void sleep() {
 		try {
-			System.out.println("开始休息，休息一会儿！");
+			Logger.log("开始休息，休息一会儿！");
 			Thread.sleep(waitInterval);
-			System.out.println("休息完了，继续干活！");
+			Logger.log("休息完了，继续干活！");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

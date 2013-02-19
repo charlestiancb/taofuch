@@ -16,6 +16,7 @@ import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
+import com.scoop.crawler.weibo.util.Logger;
 
 /**
  * 普通用户的微博，如：http://weibo.com/u/2675686781，这种页面的微博内容是以JSON格式组织的。
@@ -60,7 +61,7 @@ public class UserWeiboParser extends JsonStyleParser {
 		try {
 			driver = ExploreRequest.getDriver(url);
 			if (driver == null) {
-				System.out.println("浏览器打开失败！停止运行！");
+				Logger.log("浏览器打开失败！停止运行！");
 				System.exit(0);
 			}
 			parseHtmlToWeibo(driver);
@@ -74,7 +75,7 @@ public class UserWeiboParser extends JsonStyleParser {
 	}
 
 	private void parseHtmlToWeibo(WebDriver driver) throws IOException {
-		System.out.println("解析用户主页的微博");
+		Logger.log("解析用户主页的微博");
 		// 先将所有的页面加载完毕！至少点击三次下拉，这样使所有微博加载完毕！
 		try {
 			for (int i = 0; i < 3; i++) {
@@ -99,7 +100,7 @@ public class UserWeiboParser extends JsonStyleParser {
 		if (eles != null && eles.size() > 0) {
 			// 如果这样的格式存在，则说明是那种HTML格式的
 			for (int i = 0; i < eles.size(); i++) {
-				System.out.println("解析用户主页上的每一条微博");
+				Logger.log("解析用户主页上的每一条微博");
 				// 一条条的微博进行处理，解析每条微博的信息
 				parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
 							StringUtils.trim(parseMsgPublishTime(eles.get(i))),

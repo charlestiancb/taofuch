@@ -17,6 +17,7 @@ import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.Weibo;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
+import com.scoop.crawler.weibo.util.Logger;
 
 /**
  * 微博评论解析器。
@@ -37,16 +38,16 @@ public class CommentParser extends Parser {
 			// 打开微博页面，抓取其评论信息。
 			driver.navigate().to(w.getUrl());
 			Thread.sleep(2000);
-			System.out.println("解析评论信息……");
+			Logger.log("解析评论信息……");
 			Elements eles = getComments(driver);
 			if (eles == null || eles.isEmpty()) {
-				System.out.println("当前微博没有评论信息！");
+				Logger.log("当前微博没有评论信息！");
 			}
 			// 获取所有评论信息，并进行循环处理。
 			while (eles != null && eles.size() > 0) {
 				Element tmp = null;
 				for (int i = 0; i < eles.size(); i++) {
-					System.out.println("解析其中一条评论信息……");
+					Logger.log("解析其中一条评论信息……");
 					tmp = eles.get(i);
 					if (tmp != null) {
 						// 获取对应的评论者主页URL。
@@ -61,9 +62,9 @@ public class CommentParser extends Parser {
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-						System.out.println("当前评论解析完毕！");
+						Logger.log("当前评论解析完毕！");
 					} else {
-						System.out.println("当前评论为空，解析下一条！");
+						Logger.log("当前评论为空，解析下一条！");
 					}
 				}
 				// 加载下一页评论，并进行分析

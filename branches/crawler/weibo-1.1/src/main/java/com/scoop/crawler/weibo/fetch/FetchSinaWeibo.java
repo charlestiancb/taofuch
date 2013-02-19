@@ -25,6 +25,7 @@ import com.scoop.crawler.weibo.request.failed.FailedNode;
 import com.scoop.crawler.weibo.request.failed.RequestFailedHandler;
 import com.scoop.crawler.weibo.runnable.WeiboCommentRunnable;
 import com.scoop.crawler.weibo.runnable.WeiboUserRelationRunnable;
+import com.scoop.crawler.weibo.util.Logger;
 import com.scoop.crawler.weibo.util.ThreadUtils;
 
 /**
@@ -82,7 +83,7 @@ public class FetchSinaWeibo extends FetchSina {
 					}
 				}
 			} else {
-				System.out.println("没有词文件指定文件，使用指定的url");
+				Logger.log("没有词文件指定文件，使用指定的url");
 				fetch(client, dataSource, weiboBaseUrl, null);
 			}
 			// 微博抓取完毕之后同时抓取评论与用户信息。
@@ -125,14 +126,14 @@ public class FetchSinaWeibo extends FetchSina {
 			File file = new File(wordsFile);
 			boolean hasFile = file.isFile();
 			if (!hasFile) {
-				System.out.println("没有词文件指定文件，使用指定的url");
+				Logger.log("没有词文件指定文件，使用指定的url");
 				urls.add(weiboBaseUrl);
 				return urls;
 			}
 			// 读取一行，然后将该行删除！
 			List<String> lines = FileUtils.readLines(file, "GBK");
 			if (lines == null || lines.isEmpty()) {
-				System.out.println("文件内容为空，使用指定的url");
+				Logger.log("文件内容为空，使用指定的url");
 				urls.add(weiboBaseUrl);
 			}
 			for (String line : lines) {
@@ -144,12 +145,12 @@ public class FetchSinaWeibo extends FetchSina {
 				for (int i = 0; i < s.length; i++) {
 					url = url.replaceAll("\\{" + i + "\\}", URLEncoder.encode(s[i].trim(), "UTF-8"));
 				}
-				System.out.println("解析出需要抓取的url：" + url);
+				Logger.log("解析出需要抓取的url：" + url);
 				urls.add(url);
 			}
 			return urls;
 		} else {
-			System.out.println("指定的url中没有变量信息，不使用文件中指定的词");
+			Logger.log("指定的url中没有变量信息，不使用文件中指定的词");
 			urls.add(weiboBaseUrl);
 		}
 		return urls;
@@ -166,15 +167,15 @@ public class FetchSinaWeibo extends FetchSina {
 	public static void fetch(DefaultHttpClient client, DataSource dataSource, String weiboUrl, String[] wordsFiles) {
 		String tmpUrl = getRealUrl(weiboUrl);
 		if (tmpUrl.isEmpty()) {
-			System.out.println("指定的抓取url为空！不处理！");
+			Logger.log("指定的抓取url为空！不处理！");
 			return;
 		}
-		System.out.println("正在抓取页面：" + tmpUrl);
+		Logger.log("正在抓取页面：" + tmpUrl);
 		String html = SinaWeiboRequest.request(client, tmpUrl, handler, FailedNode.MAIN);
 		// 评论数：评论详细信息列表，包括评论者id,评论者姓名，评论者评论时间，评论者评论内容，评论者个人资料
 		// 写入csv文件
 		if (StringUtils.isBlank(html)) {
-			System.out.println("抓取的页面[" + tmpUrl + "]内容为空，不处理！");
+			Logger.log("抓取的页面[" + tmpUrl + "]内容为空，不处理！");
 			return;
 		}
 		// 将内容构建成一个HtmlParser可解析的对象
@@ -196,7 +197,7 @@ public class FetchSinaWeibo extends FetchSina {
 					userParser.setCurUrl(weiboUrl);
 					userParser.parse(tmpUrl);
 				} else {
-					System.out.println("内容不符合预定的解析规则");
+					Logger.log("内容不符合预定的解析规则");
 					return;
 				}
 			}

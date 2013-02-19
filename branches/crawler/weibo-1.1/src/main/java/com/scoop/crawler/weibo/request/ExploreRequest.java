@@ -12,6 +12,7 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 
 import com.scoop.crawler.weibo.entity.LogonInfo;
+import com.scoop.crawler.weibo.util.Logger;
 
 /**
  * 使用浏览器功能进行访问，使用这个需要已经提供登录信息。
@@ -88,7 +89,7 @@ public class ExploreRequest {
 			Thread.sleep(2 * 1000);// 2秒，等待是否有验证码出现。
 			WebElement verifycode = driver.findElement(By.name("verifycode"));
 			if (verifycode != null && verifycode.isDisplayed()) {
-				System.out.println("你也看到了，要输入验证码的，我做不了了！我撤了，拜拜~");
+				Logger.log("你也看到了，要输入验证码的，我做不了了！我撤了，拜拜~");
 				Thread.sleep(5 * 1000);// 等待5s
 				driver.quit();
 				driver = null;
@@ -102,7 +103,7 @@ public class ExploreRequest {
 			return driver;
 		} catch (UnreachableBrowserException e) {
 			// 超时的情况不鸟它！
-			System.out.println("页面中有超时的链接，应该不影响结果，继续操作！");
+			Logger.log("页面中有超时的链接，应该不影响结果，继续操作！");
 		} catch (Throwable e) {
 			e.printStackTrace();
 			driver.quit();

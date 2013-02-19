@@ -15,6 +15,7 @@ import org.openqa.selenium.WebElement;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
+import com.scoop.crawler.weibo.util.Logger;
 
 /**
  * 解析类似这样：http://gov.weibo.com/profile.php?uid=sciencenet&ref=链接形式中的微博内容。<br>
@@ -32,12 +33,12 @@ public class CompanyWeiboParser extends WeiboParser {
 	public void parse(Elements eles) throws IOException {
 		for (int i = 0; i < eles.size(); i++) {
 			// 一条条的微博进行处理，解析每条微博的信息
-			System.out.println("解析当前微博第" + getCurPage() + "页，第" + (i + 1) + "条微博！");
+			Logger.log("解析当前微博第" + getCurPage() + "页，第" + (i + 1) + "条微博！");
 			parseWeibo(	StringUtils.trim(parseMsgUrlFromHtmlStyle(eles.get(i))),
 						StringUtils.trim(parseMsgPublishTime(eles.get(i))),
 						getClient(),
 						dataSource);
-			System.out.println("当前微博第" + getCurPage() + "页，第" + (i + 1) + "条微博解析完毕！");
+			Logger.log("当前微博第" + getCurPage() + "页，第" + (i + 1) + "条微博解析完毕！");
 		}
 	}
 
@@ -73,7 +74,7 @@ public class CompanyWeiboParser extends WeiboParser {
 		try {
 			driver = ExploreRequest.getDriver(tmpUrl);
 			if (driver == null) {
-				System.out.println("页面启动失败，中止抓取！");
+				Logger.log("页面启动失败，中止抓取！");
 				System.exit(0);
 				return;
 			}
@@ -96,7 +97,7 @@ public class CompanyWeiboParser extends WeiboParser {
 					setCurPage(getCurPage() + 1);
 				} else {
 					html = null;
-					System.out.println("没有下一页了，抓取完毕！" + driver.getPageSource());
+					Logger.log("没有下一页了，抓取完毕！" + driver.getPageSource());
 				}
 			}
 		} catch (Throwable e) {

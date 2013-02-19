@@ -9,6 +9,7 @@ import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.User;
 import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
+import com.scoop.crawler.weibo.util.Logger;
 import com.scoop.crawler.weibo.util.ThreadUtils;
 
 /**
@@ -33,7 +34,7 @@ public class WeiboUserRelationRunnable extends Thread implements Runnable {
 		try {
 			WebDriver driver = ExploreRequest.getDriver("http://weibo.com/");
 			if (driver == null) {
-				System.out.println("浏览器打开失败！停止运行！");
+				Logger.log("浏览器打开失败！停止运行！");
 				System.exit(0);
 			}
 			// 循环获取用户信息
