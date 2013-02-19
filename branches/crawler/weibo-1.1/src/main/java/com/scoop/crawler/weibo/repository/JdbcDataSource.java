@@ -204,6 +204,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 			}
 			switch (sqlObj.getType()) {
 			case INSERT:
+			case DELETE:
 				return ps.execute();
 			case UPDATE:
 				return ps.executeUpdate();
