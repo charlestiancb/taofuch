@@ -34,9 +34,11 @@ public class Logger {
 		synchronized (logFile) {
 			try {
 				if (msg != null) {
+					System.out.println(msg);
 					FileUtils.writeStringToFile(logFile, msg + IOUtils.LINE_SEPARATOR, true);
 				}
 				if (t != null) {
+					t.printStackTrace();
 					FileUtils.writeStringToFile(logFile, ExceptionUtils.getFullStackTrace(t) + IOUtils.LINE_SEPARATOR,
 							true);
 				}
