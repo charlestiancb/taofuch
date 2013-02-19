@@ -166,7 +166,11 @@ public class EntityManager {
 		} else {
 			sql.append(convertor.classToTableName(entity.getClass().getName()));
 		}
-		return createWhere(entity, sql);
+		EntitySql result = createWhere(entity, sql);
+		if (result != null) {
+			result.setType(SqlType.SELECT);
+		}
+		return result;
 	}
 
 	private static EntitySql createWhere(Object entity, StringBuffer sql) {
