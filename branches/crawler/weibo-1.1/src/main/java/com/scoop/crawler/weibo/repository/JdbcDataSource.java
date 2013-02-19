@@ -178,6 +178,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 			if (!isUserExists(person.getId())) {
 				// 如果用户不存在，则保存！
 				executeSql(EntityManager.createInsertSQL(EntityTransfer.parseUser(person)));
+			} else {
+				System.out.println("该用户已经存在！");
 			}
 		} catch (Exception e) {
 		}
