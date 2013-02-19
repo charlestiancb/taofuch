@@ -35,6 +35,7 @@ import com.scoop.crawler.weibo.repository.mysql.FetchInfo;
 import com.scoop.crawler.weibo.repository.mysql.Follow;
 import com.scoop.crawler.weibo.repository.mysql.User;
 import com.scoop.crawler.weibo.repository.mysql.Weibo;
+import com.scoop.crawler.weibo.util.Logger;
 
 public class JdbcDataSource extends DatabaseDataSource {
 	private Connection conn;
@@ -60,7 +61,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 			conn.setAutoCommit(true);
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("创建数据库连接失败！");
+			Logger.log("创建数据库连接失败！");
 			System.exit(0);
 		}
 	}
@@ -73,7 +74,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 				saveFetchIfNeccessory(weibo.getId(), FetchType.weibo);
 				saveUserIfNeccessory(weibo.getPublisher());
 			} else {
-				System.out.println("该微博已经存在！");
+				Logger.log("该微博已经存在！");
 			}
 		} catch (Exception e) {
 		}
@@ -115,7 +116,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 				executeSql(EntityManager.createInsertSQL(EntityTransfer.parseComment(comment)));
 				savePerson(comment.getPerson());
 			} else {
-				System.out.println("该评论已经存在！");
+				Logger.log("该评论已经存在！");
 			}
 		} catch (Exception e) {
 		}
@@ -179,7 +180,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 				// 如果用户不存在，则保存！
 				executeSql(EntityManager.createInsertSQL(EntityTransfer.parseUser(person)));
 			} else {
-				System.out.println("该用户已经存在！");
+				Logger.log("该用户已经存在！");
 			}
 		} catch (Exception e) {
 		}

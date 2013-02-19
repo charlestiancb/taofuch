@@ -20,6 +20,7 @@ import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.util.JSONUtils;
+import com.scoop.crawler.weibo.util.Logger;
 
 /**
  * 微博搜索结果方式的微博，如：http://s.weibo.com/weibo/%25E7%25AF%25AE%25E7%2590%2583?topnav
@@ -54,7 +55,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 		try {
 			driver = ExploreRequest.getDriver(url);
 			if (driver == null) {
-				System.out.println("浏览器打开失败！停止运行！");
+				Logger.log("浏览器打开失败！停止运行！");
 				System.exit(0);
 			}
 			parseHtmlToWeibo(driver);
@@ -185,7 +186,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 		if (wordsFiles != null && wordsFiles.length > 0) {
 			WebDriver driver = ExploreRequest.getDriver("http://s.weibo.com/weibo/AI");
 			if (driver == null) {
-				System.out.println("打开浏览器失败！停止工作！");
+				Logger.log("打开浏览器失败！停止工作！");
 			}
 			for (String file : wordsFiles) {
 				file = StringUtils.trim(file);
@@ -208,11 +209,11 @@ public class SearchWeiboParser extends JsonStyleParser {
 								parseHtmlToWeibo(driver);
 							}
 						} catch (Throwable t) {
-							System.out.println("当前文件[" + file + "]中的词[" + word + "]出现问题，继续下一个词语搜索！");
+							Logger.log("当前文件[" + file + "]中的词[" + word + "]出现问题，继续下一个词语搜索！");
 						}
 					}
 				} catch (Throwable t) {
-					System.out.println("当前文件[" + file + "]处理过程中出现问题，继续下一个文件操作！");
+					Logger.log("当前文件[" + file + "]处理过程中出现问题，继续下一个文件操作！");
 					// t.printStackTrace();
 				}
 				saveQuery(null);
