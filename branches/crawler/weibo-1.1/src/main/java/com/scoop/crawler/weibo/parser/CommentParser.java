@@ -61,6 +61,9 @@ public class CommentParser extends Parser {
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
+						System.out.println("当前评论解析完毕！");
+					} else {
+						System.out.println("当前评论为空，解析下一条！");
 					}
 				}
 				// 加载下一页评论，并进行分析
