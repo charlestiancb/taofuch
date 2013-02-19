@@ -55,9 +55,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 	private void connect() {
 		try {
 			Class.forName(pro.getProperty(Environment.DRIVER));
-			conn = DriverManager.getConnection(	pro.getProperty(Environment.URL),
-												pro.getProperty(Environment.USER),
-												pro.getProperty(Environment.PASS));
+			conn = DriverManager.getConnection(pro.getProperty(Environment.URL), pro.getProperty(Environment.USER),
+					pro.getProperty(Environment.PASS));
 			conn.setAutoCommit(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -73,6 +72,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 				executeSql(EntityManager.createInsertSQL(EntityTransfer.parseWeibo(weibo)));
 				saveFetchIfNeccessory(weibo.getId(), FetchType.weibo);
 				saveUserIfNeccessory(weibo.getPublisher());
+			} else {
+				System.out.println("该微博已经存在！");
 			}
 		} catch (Exception e) {
 		}
@@ -89,7 +90,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 		try {
 			FetchInfo fi = new FetchInfo(WeiboParser.getQuery(), id, type.name());
 			if (fi.needSave()) {
-				List<Map<String, Object>> records = (List<Map<String, Object>>) executeSql(EntityManager.createSelectSQL(fi));
+				List<Map<String, Object>> records = (List<Map<String, Object>>) executeSql(EntityManager
+						.createSelectSQL(fi));
 				if (records == null || records.isEmpty()) {
 					executeSql(EntityManager.createInsertSQL(fi));
 				}
@@ -112,6 +114,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 			if (!isCommentExists(comment.getId())) {
 				executeSql(EntityManager.createInsertSQL(EntityTransfer.parseComment(comment)));
 				savePerson(comment.getPerson());
+			} else {
+				System.out.println("该评论已经存在！");
 			}
 		} catch (Exception e) {
 		}
