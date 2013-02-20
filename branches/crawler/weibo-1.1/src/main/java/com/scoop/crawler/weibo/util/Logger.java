@@ -1,6 +1,8 @@
 package com.scoop.crawler.weibo.util;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -14,6 +16,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
  */
 public class Logger {
 	private static File logFile = null;
+	private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS  ");
 	static {
 		logFile = new File(FileUtils.getUserDirectory(), "weibo_logs.log");
 		try {
@@ -35,7 +38,7 @@ public class Logger {
 			try {
 				if (msg != null) {
 					System.out.println(msg);
-					FileUtils.writeStringToFile(logFile, msg + IOUtils.LINE_SEPARATOR, true);
+					FileUtils.writeStringToFile(logFile, formatCurTime() + msg + IOUtils.LINE_SEPARATOR, true);
 				}
 				if (t != null) {
 					t.printStackTrace();
@@ -50,11 +53,19 @@ public class Logger {
 		}
 	}
 
+	private static String formatCurTime() {
+		return format.format(new Date());
+	}
+
 	public static void log(String msg) {
 		log(msg, null);
 	}
 
 	public static void log(Throwable t) {
 		log(null, t);
+	}
+
+	public static void main(String[] args) {
+		System.out.println(formatCurTime());
 	}
 }

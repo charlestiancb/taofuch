@@ -50,62 +50,68 @@ public class UserRelationParser extends Parser {
 	}
 
 	protected void saveRelations(User u, DefaultHttpClient client, WebDriver driver, FailedNode node) {
-		String html = driver.getPageSource();
-		Document doc = Jsoup.parse(html);
-		Element relations = null;
-		if (FailedNode.FANS.compareTo(node) == 0) {
-			relations = doc.getElementById("pl_relation_hisFans");
-		} else {
-			relations = doc.getElementById("pl_relation_hisFollow");
-		}
-		if (relations == null) {
-			return;
-		}
-		Elements eles = relations.getElementsByAttributeValue("node-type", "userListBox");
-		if (eles.isEmpty()) {
-			return;
-		}
-		eles = eles.first().getElementsByTag("li");
-		if (eles.isEmpty()) {
-			return;
-		}
-		Iterator<Element> es = eles.iterator();
-		while (es.hasNext()) {
-			String userId = es.next().attr("action-data");
-			userId = userId.substring("uid=".length(), userId.indexOf("&"));
-			WeiboPersonInfo person = new WeiboPersonInfo("http://weibo.com/u/" + userId, client);
-			person.setId(userId);
-			person.setHandler(getHandler());
-			person.setNeedFetchRelation(false);
-			dataSource.savePerson(person);
+		// 这里使用循环而不使用递归，是因为递归有次数限制！
+		while (true) {
+			String html = driver.getPageSource();
+			Document doc = Jsoup.parse(html);
+			Element relations = null;
 			if (FailedNode.FANS.compareTo(node) == 0) {
-				Fans fans = new Fans();
-				fans.setUserId(u.getUserId());
-				fans.setFansId(userId);
-				dataSource.saveFans(fans);
+				relations = doc.getElementById("pl_relation_hisFans");
 			} else {
-				Follow follow = new Follow();
-				follow.setUserId(u.getUserId());
-				follow.setFollowId(userId);
-				dataSource.saveFollows(follow);
+				relations = doc.getElementById("pl_relation_hisFollow");
 			}
-		}
-		// 获取下一页的消息
-		WebElement ele = null;
-		try {
-			ele = driver.findElement(By.className("W_pages_comment"));
-			if (ele != null) {
-				ele = ele.findElement(By.linkText("下一页"));
+			if (relations == null) {
+				return;
 			}
-		} catch (Throwable e) {
-		}
-		if (ele != null && ele.isEnabled()) {
-			ele.click();
+			Elements eles = relations.getElementsByAttributeValue("node-type", "userListBox");
+			if (eles.isEmpty()) {
+				return;
+			}
+			eles = eles.first().getElementsByTag("li");
+			if (eles.isEmpty()) {
+				return;
+			}
+			Iterator<Element> es = eles.iterator();
+			while (es.hasNext()) {
+				String userId = es.next().attr("action-data");
+				userId = userId.substring("uid=".length(), userId.indexOf("&"));
+				WeiboPersonInfo person = new WeiboPersonInfo("http://weibo.com/u/" + userId, client);
+				person.setId(userId);
+				person.setHandler(getHandler());
+				person.setNeedFetchRelation(false);
+				dataSource.savePerson(person);// 保存粉丝或关注信息
+				if (FailedNode.FANS.compareTo(node) == 0) {
+					Fans fans = new Fans();
+					fans.setUserId(u.getUserId());
+					fans.setFansId(userId);
+					dataSource.saveFans(fans);// 保存用户与粉丝的关系信息
+				} else {
+					Follow follow = new Follow();
+					follow.setUserId(u.getUserId());
+					follow.setFollowId(userId);
+					dataSource.saveFollows(follow);// 保存用户与关注的关系信息
+				}
+			}
+			// 获取下一页的消息
+			WebElement ele = null;
 			try {
-				Thread.sleep(1000);// 等待1s，让页面加载完毕！
-			} catch (InterruptedException e) {
+				ele = driver.findElement(By.className("W_pages_comment"));
+				if (ele != null) {
+					ele = ele.findElement(By.linkText("下一页"));
+				} else {
+					break;
+				}
+			} catch (Throwable e) {
 			}
-			saveRelations(u, client, driver, node);
+			if (ele != null && ele.isEnabled()) {
+				ele.click();
+				try {
+					Thread.sleep(1000);// 等待1s，让页面加载完毕！
+				} catch (InterruptedException e) {
+				}
+			} else {
+				break;
+			}
 		}
 	}
 }
