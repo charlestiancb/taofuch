@@ -29,7 +29,7 @@ public class Logger {
 		if (logFile == null || !logFile.isFile()) {
 			System.exit(-1);
 		} else {
-			Logger.log("日志文件：" + logFile);
+			System.out.println("日志文件：" + logFile);
 		}
 	}
 
@@ -46,9 +46,9 @@ public class Logger {
 							true);
 				}
 			} catch (Exception e) {
-				Logger.log("保存日志失败！");
-				Logger.log(msg);
-				Logger.log(t);
+				System.out.println("保存日志失败！");
+				System.out.println(msg);
+				System.out.println(t);
 			}
 		}
 	}
