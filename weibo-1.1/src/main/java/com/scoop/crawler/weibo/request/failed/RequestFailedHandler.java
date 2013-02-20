@@ -50,8 +50,9 @@ public class RequestFailedHandler extends FailedHandler {
 
 		public void run() {
 			// 处理每条失败的请求！
-			for (FailedRequest req = getDataSource().pop(); req != null && req.getRecId() != null; req = getDataSource().pop()) {
+			while (true) {
 				try {
+					FailedRequest req = getDataSource().pop();
 					if (req == null || req.getRecId() == null) {
 						// 如果没有失败记录，则等待30分钟！
 						Thread.sleep(30 * 60 * 1000);
