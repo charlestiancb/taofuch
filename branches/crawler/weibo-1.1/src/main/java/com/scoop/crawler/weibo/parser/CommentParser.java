@@ -38,7 +38,7 @@ public class CommentParser extends Parser {
 			// 打开微博页面，抓取其评论信息。
 			driver.navigate().to(w.getUrl());
 			Thread.sleep(2000);
-			Logger.log("解析评论信息……");
+			Logger.log("解析微博[" + w + "]的评论信息……");
 			Elements eles = getComments(driver);
 			if (eles == null || eles.isEmpty()) {
 				Logger.log("当前微博没有评论信息！");
@@ -74,6 +74,7 @@ public class CommentParser extends Parser {
 			System.err.println("解析微博[" + w + "]的评论失败！");
 			e.printStackTrace();
 		}
+		Logger.log("微博[" + w + "]的评论信息解析完毕！");
 	}
 
 	/**
