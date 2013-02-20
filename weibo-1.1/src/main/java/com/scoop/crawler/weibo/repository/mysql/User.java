@@ -118,6 +118,6 @@ public class User implements Serializable {
 	}
 
 	public String toString() {
-		return "id=" + userId + "; name=" + name;
+		return userId + ":" + name;
 	}
 }
