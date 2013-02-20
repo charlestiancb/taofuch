@@ -19,6 +19,7 @@ import com.scoop.crawler.weibo.repository.mysql.Follow;
 import com.scoop.crawler.weibo.repository.mysql.User;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
+import com.scoop.crawler.weibo.util.Logger;
 
 public class UserRelationParser extends Parser {
 	public UserRelationParser(DataSource dataSource, FailedHandler handler) {
@@ -91,6 +92,7 @@ public class UserRelationParser extends Parser {
 					follow.setFollowId(userId);
 					dataSource.saveFollows(follow);// 保存用户与关注的关系信息
 				}
+				Logger.log("保存用户信息[" + person.getId() + ":" + person.getName() + "]成功！");
 			}
 			// 获取下一页的消息
 			WebElement ele = null;
