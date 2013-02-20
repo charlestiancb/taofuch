@@ -4,11 +4,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.fetch.FetchSinaWeibo;
 import com.scoop.crawler.weibo.parser.UserWeiboParser;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.FailedRequest;
+import com.scoop.crawler.weibo.util.Logger;
 
 /**
  * 请求失败的请求处理。
@@ -49,16 +51,21 @@ public class RequestFailedHandler extends FailedHandler {
 	class HandlerRunnable implements Runnable {
 
 		public void run() {
+			FailedRequest req = getDataSource().pop();
+			if (req == null || req.getRecId() == null) {
+				Logger.log("没有失败的记录，线程进入守候状态……");
+			}
 			// 处理每条失败的请求！
 			while (true) {
 				try {
-					FailedRequest req = getDataSource().pop();
 					if (req == null || req.getRecId() == null) {
 						// 如果没有失败记录，则等待30分钟！
 						Thread.sleep(30 * 60 * 1000);
 					} else {
+						Logger.log("有失败的记录，线程进入激活抓取状态！");
 						fetch(req);
 					}
+					req = getDataSource().pop();
 				} catch (Exception e) {
 				}
 			}
@@ -79,7 +86,7 @@ public class RequestFailedHandler extends FailedHandler {
 					new UserWeiboParser(getDataSource(), this).reTry(getClient(), req.getUrl(), fn);
 					break;
 				case SINGLE_WEIBO:
-
+					getDataSource().saveWeibo(new OneWeiboInfo(req.getUrl(), getClient()));
 					break;
 				case COMMENT:
 
