@@ -54,6 +54,6 @@ public class CnAndPingyinAPITest extends BaseTest {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(Arrays.toString(PinyinAPI.toPinyinSplit(">起重de设备111")));
+		System.out.println(Arrays.toString(PinyinAPI.toPinyinSplit(">起重de设备111和")));
 	}
 }
