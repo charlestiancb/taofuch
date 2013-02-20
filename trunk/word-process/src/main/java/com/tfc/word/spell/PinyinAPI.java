@@ -27,7 +27,7 @@ import com.tfc.word.spell.dic.SpellToCharsDic;
  * @author taofucheng
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class PingyinAPI {
+public class PinyinAPI {
 	/** 字母正则 */
 	private static final String ASCII_LETTER = "\\w+";
 	/** 字母匹配 */
@@ -45,7 +45,7 @@ public class PingyinAPI {
 		if (StringUtils.isBlank(cnText)) {
 			return new String[] {};
 		}
-		String[] py = toPingyin(cnText);
+		String[] py = toPinyin(cnText);
 		String[] result = new String[] {};
 		if (py != null && py.length > 1) {
 			// 先取正常拼音，如果结果有多个，则使用单字实现。
@@ -98,7 +98,7 @@ public class PingyinAPI {
 	 * @param cnText
 	 * @return
 	 */
-	public static String[] toPingyin(String cnText) {
+	public static String[] toPinyin(String cnText) {
 		if (StringUtils.isBlank(cnText)) {
 			return new String[] { cnText };
 		}
@@ -129,6 +129,53 @@ public class PingyinAPI {
 					continue;
 				}
 			}
+		}
+		return result;
+	}
+
+	/**
+	 * 将给定的文本中的汉字转换为拼音。
+	 * 
+	 * @param cnText
+	 * @return
+	 */
+	public static String[] toPinyinSplit(String cnText) {
+		if (StringUtils.isBlank(cnText)) {
+			return new String[] { cnText };
+		}
+		String[] result = toPinyin(cnText);
+		// 将拼音结果分开
+		for (int i = 0; i < result.length; i++) {
+			StringBuffer tmp = new StringBuffer("");
+			String py = result[i];
+			boolean isPinyin = false;
+			for (int j = 0; j < cnText.length(); j++) {
+				String ch = cnText.substring(j, j + 1);
+				String pys = SingleCnToSpell.getFullSpell(ch);
+				if (ch.endsWith(pys)) {
+					// 如果拼音与原内容一致，表示这是非汉字！
+					if (isPinyin) {
+						tmp.append(" ");
+					}
+					tmp.append(ch);
+					py = py.substring(1);
+					isPinyin = false;
+				} else {
+					for (String chrPy : pys.split(",")) {
+						// 将该字的每个拼音与py进行对比！
+						if (py.startsWith(chrPy)) {
+							if (tmp.length() > 0) {
+								tmp.append(" ");
+							}
+							tmp.append(chrPy);
+							isPinyin = true;
+							py = py.substring(chrPy.length());
+							break;
+						}
+					}
+				}
+			}
+			result[i] = tmp.toString();
 		}
 		return result;
 	}
@@ -192,7 +239,7 @@ public class PingyinAPI {
 			return ArrayUtils.EMPTY_STRING_ARRAY;
 		}
 		String pureWord = word.replaceAll(ASCII_LETTER, "");// 这是去除了字母之后的内容
-		String[] pinyins = toPingyin(word);
+		String[] pinyins = toPinyin(word);
 		if (pinyins != null && pinyins.length > 0) {
 			Set<String> result = new LinkedHashSet<String>();
 			for (String pinyin : pinyins) {
@@ -216,7 +263,7 @@ public class PingyinAPI {
 				List<String> lettersWords = new ArrayList<String>();
 				for (Matcher m = ASCII_LETTER_PATTERN.matcher(word); m.find(); lettersWords.add(m.group(0)))
 					;
-				pinyins = toPingyin(unLetterWord);
+				pinyins = toPinyin(unLetterWord);
 				if (pinyins != null && pinyins.length > 0) {
 					Set<String> result_ = new HashSet<String>();
 					for (String pinyin : pinyins) {
