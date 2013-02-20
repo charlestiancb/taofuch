@@ -74,7 +74,7 @@ public class RequestFailedHandler extends FailedHandler {
 	}
 
 	private void fetch(FailedRequest req) {
-		// TODO 存储失败记录，则处理！
+		// 存储失败记录，则处理！
 		try {
 			FailedNode fn = FailedNode.valueOf(req.getFailedNode());
 			if (fn != null) {
