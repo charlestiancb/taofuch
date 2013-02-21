@@ -1,6 +1,7 @@
 package com.scoop.crawler.weibo.parser;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -97,9 +98,9 @@ public class UserRelationParser extends Parser {
 			// 获取下一页的消息
 			WebElement ele = null;
 			try {
-				ele = driver.findElement(By.className("W_pages_comment"));
-				if (ele != null) {
-					ele = ele.findElement(By.linkText("下一页"));
+				List<WebElement> pages = driver.findElements(By.className("W_pages_comment"));
+				if (pages != null && pages.size() > 0) {
+					ele = pages.get(0).findElement(By.linkText("下一页"));
 				} else {
 					break;
 				}
