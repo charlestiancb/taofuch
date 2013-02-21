@@ -52,6 +52,9 @@ public class UserRelationParser extends Parser {
 	}
 
 	protected void saveRelations(User u, DefaultHttpClient client, WebDriver driver, FailedNode node) {
+		if (node == null) {
+			node = FailedNode.FANS;
+		}
 		// 这里使用循环而不使用递归，是因为递归有次数限制！
 		while (true) {
 			String html = driver.getPageSource();
@@ -63,14 +66,17 @@ public class UserRelationParser extends Parser {
 				relations = doc.getElementById("pl_relation_hisFollow");
 			}
 			if (relations == null) {
+				Logger.log("当前用户[" + u.getUserId() + ":" + u.getName() + "]没有" + node.name() + "信息");
 				return;
 			}
 			Elements eles = relations.getElementsByAttributeValue("node-type", "userListBox");
 			if (eles.isEmpty()) {
+				Logger.log("当前用户[" + u.getUserId() + ":" + u.getName() + "]没有" + node.name() + "信息");
 				return;
 			}
 			eles = eles.first().getElementsByTag("li");
 			if (eles.isEmpty()) {
+				Logger.log("当前用户[" + u.getUserId() + ":" + u.getName() + "]没有" + node.name() + "信息");
 				return;
 			}
 			Iterator<Element> es = eles.iterator();

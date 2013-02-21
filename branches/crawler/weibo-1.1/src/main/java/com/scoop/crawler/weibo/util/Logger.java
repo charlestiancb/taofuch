@@ -29,7 +29,7 @@ public class Logger {
 		if (logFile == null || !logFile.isFile()) {
 			System.exit(-1);
 		} else {
-			System.out.println("日志文件：" + logFile);
+			System.out.println(formatCurTime() + "日志文件：" + logFile);
 		}
 	}
 
@@ -37,18 +37,19 @@ public class Logger {
 		synchronized (logFile) {
 			try {
 				if (msg != null) {
-					System.out.println(msg);
+					System.out.println(formatCurTime() + msg);
 					FileUtils.writeStringToFile(logFile, formatCurTime() + msg + IOUtils.LINE_SEPARATOR, true);
 				}
 				if (t != null) {
+					System.out.println(formatCurTime());
 					t.printStackTrace();
 					FileUtils.writeStringToFile(logFile, ExceptionUtils.getFullStackTrace(t) + IOUtils.LINE_SEPARATOR,
 							true);
 				}
 			} catch (Exception e) {
-				System.out.println("保存日志失败！");
-				System.out.println(msg);
-				System.out.println(t);
+				System.out.println(formatCurTime() + "保存日志失败！");
+				System.out.println(formatCurTime() + msg);
+				System.out.println(formatCurTime() + t);
 			}
 		}
 	}
