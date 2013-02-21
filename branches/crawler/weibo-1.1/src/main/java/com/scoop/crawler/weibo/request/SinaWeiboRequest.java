@@ -38,7 +38,7 @@ public class SinaWeiboRequest {
 	private static boolean hasProcProxy = false;
 	private static final String INPUT_CODE_TIP = "%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB";
 	private static final String CODE_ERR_TIP = "%CA%E4%C8%EB%B5%C4%D1%E9%D6%A4%C2%EB%B2%BB%D5%FD%C8%B7";
-	private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 5.1; rv:14.0) Gecko/20100101 Firefox/14.0.1";
+	private static final String USER_AGENT = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E)";
 	/** 等待的时间长度 */
 	private static long waitInterval = 20 * 60 * 1000;// 20分钟
 
@@ -287,6 +287,7 @@ public class SinaWeiboRequest {
 		DefaultHttpClient client = new DefaultHttpClient();
 		// 连接超时设置5000
 		client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
+		client.getParams().setParameter("Referer", "http://weibo.com/");
 		if (hasProcProxy) {
 			setProxy(client);
 		} else {
