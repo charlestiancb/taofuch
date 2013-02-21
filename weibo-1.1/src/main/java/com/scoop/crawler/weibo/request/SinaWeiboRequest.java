@@ -102,7 +102,7 @@ public class SinaWeiboRequest {
 			DefaultHttpClient client = newProxy();
 
 			// 新浪微博登录js地址
-			HttpPost post = new HttpPost("https://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.5)");
+			HttpPost post = new HttpPost("http://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.5)");
 
 			// 获得ServerTime
 			String data = getServerTime();
@@ -124,7 +124,9 @@ public class SinaWeiboRequest {
 			nvps.add(new BasicNameValuePair("service", "miniblog"));
 			nvps.add(new BasicNameValuePair("servertime", data));
 			nvps.add(new BasicNameValuePair("nonce", nonce));
-			nvps.add(new BasicNameValuePair("pwencode", "wsse"));
+			nvps.add(new BasicNameValuePair("pwencode", "rsa2"));// 原值：wsse
+			nvps.add(new BasicNameValuePair("rsakv", "1330428213"));
+			nvps.add(new BasicNameValuePair("prelt", "65"));
 			nvps.add(new BasicNameValuePair("sp", new SinaSSOEncoder().encode(password, data, nonce)));
 			nvps.add(new BasicNameValuePair("encoding", "UTF-8"));
 			nvps.add(new BasicNameValuePair("returntype", "META"));
