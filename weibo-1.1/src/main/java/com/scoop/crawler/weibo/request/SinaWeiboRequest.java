@@ -102,7 +102,7 @@ public class SinaWeiboRequest {
 			DefaultHttpClient client = newProxy();
 
 			// 新浪微博登录js地址
-			HttpPost post = new HttpPost("http://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.3.17)");
+			HttpPost post = new HttpPost("https://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.5)");
 
 			// 获得ServerTime
 			String data = getServerTime();
@@ -157,7 +157,7 @@ public class SinaWeiboRequest {
 				tmp = tmp.substring(tmp.indexOf("=") + 1);
 				tmp = tmp.substring(0, tmp.indexOf("&#39;\"/>"));
 				String _tmp = URLDecoder.decode(tmp, "GBK");
-				System.err.println(_tmp);
+				System.err.println("登录失败，网站提示信息：" + _tmp);
 				if (INPUT_CODE_TIP.equals(tmp) || CODE_ERR_TIP.equals(tmp)) {
 					validCode.set("输入验证码");
 					// return getHttpClient(username, password);
