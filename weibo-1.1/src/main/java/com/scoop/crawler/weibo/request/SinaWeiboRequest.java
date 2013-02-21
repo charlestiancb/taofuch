@@ -6,12 +6,14 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -19,9 +21,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.cookie.BasicClientCookie2;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
+import org.openqa.selenium.WebDriver;
 
 import com.alibaba.fastjson.JSON;
 import com.scoop.crawler.weibo.entity.LogonInfo;
@@ -131,7 +135,7 @@ public class SinaWeiboRequest {
 			nvps.add(new BasicNameValuePair("encoding", "UTF-8"));
 			nvps.add(new BasicNameValuePair("returntype", "META"));
 			nvps.add(new BasicNameValuePair("url",
-					"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
+											"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
 			// if (validCode.get() != null && validCode.get().length() > 0) {
 			// String code = InputValidCodeDialog.input(null);
 			// while (StringUtils.isBlank(code)) {
@@ -159,23 +163,57 @@ public class SinaWeiboRequest {
 				tmp = tmp.substring(tmp.indexOf("=") + 1);
 				tmp = tmp.substring(0, tmp.indexOf("&#39;\"/>"));
 				String _tmp = URLDecoder.decode(tmp, "GBK");
-				System.err.println("登录失败，网站提示信息：" + _tmp);
+				System.err.println("后台代码登录失败，网站提示信息：" + _tmp + "。 \n使用浏览器进行登录尝试！");
 				if (INPUT_CODE_TIP.equals(tmp) || CODE_ERR_TIP.equals(tmp)) {
 					validCode.set("输入验证码");
 					// return getHttpClient(username, password);
 				}
-				System.exit(0);
+				// 使用网页方式登录
+				setCookie(client);
+				String userId = "2210871673";
+				String html = EntityUtils.toString(client.execute(new HttpGet("http://weibo.com/u/" + userId + ""))
+															.getEntity(), "UTF-8");
+				System.out.println(html);
+				if (html.indexOf("$CONFIG['oid'] = '" + userId + "';") == -1) {
+					// 登录失败，退出操作！
+					System.err.println("浏览器方式登录也失败，只能停止工作了~");
+					System.exit(0);
+				}
+			} else {
+				String url = tmp.substring(fromIndex, tmp.indexOf("retcode=0", fromIndex) + 9);
+				// 登录新浪微博
+				HttpGet loginMethod = new HttpGet(url);
+				res = client.execute(loginMethod);
+				Logger.log("登录结果：" + EntityUtils.toString(res.getEntity(), "UTF-8"));
 			}
-			String url = tmp.substring(fromIndex, tmp.indexOf("retcode=0", fromIndex) + 9);
-			// 登录新浪微博
-			HttpGet loginMethod = new HttpGet(url);
-			res = client.execute(loginMethod);
-			Logger.log("登录结果：" + EntityUtils.toString(res.getEntity(), "UTF-8"));
 			LogonInfo.store(username, password);
 			Logger.log("程序登录成功！开始工作！");
 			return client;
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e);
+		}
+	}
+
+	private static void setCookie(DefaultHttpClient client) {
+		WebDriver driver = null;
+		try {
+			driver = ExploreRequest.getDriver("http://weibo.com/u/2210871673");
+			Set<org.openqa.selenium.Cookie> cs = driver.manage().getCookies();
+			CookieStore cookieStore = client.getCookieStore();
+			for (org.openqa.selenium.Cookie c : cs) {
+				BasicClientCookie2 cookie = new BasicClientCookie2(c.getName(), c.getValue());
+				cookie.setDomain(c.getDomain());
+				cookie.setExpiryDate(c.getExpiry());
+				cookie.setPath(c.getPath());
+				cookieStore.addCookie(cookie);
+			}
+			client.setCookieStore(cookieStore);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (driver != null) {
+				driver.quit();
+			}
 		}
 	}
 
@@ -298,24 +336,24 @@ public class SinaWeiboRequest {
 				if (response.getStatusLine().getStatusCode() == 403
 						&& html.indexOf("http://oa.vemic.com/system_support/trouble_ticket_add.php") > -1) {
 					setProxy(client);
+					hasProcProxy = true;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			hasProcProxy = true;
 		}
 		return client;
 	}
 
 	private static void setProxy(DefaultHttpClient client) {
 		// 代理方式访问网络
-		client.getCredentialsProvider().setCredentials(new AuthScope("192.168.16.187", 8080),
-				new UsernamePasswordCredentials("taofucheng", "taofuchok"));
+		client.getCredentialsProvider().setCredentials(	new AuthScope("192.168.16.187", 8080),
+														new UsernamePasswordCredentials("taofucheng", "taofuchok"));
 		client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, new HttpHost("192.168.16.187", 8080));
 	}
 
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		System.err.println(URLDecoder.decode(
-				"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB", "GBK"));
+		System.err.println(URLDecoder.decode(	"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB",
+												"GBK"));
 	}
 }
