@@ -46,7 +46,7 @@ public class UserRelationParser extends Parser {
 				}
 				// 判断是否是pageNotFound，如果是，则使用页面点击方式进入！
 				String html = driver.getPageSource();
-				if (html.indexOf("<div class=\"note\"><span class=\"icon_delM\"></span><p>抱歉，你访问的页面地址有误，或者该页面不存在</p></div>") > 0) {
+				if (html.indexOf("<p>抱歉，你访问的页面地址有误，或者该页面不存在</p>") > 0) {
 					driver.navigate().to(url.substring(0, url.lastIndexOf("/")));
 					try {
 						Thread.sleep(2000);// 等待1s，让页面加载完毕！
