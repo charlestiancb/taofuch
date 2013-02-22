@@ -44,6 +44,34 @@ public class UserRelationParser extends Parser {
 					Thread.sleep(2000);// 等待1s，让页面加载完毕！
 				} catch (InterruptedException e) {
 				}
+				// 判断是否是pageNotFound，如果是，则使用页面点击方式进入！
+				String html = driver.getPageSource();
+				if (html.indexOf("<div class=\"note\"><span class=\"icon_delM\"></span><p>抱歉，你访问的页面地址有误，或者该页面不存在</p></div>") > 0) {
+					driver.navigate().to(url.substring(0, url.lastIndexOf("/")));
+					try {
+						Thread.sleep(2000);// 等待1s，让页面加载完毕！
+					} catch (InterruptedException e) {
+					}
+					List<WebElement> elements = driver.findElements(By.className("user_atten_l"));
+					WebElement element = null;
+					if (elements != null && elements.size() > 0) {
+						elements = elements.get(0).findElements(By.tagName("li"));
+						if (elements != null && elements.size() > 0) {
+							if (FailedNode.FANS.compareTo(node) == 0) {
+								element = elements.get(1).findElement(By.className("S_func1"));
+							} else {
+								element = elements.get(0).findElement(By.className("S_func1"));
+							}
+						}
+					}
+					if (element != null) {
+						element.click();
+						try {
+							Thread.sleep(2000);// 等待1s，让页面加载完毕！
+						} catch (InterruptedException e) {
+						}
+					}
+				}
 				saveRelations(u, client, driver, node);
 			}
 		} catch (Exception e) {
