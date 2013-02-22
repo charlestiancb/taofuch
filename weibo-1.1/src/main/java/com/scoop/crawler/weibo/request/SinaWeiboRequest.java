@@ -102,6 +102,7 @@ public class SinaWeiboRequest {
 	 */
 	public static DefaultHttpClient getHttpClient(String username, String password) {
 		try {
+			LogonInfo.store(username, password);
 			// httpClient实例
 			DefaultHttpClient client = newProxy();
 
@@ -135,7 +136,7 @@ public class SinaWeiboRequest {
 			nvps.add(new BasicNameValuePair("encoding", "UTF-8"));
 			nvps.add(new BasicNameValuePair("returntype", "META"));
 			nvps.add(new BasicNameValuePair("url",
-											"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
+					"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
 			// if (validCode.get() != null && validCode.get().length() > 0) {
 			// String code = InputValidCodeDialog.input(null);
 			// while (StringUtils.isBlank(code)) {
@@ -172,8 +173,7 @@ public class SinaWeiboRequest {
 				setCookie(client);
 				String userId = "2210871673";
 				String html = EntityUtils.toString(client.execute(new HttpGet("http://weibo.com/u/" + userId + ""))
-															.getEntity(), "UTF-8");
-				System.out.println(html);
+						.getEntity(), "UTF-8");
 				if (html.indexOf("$CONFIG['oid'] = '" + userId + "';") == -1) {
 					// 登录失败，退出操作！
 					System.err.println("浏览器方式登录也失败，只能停止工作了~");
@@ -186,7 +186,6 @@ public class SinaWeiboRequest {
 				res = client.execute(loginMethod);
 				Logger.log("登录结果：" + EntityUtils.toString(res.getEntity(), "UTF-8"));
 			}
-			LogonInfo.store(username, password);
 			Logger.log("程序登录成功！开始工作！");
 			return client;
 		} catch (Exception e) {
@@ -347,13 +346,13 @@ public class SinaWeiboRequest {
 
 	private static void setProxy(DefaultHttpClient client) {
 		// 代理方式访问网络
-		client.getCredentialsProvider().setCredentials(	new AuthScope("192.168.16.187", 8080),
-														new UsernamePasswordCredentials("taofucheng", "taofuchok"));
+		client.getCredentialsProvider().setCredentials(new AuthScope("192.168.16.187", 8080),
+				new UsernamePasswordCredentials("taofucheng", "taofuchok"));
 		client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, new HttpHost("192.168.16.187", 8080));
 	}
 
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		System.err.println(URLDecoder.decode(	"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB",
-												"GBK"));
+		System.err.println(URLDecoder.decode(
+				"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB", "GBK"));
 	}
 }

@@ -59,6 +59,7 @@ public class RequestFailedHandler extends FailedHandler {
 			while (true) {
 				try {
 					if (req == null || req.getRecId() == null) {
+						Logger.log("已经没有失败的记录，线程进入守候状态……");
 						// 如果没有失败记录，则等待30分钟！
 						Thread.sleep(30 * 60 * 1000);
 					} else {
