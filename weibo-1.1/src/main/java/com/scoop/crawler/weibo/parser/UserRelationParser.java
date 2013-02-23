@@ -20,6 +20,7 @@ import com.scoop.crawler.weibo.repository.mysql.Follow;
 import com.scoop.crawler.weibo.repository.mysql.User;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
+import com.scoop.crawler.weibo.util.JSONUtils;
 import com.scoop.crawler.weibo.util.Logger;
 
 public class UserRelationParser extends Parser {
@@ -101,6 +102,7 @@ public class UserRelationParser extends Parser {
 			}
 			if (relations == null || StringUtils.isBlank(relations.text())) {
 				Logger.log("对当前用户[" + u.getUserId() + ":" + u.getName() + "]进行json方式解析。");
+				html = JSONUtils.unEscapeHtml(html);
 				if (FailedNode.FANS.compareTo(node) == 0) {
 					doc = parseToDoc(html, "pl_relation_hisFans");
 				} else {

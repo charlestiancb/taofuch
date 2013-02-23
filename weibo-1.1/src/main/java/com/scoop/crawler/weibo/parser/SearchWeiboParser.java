@@ -34,8 +34,6 @@ public class SearchWeiboParser extends JsonStyleParser {
 	private String common = "<script>STK && STK.pageletM && STK.pageletM.view({\"pid\":\"" + replace + "\",";
 	private String weiboStart = common.replaceAll(replace, "pl_weibo_feedlist");
 	private String userStart = common.replaceAll(replace, "pl_user_feedlist");
-	private static final String[] special = new String[] { "&amp;", "&lt;", "&gt;", "&quot;", "&nbsp;" };
-	private static final String[] plain = new String[] { "&", "<", ">", "\"", " " };
 
 	public SearchWeiboParser(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
@@ -84,9 +82,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 			user = null;
 			html = driver.getPageSource();
 			// 将其中的html转义字符转换成正常的字符！
-			for (int i = 0; i < special.length; i++) {
-				html = html.replaceAll(special[i], plain[i]);
-			}
+			html = JSONUtils.unEscapeHtml(html);
 			String hit = weiboStart;
 			int idx = html.indexOf(weiboStart);
 			if (idx == -1) {
@@ -145,8 +141,10 @@ public class SearchWeiboParser extends JsonStyleParser {
 			for (int i = 0; i < eles.size(); i++) {
 				try {
 					// 一条条的微博进行处理，解析每条微博的信息
-					parseWeibo(StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-							StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
+					parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
+								StringUtils.trim(parseMsgPublishTime(eles.get(i))),
+								getClient(),
+								dataSource);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

@@ -8,6 +8,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 public class JSONUtils {
+	private static final String[] special = new String[] { "&amp;", "&lt;", "&gt;", "&quot;", "&nbsp;" };
+	private static final String[] plain = new String[] { "&", "<", ">", "\"", " " };
+
 	@SuppressWarnings({ "rawtypes" })
 	public static String getSinaHtml(String jsonContent) {
 		if (StringUtils.isBlank(jsonContent)) {
@@ -29,5 +32,15 @@ public class JSONUtils {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static String unEscapeHtml(String html) {
+		if (StringUtils.isBlank(html)) {
+			return html;
+		}
+		for (int i = 0; i < special.length; i++) {
+			html = html.replaceAll(special[i], plain[i]);
+		}
+		return html;
 	}
 }
