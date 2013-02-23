@@ -41,12 +41,13 @@ public class UserRelationParser extends Parser {
 				}
 				driver.navigate().to(url);
 				try {
-					Thread.sleep(2000);// 等待1s，让页面加载完毕！
+					Thread.sleep(200);// 等待0.2s，让链接完毕！
 				} catch (InterruptedException e) {
 				}
+				String currentUrl = driver.getCurrentUrl();
 				// 判断是否是pageNotFound，如果是，则使用页面点击方式进入！
-				String html = driver.getPageSource();
-				if (html.indexOf("<p>抱歉，你访问的页面地址有误，或者该页面不存在</p>") > 0) {
+				if (currentUrl.startsWith("http://weibo.com/sorry")) {
+					Logger.log("链接[" + url + "]无法直接访问[" + currentUrl + "]，启用浏览器访问！");
 					driver.navigate().to(url.substring(0, url.lastIndexOf("/")));
 					try {
 						Thread.sleep(2000);// 等待1s，让页面加载完毕！
@@ -70,6 +71,11 @@ public class UserRelationParser extends Parser {
 							Thread.sleep(2000);// 等待1s，让页面加载完毕！
 						} catch (InterruptedException e) {
 						}
+					}
+				} else {
+					try {
+						Thread.sleep(1800);// 等待1s，让页面加载完毕！
+					} catch (InterruptedException e) {
 					}
 				}
 				saveRelations(u, client, driver, node);
