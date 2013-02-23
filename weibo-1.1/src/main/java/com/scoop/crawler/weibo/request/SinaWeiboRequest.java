@@ -137,19 +137,6 @@ public class SinaWeiboRequest {
 			nvps.add(new BasicNameValuePair("returntype", "META"));
 			nvps.add(new BasicNameValuePair("url",
 					"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
-			// if (validCode.get() != null && validCode.get().length() > 0) {
-			// String code = InputValidCodeDialog.input(null);
-			// while (StringUtils.isBlank(code)) {
-			// if (code == null) {
-			// // 如果是取消，则退出！
-			// System.err.println("你选择了不输入验证码，你太不配合了……我不干了，退出~");
-			// System.exit(0);
-			// }
-			// code = InputValidCodeDialog.input("请输入验证码");
-			// }
-			// nvps.add(new
-			// BasicNameValuePair(InputValidCodeDialog.VALID_CODE_NAME, code));
-			// }
 			HttpEntity entity = new UrlEncodedFormEntity(nvps, "UTF-8");
 			post.setEntity(entity);
 			// 获取跳转登录
@@ -164,7 +151,7 @@ public class SinaWeiboRequest {
 				tmp = tmp.substring(tmp.indexOf("=") + 1);
 				tmp = tmp.substring(0, tmp.indexOf("&#39;\"/>"));
 				String _tmp = URLDecoder.decode(tmp, "GBK");
-				System.err.println("后台代码登录失败，网站提示信息：" + _tmp + "。 \n使用浏览器进行登录尝试！");
+				Logger.log("后台代码登录失败，网站提示信息：" + _tmp + "。 \n使用浏览器进行登录尝试！");
 				if (INPUT_CODE_TIP.equals(tmp) || CODE_ERR_TIP.equals(tmp)) {
 					validCode.set("输入验证码");
 					// return getHttpClient(username, password);
@@ -173,10 +160,10 @@ public class SinaWeiboRequest {
 				setCookie(client);
 				String userId = "2210871673";
 				String html = EntityUtils.toString(client.execute(new HttpGet("http://weibo.com/u/" + userId + ""))
-						.getEntity(), "UTF-8");
+															.getEntity(), "UTF-8");
 				if (html.indexOf("$CONFIG['oid'] = '" + userId + "';") == -1) {
 					// 登录失败，退出操作！
-					System.err.println("浏览器方式登录也失败，只能停止工作了~");
+					Logger.log("浏览器方式登录也失败，只能停止工作了~");
 					System.exit(0);
 				}
 			} else {
@@ -305,8 +292,6 @@ public class SinaWeiboRequest {
 					try {
 						HttpGet tmpMethod = new HttpGet(url);
 						client.execute(tmpMethod);
-						// System.err.println("CrossLogin执行结果：" +
-						// EntityUtils.toString(res.getEntity(), "UTF-8"));
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
