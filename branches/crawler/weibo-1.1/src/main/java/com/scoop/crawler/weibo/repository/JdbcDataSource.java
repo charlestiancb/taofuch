@@ -429,11 +429,19 @@ public class JdbcDataSource extends DatabaseDataSource {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void saveFans(Fans fans) {
-		executeSql(EntityManager.createInsertSQL(fans));
+		List<Map<String, Object>> result = (List<Map<String, Object>>) executeSql(EntityManager.createSelectSQL(fans));
+		if (result == null || result.isEmpty()) {
+			executeSql(EntityManager.createInsertSQL(fans));
+		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void saveFollows(Follow follow) {
-		executeSql(EntityManager.createInsertSQL(follow));
+		List<Map<String, Object>> result = (List<Map<String, Object>>) executeSql(EntityManager.createSelectSQL(follow));
+		if (result == null || result.isEmpty()) {
+			executeSql(EntityManager.createInsertSQL(follow));
+		}
 	}
 }
