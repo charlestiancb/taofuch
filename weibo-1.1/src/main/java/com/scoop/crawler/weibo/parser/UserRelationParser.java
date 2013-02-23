@@ -99,6 +99,17 @@ public class UserRelationParser extends Parser {
 			} else {
 				relations = doc.getElementById("pl_relation_hisFollow");
 			}
+			if (relations == null || StringUtils.isBlank(relations.text())) {
+				Logger.log("对当前用户[" + u.getUserId() + ":" + u.getName() + "]进行json方式解析。");
+				if (FailedNode.FANS.compareTo(node) == 0) {
+					doc = parseToDoc(html, "pl_relation_hisFans");
+				} else {
+					doc = parseToDoc(html, "pl_relation_hisFollow");
+				}
+				if (doc != null) {
+					relations = doc.append("");
+				}
+			}
 			if (relations == null) {
 				Logger.log("当前用户[" + u.getUserId() + ":" + u.getName() + "]没有" + node.name() + "信息");
 				return;
@@ -156,5 +167,11 @@ public class UserRelationParser extends Parser {
 				break;
 			}
 		}
+	}
+
+	private Document parseToDoc(String html, String contentPart) {
+		String detailStart = "<script>STK && STK.pageletM && STK.pageletM.view({\"pid\":\"" + contentPart + "\",";
+		String tmp = cut(html, detailStart);
+		return StringUtils.isBlank(tmp) ? null : Jsoup.parse(tmp);
 	}
 }
