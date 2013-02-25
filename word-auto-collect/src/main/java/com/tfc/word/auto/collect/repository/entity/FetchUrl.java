@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "FETCH_URL")
+@Table(name = "FETCH_ORIG")
 public class FetchUrl implements Serializable {
 	/**
 	 * 
@@ -19,7 +19,7 @@ public class FetchUrl implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long recId;
-	private String url;
+	private String orig;
 	private Date addTime;
 
 	public Long getRecId() {
@@ -30,12 +30,12 @@ public class FetchUrl implements Serializable {
 		this.recId = recId;
 	}
 
-	public String getUrl() {
-		return url;
+	public String getOrig() {
+		return orig;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setOrig(String orig) {
+		this.orig = orig;
 	}
 
 	public Date getAddTime() {
