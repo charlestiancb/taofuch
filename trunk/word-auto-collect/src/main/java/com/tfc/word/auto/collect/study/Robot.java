@@ -8,11 +8,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.tfc.word.auto.collect.repository.JdbcRepository;
 import com.tfc.word.auto.collect.study.service.WordAnalyzerService;
 
 public class Robot implements Runnable {
 	private String startUrl;
 	private WordAnalyzerService wordService;
+	private JdbcRepository repo = new JdbcRepository();
 
 	public Robot(String startUrl) {
 		this.startUrl = startUrl;
@@ -23,12 +25,13 @@ public class Robot implements Runnable {
 		// 抓取链接中的内容，然后将抓取的内容交给WordAnalyzerService进行处理。再抓取其中的一个，其过程就像蜘蛛。
 	}
 
-	private void parse(String startUrl2) {
+	private void parse(String fetchUrl) {
 		try {
 			// TODO 如何保证读取过的链接不再读取？
-			Document doc = Jsoup.connect(startUrl2).get();
+			Document doc = Jsoup.connect(fetchUrl).get();
 			String text = doc.text();
 			wordService.analyzer(text);
+			repo.saveOrgi(fetchUrl);
 			Elements eles = doc.getElementsByTag("a");
 			if (eles != null && eles.size() > 0) {
 				for (int i = 0; i < eles.size(); i++) {

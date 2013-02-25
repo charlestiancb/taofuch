@@ -16,6 +16,11 @@ public class WordBase implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -5772488651271981256L;
+	/** 审核状态：通过 */
+	public static final String CHECK_STATUS_YES = "1";
+	/** 审核状态：不通过 */
+	public static final String CHECK_STATUS_NO = "0";
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long recId;
@@ -26,7 +31,7 @@ public class WordBase implements Serializable {
 	/** 审核状态，是否已经被审核通过。0：未审核；1：审核通过 */
 	private String checkStatus;
 	/** 自动学习时，统计得到的数字 */
-	private Long statNum;
+	private Long statNum = 0L;
 	private Date addTime;
 	private Date checkedTime;
 
