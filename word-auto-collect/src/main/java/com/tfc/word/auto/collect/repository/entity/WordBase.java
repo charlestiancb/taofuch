@@ -32,7 +32,7 @@ public class WordBase implements Serializable {
 	private String checkStatus;
 	/** 自动学习时，统计得到的数字 */
 	private Long statNum = 0L;
-	private Date addTime;
+	private Date addTime = new Date();
 	private Date checkedTime;
 
 	public Long getRecId() {
