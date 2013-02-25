@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "FETCH_ORIG")
-public class FetchUrl implements Serializable {
+public class FetchOrig implements Serializable {
 	/**
 	 * 
 	 */
