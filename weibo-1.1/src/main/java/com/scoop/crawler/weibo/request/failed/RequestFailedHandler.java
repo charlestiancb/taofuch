@@ -53,22 +53,20 @@ public class RequestFailedHandler extends FailedHandler {
 		public void run() {
 			FailedRequest req = getDataSource().pop();
 			if (req == null || req.getRecId() == null) {
-				Logger.log("没有失败的记录，线程进入守候状态……");
+				Logger.log("没有失败的记录，继续……");
 			}
 			// 处理每条失败的请求！
-			while (true) {
-				try {
-					if (req == null || req.getRecId() == null) {
-						Logger.log("已经没有失败的记录，线程进入守候状态……");
-						// 如果没有失败记录，则等待30分钟！
-						Thread.sleep(30 * 60 * 1000);
-					} else {
-						Logger.log("有失败的记录，线程进入激活抓取状态！");
-						fetch(req);
-					}
-					req = getDataSource().pop();
-				} catch (Exception e) {
+			try {
+				if (req == null || req.getRecId() == null) {
+					Logger.log("没有失败的记录，继续……");
+					// 如果没有失败记录，则等待30分钟！
+					Thread.sleep(30 * 60 * 1000);
+				} else {
+					Logger.log("有失败的记录，线程进入激活抓取状态！");
+					fetch(req);
 				}
+				req = getDataSource().pop();
+			} catch (Exception e) {
 			}
 		}
 
