@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.tfc.word.auto.collect.repository.JdbcRepository;
+import com.tfc.word.auto.collect.repository.entity.FetchOrig;
 import com.tfc.word.auto.collect.study.service.WordAnalyzerService;
 
 public class Robot implements Runnable {
@@ -27,7 +28,11 @@ public class Robot implements Runnable {
 
 	private void parse(String fetchUrl) {
 		try {
-			// TODO 如何保证读取过的链接不再读取？
+			FetchOrig fo = repo.getOrgi(fetchUrl);
+			if (fo != null) {
+				// 已经存在过，则表示已经分析过。
+				return;
+			}
 			Document doc = Jsoup.connect(fetchUrl).get();
 			String text = doc.text();
 			wordService.analyzer(text);
