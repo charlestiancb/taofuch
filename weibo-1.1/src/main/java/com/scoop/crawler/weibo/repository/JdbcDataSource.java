@@ -56,8 +56,9 @@ public class JdbcDataSource extends DatabaseDataSource {
 	private void connect() {
 		try {
 			Class.forName(pro.getProperty(Environment.DRIVER));
-			conn = DriverManager.getConnection(pro.getProperty(Environment.URL), pro.getProperty(Environment.USER),
-					pro.getProperty(Environment.PASS));
+			conn = DriverManager.getConnection(	pro.getProperty(Environment.URL),
+												pro.getProperty(Environment.USER),
+												pro.getProperty(Environment.PASS));
 			conn.setAutoCommit(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -91,8 +92,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 		try {
 			FetchInfo fi = new FetchInfo(WeiboParser.getQuery(), id, type.name());
 			if (fi.needSave()) {
-				List<Map<String, Object>> records = (List<Map<String, Object>>) executeSql(EntityManager
-						.createSelectSQL(fi));
+				List<Map<String, Object>> records = (List<Map<String, Object>>) executeSql(EntityManager.createSelectSQL(fi));
 				if (records == null || records.isEmpty()) {
 					executeSql(EntityManager.createInsertSQL(fi));
 				}
@@ -180,7 +180,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 				// 如果用户不存在，则保存！
 				executeSql(EntityManager.createInsertSQL(EntityTransfer.parseUser(person)));
 			} else {
-				Logger.log("该用户已经存在！");
+				Logger.log("该用户[" + person.getId() + "]已经存在！");
 			}
 		} catch (Exception e) {
 		}
