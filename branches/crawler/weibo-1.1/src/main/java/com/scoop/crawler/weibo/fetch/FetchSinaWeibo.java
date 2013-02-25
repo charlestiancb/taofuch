@@ -86,14 +86,17 @@ public class FetchSinaWeibo extends FetchSina {
 				Logger.log("没有词文件指定文件，使用指定的url");
 				fetch(client, dataSource, weiboBaseUrl, null);
 			}
+			handler.reTry();
 			// 微博抓取完毕之后同时抓取评论与用户信息。
 			// 处理评论与转发的信息、以及评论者的个人信息。
 			WeiboCommentRunnable run = new WeiboCommentRunnable(dataSource, handler);
 			run.run();
+			handler.reTry();
 			// ThreadUtils.executeCommnet(run);
 			// 重启线程专门存储用户关系
 			WeiboUserRelationRunnable userRun = new WeiboUserRelationRunnable(dataSource, handler);
 			userRun.run();
+			handler.reTry();
 			// ThreadUtils.executeUserRelation(userRun);
 		} catch (Exception e) {
 			e.printStackTrace();
