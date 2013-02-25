@@ -14,13 +14,6 @@ import com.tfc.word.auto.collect.config.Configuration;
 public class RobotManager {
 	private static ExecutorService threads = Executors.newFixedThreadPool(Configuration.THREAD_COUNT);
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-	}
-
 	public static void exec(Robot robot) {
 		threads.execute(robot);
 	}
