@@ -44,6 +44,6 @@ public class EntitySql {
 	}
 
 	public enum SqlType {
-		INSERT, UPDATE, SELECT
+		INSERT, UPDATE, SELECT, DELETE
 	}
 }
