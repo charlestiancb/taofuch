@@ -24,6 +24,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie2;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.openqa.selenium.WebDriver;
 
@@ -136,7 +138,7 @@ public class SinaWeiboRequest {
 			nvps.add(new BasicNameValuePair("encoding", "UTF-8"));
 			nvps.add(new BasicNameValuePair("returntype", "META"));
 			nvps.add(new BasicNameValuePair("url",
-					"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
+											"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
 			HttpEntity entity = new UrlEncodedFormEntity(nvps, "UTF-8");
 			post.setEntity(entity);
 			// 获取跳转登录
@@ -222,6 +224,7 @@ public class SinaWeiboRequest {
 		try {
 			// 设置需要登录才能访问的微博地址（由于httpClient已经拥有登录后的cookie，所以此处可以直接访问）
 			HttpGet weiBoMethod = new HttpGet(url);
+			HttpConnectionParams.setConnectionTimeout(weiBoMethod.getParams(), 30 * 1000);
 			if (LogonInfo.shouldLogAgain()) {
 				LogonInfo log = LogonInfo.getLogonInfo();
 				DefaultHttpClient _client = getHttpClient(log.getUsername(), log.getPassword());
@@ -308,8 +311,11 @@ public class SinaWeiboRequest {
 	private static DefaultHttpClient newProxy() {
 		DefaultHttpClient client = new DefaultHttpClient();
 		// 连接超时设置5000
-		client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
-		client.getParams().setParameter("Referer", "http://weibo.com/");
+		HttpParams ps = client.getParams();
+		ps.setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
+		ps.setParameter("Referer", "http://weibo.com/");
+		HttpConnectionParams.setConnectionTimeout(ps, 30 * 1000);
+		client.setParams(ps);
 		if (hasProcProxy) {
 			setProxy(client);
 		} else {
@@ -331,13 +337,13 @@ public class SinaWeiboRequest {
 
 	private static void setProxy(DefaultHttpClient client) {
 		// 代理方式访问网络
-		client.getCredentialsProvider().setCredentials(new AuthScope("192.168.16.187", 8080),
-				new UsernamePasswordCredentials("taofucheng", "taofuchok"));
+		client.getCredentialsProvider().setCredentials(	new AuthScope("192.168.16.187", 8080),
+														new UsernamePasswordCredentials("taofucheng", "taofuchok"));
 		client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, new HttpHost("192.168.16.187", 8080));
 	}
 
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		System.err.println(URLDecoder.decode(
-				"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB", "GBK"));
+		System.err.println(URLDecoder.decode(	"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB",
+												"GBK"));
 	}
 }
