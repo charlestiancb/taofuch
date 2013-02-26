@@ -37,6 +37,7 @@ public class WordAnalyzerService {
 		if (StringUtils.isBlank(text)) {
 			return;
 		}
+		// 将接下的内容处理成一个个的词！
 	}
 
 	private void initSeeker() {
@@ -55,7 +56,7 @@ public class WordAnalyzerService {
 	private static class ReplaceFragment extends AbstractFragment {
 		@Override
 		public String format(Keyword word) {
-			return "";
+			return ",";
 		}
 
 	}
