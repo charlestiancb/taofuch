@@ -3,6 +3,8 @@ package com.tfc.word.auto.collect.study.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.tfc.analysis.KWSeeker;
 import com.tfc.analysis.entity.Keyword;
 import com.tfc.analysis.fragment.AbstractFragment;
@@ -25,10 +27,16 @@ public class WordAnalyzerService {
 	 * @param text
 	 */
 	public void analyzer(String text) {
+		if (StringUtils.isBlank(text)) {
+			return;
+		}
 		// 纯的数字、英文、符号，都不作为词
 		// 操作步骤：先对整个内容进行分词。将非符号分隔的所有单字拼接成词。检查这些拼接成的词在数据库中有没有，如果没有，添加到数据库中，如果有，增加一次统计次数（达到数量之后，自动审核通过）。
 		initSeeker();
-		seeker.highlight(text, fragment);
+		text = seeker.highlight(text, fragment);
+		if (StringUtils.isBlank(text)) {
+			return;
+		}
 	}
 
 	private void initSeeker() {
