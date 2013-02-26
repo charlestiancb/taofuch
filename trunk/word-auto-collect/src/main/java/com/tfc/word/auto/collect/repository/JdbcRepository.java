@@ -233,4 +233,11 @@ public class JdbcRepository extends Repository {
 		}
 		return null;
 	}
+
+	@Override
+	public List<WordBase> getAllCheckedWords() {
+		WordBase wb = new WordBase();
+		wb.setCheckStatus(WordBase.CHECK_STATUS_YES);
+		return query(wb);
+	}
 }
