@@ -17,6 +17,7 @@ import com.tfc.word.auto.collect.repository.entity.WordBase;
  */
 public class WordAnalyzerService {
 	private KWSeeker seeker = null;
+	private ReplaceFragment fragment = new ReplaceFragment();
 
 	/**
 	 * 对给定的文件进行分析。
@@ -44,6 +45,10 @@ public class WordAnalyzerService {
 	}
 
 	private static class ReplaceFragment extends AbstractFragment {
+		@Override
+		public String format(Keyword word) {
+			return "";
+		}
 
 	}
 }
