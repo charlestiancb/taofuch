@@ -24,7 +24,7 @@ import com.tfc.word.auto.collect.config.Configuration;
 import com.tfc.word.auto.collect.repository.entity.FetchOrig;
 import com.tfc.word.auto.collect.repository.entity.WordBase;
 
-public class JdbcRepository {
+public class JdbcRepository extends Repository {
 	private Connection conn;
 	protected Properties pro = new Properties();
 
