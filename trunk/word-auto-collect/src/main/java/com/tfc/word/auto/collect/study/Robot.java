@@ -8,14 +8,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.tfc.word.auto.collect.repository.JdbcRepository;
+import com.tfc.word.auto.collect.config.Configuration;
 import com.tfc.word.auto.collect.repository.entity.FetchOrig;
 import com.tfc.word.auto.collect.study.service.WordAnalyzerService;
 
 public class Robot implements Runnable {
 	private String startUrl;
 	private WordAnalyzerService wordService;
-	private JdbcRepository repo = new JdbcRepository();
 
 	public Robot(String startUrl) {
 		this.startUrl = startUrl;
@@ -28,7 +27,7 @@ public class Robot implements Runnable {
 
 	private void parse(String fetchUrl) {
 		try {
-			FetchOrig fo = repo.getOrgi(fetchUrl);
+			FetchOrig fo = Configuration.repo.getOrgi(fetchUrl);
 			if (fo != null) {
 				// 已经存在过，则表示已经分析过。
 				return;
@@ -36,7 +35,7 @@ public class Robot implements Runnable {
 			Document doc = Jsoup.connect(fetchUrl).get();
 			String text = doc.text();
 			wordService.analyzer(text);
-			repo.saveOrgi(fetchUrl);
+			Configuration.repo.saveOrgi(fetchUrl);
 			Elements eles = doc.getElementsByTag("a");
 			if (eles != null && eles.size() > 0) {
 				for (int i = 0; i < eles.size(); i++) {
