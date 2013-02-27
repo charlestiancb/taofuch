@@ -57,7 +57,6 @@ public class WordAnalyzerService {
 				}
 			}
 		}
-		System.out.println(words);
 	}
 
 	/**
