@@ -59,6 +59,7 @@ public class JdbcRepository extends Repository {
 		}
 		WordBase wb = new WordBase();
 		wb.setWord(word);
+		wb.setCheckStatus(WordBase.CHECK_STATUS_NO);
 		executeSql(EntityManager.createInsertSQL(wb));
 	}
 
@@ -238,6 +239,8 @@ public class JdbcRepository extends Repository {
 	public List<WordBase> getAllCheckedWords() {
 		WordBase wb = new WordBase();
 		wb.setCheckStatus(WordBase.CHECK_STATUS_YES);
+		wb.setStatNum(null);
+		wb.setAddTime(null);
 		return query(wb);
 	}
 }
