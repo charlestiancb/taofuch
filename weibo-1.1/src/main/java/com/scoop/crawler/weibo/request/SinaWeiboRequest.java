@@ -223,8 +223,10 @@ public class SinaWeiboRequest {
 		}
 		try {
 			// 设置需要登录才能访问的微博地址（由于httpClient已经拥有登录后的cookie，所以此处可以直接访问）
-			HttpGet weiBoMethod = new HttpGet(url);
-			HttpConnectionParams.setConnectionTimeout(weiBoMethod.getParams(), 30 * 1000);
+			HttpGet weiboMethod = new HttpGet(url);
+			HttpParams ps = weiboMethod.getParams();
+			HttpConnectionParams.setConnectionTimeout(ps, 30 * 1000);
+			weiboMethod.setParams(ps);
 			if (LogonInfo.shouldLogAgain()) {
 				LogonInfo log = LogonInfo.getLogonInfo();
 				DefaultHttpClient _client = getHttpClient(log.getUsername(), log.getPassword());
@@ -236,7 +238,7 @@ public class SinaWeiboRequest {
 					}
 				}
 			}
-			HttpResponse res = client.execute(weiBoMethod);
+			HttpResponse res = client.execute(weiboMethod);
 			if (res.getStatusLine().getStatusCode() != 200) {
 				String msg = new Date() + "：你妹的，还请求有问题[code:" + res.getStatusLine().getStatusCode() + "]！页面内容："
 						+ EntityUtils.toString(res.getEntity(), "UTF-8");

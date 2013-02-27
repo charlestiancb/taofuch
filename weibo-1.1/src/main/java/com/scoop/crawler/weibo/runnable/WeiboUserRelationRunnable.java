@@ -21,6 +21,8 @@ import com.scoop.crawler.weibo.util.ThreadUtils;
 public class WeiboUserRelationRunnable extends Thread implements Runnable {
 	protected DataSource dataSource;
 	protected FailedHandler handler;
+	private static long interval = 12 * 3600 * 1000L;
+	private long preTime = System.currentTimeMillis();
 
 	public WeiboUserRelationRunnable(DataSource dataSource, FailedHandler handler) {
 		this.dataSource = dataSource;
@@ -41,6 +43,14 @@ public class WeiboUserRelationRunnable extends Thread implements Runnable {
 			// 循环获取用户信息
 			for (User u = dataSource.getOneUnfetchedUser(); u != null; u = dataSource.getOneUnfetchedUser()) {
 				try {
+					if (System.currentTimeMillis() - preTime >= interval) {
+						driver.quit();
+						driver = ExploreRequest.getDriver("http://weibo.com/");
+						if (driver == null) {
+							Logger.log("浏览器打开失败！停止运行！");
+							return;
+						}
+					}
 					fansp.fetchFans(u, driver, client);
 					followP.fetchFollows(u, driver, client);
 				} catch (Exception e) {
