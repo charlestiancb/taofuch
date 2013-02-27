@@ -1,6 +1,7 @@
 package com.tfc.word.auto.collect.study.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -38,6 +39,43 @@ public class WordAnalyzerService {
 			return;
 		}
 		// 将接下的内容处理成一个个的词！
+		List<String> words = new ArrayList<String>(Arrays.asList(text.split(ReplaceFragment.split)));
+		for (String word : words) {
+			word = StringUtils.trim(word);
+			if (StringUtils.isBlank(word) || !isValid(word)) {
+				continue;
+			}
+			WordBase wb = Configuration.repo.getWord(word);
+			if (wb == null) {
+				// 不存在的时候，保存。
+				Configuration.repo.saveWord(word);
+			} else {
+				// 存在的要注意其数量变化。
+				boolean result = Configuration.repo.updateWord(wb);
+				if (result && wb.getStatNum() < Configuration.AUTO_CHECKED_NUM) {
+					seeker.addWord(new Keyword(word));
+				}
+			}
+		}
+		System.out.println(words);
+	}
+
+	/**
+	 * 判断是否是非词汇信息，如：是否全是数字，是否全是标点符号
+	 * 
+	 * @param word
+	 * @return
+	 */
+	private boolean isValid(String word) {
+		if (StringUtils.isNumeric(word)) {
+			// 纯数字，非法
+			return false;
+		}
+		if (word.trim().length() == 1) {
+			// 如果是一个字符，那就是没有意义的词。
+			return false;
+		}
+		return true;
 	}
 
 	private void initSeeker() {
@@ -53,10 +91,16 @@ public class WordAnalyzerService {
 		}
 	}
 
+	public static void main(String[] args) {
+		new WordAnalyzerService().analyzer("这是一个内容测试，哈哈哈，,,，你好啊！");
+	}
+
 	private static class ReplaceFragment extends AbstractFragment {
+		public static final String split = "$$$";
+
 		@Override
 		public String format(Keyword word) {
-			return ",";
+			return split;
 		}
 
 	}
