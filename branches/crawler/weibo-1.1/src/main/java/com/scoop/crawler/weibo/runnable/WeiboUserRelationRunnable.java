@@ -21,7 +21,7 @@ import com.scoop.crawler.weibo.util.ThreadUtils;
 public class WeiboUserRelationRunnable extends Thread implements Runnable {
 	protected DataSource dataSource;
 	protected FailedHandler handler;
-	private static long interval = 12 * 3600 * 1000L;
+	private static long interval = 5 * 3600 * 1000L;
 	private long preTime = System.currentTimeMillis();
 
 	public WeiboUserRelationRunnable(DataSource dataSource, FailedHandler handler) {
