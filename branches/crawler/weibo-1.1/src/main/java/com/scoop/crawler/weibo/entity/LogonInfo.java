@@ -1,6 +1,5 @@
 package com.scoop.crawler.weibo.entity;
 
-
 /**
  * 登录信息
  * 
@@ -24,8 +23,9 @@ public class LogonInfo {
 	}
 
 	public static boolean shouldLogAgain() {
-		return System.currentTimeMillis() - preTime > 4 * 24 * 3600 * 1000;// 四天就要重新登录一次
-		// return false;
+		// return System.currentTimeMillis() - preTime > 4 * 24 * 3600 * 1000;//
+		// 四天就要重新登录一次
+		return false;
 	}
 
 	public static LogonInfo getLogonInfo() {
