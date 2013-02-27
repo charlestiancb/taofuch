@@ -47,6 +47,7 @@ public class SinaWeiboRequest {
 	private static final String USER_AGENT = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E)";
 	/** 等待的时间长度 */
 	private static long waitInterval = 20 * 60 * 1000;// 20分钟
+	private static int timeout = 30 * 1000;// 30s
 
 	/***
 	 * 用户名转码
@@ -218,14 +219,11 @@ public class SinaWeiboRequest {
 	 */
 	public static String request(DefaultHttpClient client, String url, FailedHandler handler, FailedNode node) {
 		try {
-			Thread.sleep(1 * 1000);// 每次等待1秒，模拟人有停顿
-		} catch (InterruptedException e1) {
-		}
-		try {
 			// 设置需要登录才能访问的微博地址（由于httpClient已经拥有登录后的cookie，所以此处可以直接访问）
 			HttpGet weiboMethod = new HttpGet(url);
 			HttpParams ps = weiboMethod.getParams();
-			HttpConnectionParams.setConnectionTimeout(ps, 30 * 1000);
+			HttpConnectionParams.setConnectionTimeout(ps, timeout);
+			HttpConnectionParams.setSoTimeout(ps, timeout);
 			weiboMethod.setParams(ps);
 			if (LogonInfo.shouldLogAgain()) {
 				LogonInfo log = LogonInfo.getLogonInfo();
@@ -238,6 +236,10 @@ public class SinaWeiboRequest {
 					}
 				}
 			}
+			HttpParams hps = client.getParams();
+			HttpConnectionParams.setConnectionTimeout(hps, timeout);
+			HttpConnectionParams.setSoTimeout(hps, timeout);
+			client.setParams(hps);
 			HttpResponse res = client.execute(weiboMethod);
 			if (res.getStatusLine().getStatusCode() != 200) {
 				String msg = new Date() + "：你妹的，还请求有问题[code:" + res.getStatusLine().getStatusCode() + "]！页面内容："
@@ -316,7 +318,8 @@ public class SinaWeiboRequest {
 		HttpParams ps = client.getParams();
 		ps.setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
 		ps.setParameter("Referer", "http://weibo.com/");
-		HttpConnectionParams.setConnectionTimeout(ps, 30 * 1000);
+		HttpConnectionParams.setConnectionTimeout(ps, timeout);
+		HttpConnectionParams.setSoTimeout(ps, timeout);
 		client.setParams(ps);
 		if (hasProcProxy) {
 			setProxy(client);
