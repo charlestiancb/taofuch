@@ -95,7 +95,7 @@ public class WordAnalyzerService {
 	}
 
 	private static class ReplaceFragment extends AbstractFragment {
-		public static final String split = "$$$";
+		public static final String split = "###";
 
 		@Override
 		public String format(Keyword word) {
