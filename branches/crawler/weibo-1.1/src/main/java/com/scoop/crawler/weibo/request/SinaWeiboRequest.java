@@ -146,6 +146,7 @@ public class SinaWeiboRequest {
 			HttpResponse res = client.execute(post);
 			// 获取真实跳转登录地址（Sample程序，所以采用硬编码方式）
 			String tmp = EntityUtils.toString(res.getEntity(), "UTF-8");
+			EntityUtils.consumeQuietly(res.getEntity());
 			// doCrossLogin(client, tmp);
 			int fromIndex = tmp.indexOf("http://weibo.com/ajaxlogin.php?");
 			if (tmp.indexOf("retcode=0") == -1) {
@@ -162,8 +163,9 @@ public class SinaWeiboRequest {
 				// 使用网页方式登录
 				setCookie(client);
 				String userId = "2210871673";
-				String html = EntityUtils.toString(client.execute(new HttpGet("http://weibo.com/u/" + userId + ""))
-															.getEntity(), "UTF-8");
+				res = client.execute(new HttpGet("http://weibo.com/u/" + userId + ""));
+				String html = EntityUtils.toString(res.getEntity(), "UTF-8");
+				EntityUtils.consumeQuietly(res.getEntity());
 				if (html.indexOf("$CONFIG['oid'] = '" + userId + "';") == -1) {
 					// 登录失败，退出操作！
 					Logger.log("浏览器方式登录也失败，只能停止工作了~");
@@ -175,6 +177,7 @@ public class SinaWeiboRequest {
 				HttpGet loginMethod = new HttpGet(url);
 				res = client.execute(loginMethod);
 				Logger.log("登录结果：" + EntityUtils.toString(res.getEntity(), "UTF-8"));
+				EntityUtils.consumeQuietly(res.getEntity());
 			}
 			Logger.log("程序登录成功！开始工作！");
 			return client;
@@ -248,10 +251,12 @@ public class SinaWeiboRequest {
 				if (handler != null && res.getStatusLine().getStatusCode() >= 500) {
 					handler.record(new FailedRequest(url, node, msg));
 				}
+				EntityUtils.consumeQuietly(res.getEntity());
 				return "";
 			}
 			// 获取登录过的微博页面
 			String html = EntityUtils.toString(res.getEntity(), "UTF-8");
+			EntityUtils.consumeQuietly(res.getEntity());
 			if (html.indexOf("<p class=\\\"code_tit\\\">\\u4f60\\u7684\\u884c\\u4e3a\\u6709\\u4e9b\\u5f02\\u5e38\\uff0c\\u8bf7\\u8f93\\u5165\\u9a8c\\u8bc1\\u7801\\uff1a<\\/p>\\n") > -1) {
 				// 如果存在这样的提示信息，则表示账号不能正常访问，所以，应该提示并等待！
 				Logger.log("账号无法进行正常使用，被封了！休息一会儿！");
@@ -333,6 +338,7 @@ public class SinaWeiboRequest {
 					setProxy(client);
 					hasProcProxy = true;
 				}
+				EntityUtils.consumeQuietly(response.getEntity());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
