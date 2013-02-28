@@ -38,7 +38,7 @@ public class ExploreRequest {
 	public static WebDriver ie(String url) {
 		WebDriver driver = null;
 		try {
-			System.setProperty("webdriver.ie.driver", "src/main/java/driver/IEDriverServer.exe");
+			System.setProperty("webdriver.ie.driver", "src/main/resources/driver/IEDriverServer.exe");
 			driver = new InternetExplorerDriver();
 			return loginAndRequest(driver, url);
 		} catch (Throwable t) {
@@ -50,7 +50,7 @@ public class ExploreRequest {
 	public static WebDriver chrome(String url) {
 		WebDriver driver = null;
 		try {
-			System.setProperty("webdriver.chrome.driver", "src/main/java/driver/chromedriver.exe");
+			System.setProperty("webdriver.chrome.driver", "src/main/resources/driver/chromedriver.exe");
 			driver = new ChromeDriver();
 			return loginAndRequest(driver, url);
 		} catch (Throwable t) {
