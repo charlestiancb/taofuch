@@ -8,7 +8,7 @@ package com.scoop.crawler.weibo.entity;
  */
 public class LogonInfo {
 	/** WebDriver每次重新启动一个新的间隔时间 */
-	public static long DRIVER_INTERVAL = 3 * 3600 * 1000L;
+	public static long DRIVER_INTERVAL = 4 * 3600 * 1000L;
 	private static LogonInfo logon;
 	private static long preTime;
 	private String username;
