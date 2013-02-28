@@ -155,18 +155,21 @@ public class UserRelationParser extends Parser {
 				if (pages != null && pages.size() > 0) {
 					ele = pages.get(0).findElement(By.linkText("下一页"));
 				} else {
-					break;
+					return;
 				}
 			} catch (Throwable e) {
 			}
 			if (ele != null && ele.isEnabled()) {
-				ele.click();
 				try {
+					Logger.log("当前URL[" + driver.getCurrentUrl() + "]，进入当前用户[" + u.getUserId() + ":" + u.getName()
+							+ "]的" + node.name() + "下一页……");
+					ele.click();
 					Thread.sleep(1000);// 等待1s，让页面加载完毕！
-				} catch (InterruptedException e) {
+				} catch (Exception e) {
+					return;
 				}
 			} else {
-				break;
+				return;
 			}
 		}
 	}
