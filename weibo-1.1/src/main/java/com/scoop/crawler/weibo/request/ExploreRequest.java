@@ -82,9 +82,8 @@ public class ExploreRequest {
 	private static WebDriver loginAndRequest(WebDriver driver, String url) {
 		try {
 			driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-			// driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
-			// driver.manage().timeouts().setScriptTimeout(30,
-			// TimeUnit.SECONDS);
+			driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+			driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
 			driver.get("http://www.weibo.com/");
 			// 这次访问肯定需要登录！因此登录之
 			driver.findElement(By.name("username")).sendKeys(LogonInfo.getLogonInfo().getUsername());
