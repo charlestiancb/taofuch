@@ -15,6 +15,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import com.scoop.crawler.weibo.entity.LogonInfo;
 import com.scoop.crawler.weibo.fetch.FetchSinaWeibo;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.ExploreRequest;
@@ -187,6 +188,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 				Logger.log("打开浏览器失败！停止工作！");
 				return;
 			}
+			long preTime = System.currentTimeMillis();
 			for (String file : wordsFiles) {
 				file = StringUtils.trim(file);
 				if (StringUtils.isEmpty(file)) {
@@ -196,6 +198,14 @@ public class SearchWeiboParser extends JsonStyleParser {
 					BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "GBK"));
 					for (String word = br.readLine(); word != null; word = br.readLine()) {
 						try {
+							if (System.currentTimeMillis() - preTime >= LogonInfo.DRIVER_INTERVAL) {
+								driver = ExploreRequest.getDriver("http://s.weibo.com/weibo/AI");
+								if (driver == null) {
+									Logger.log("打开浏览器失败！停止工作！");
+									continue;
+								}
+								preTime = System.currentTimeMillis();
+							}
 							if (StringUtils.isBlank(word)) {
 								continue;
 							} else {
