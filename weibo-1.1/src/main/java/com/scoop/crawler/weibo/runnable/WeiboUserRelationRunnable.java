@@ -3,6 +3,7 @@ package com.scoop.crawler.weibo.runnable;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.openqa.selenium.WebDriver;
 
+import com.scoop.crawler.weibo.entity.LogonInfo;
 import com.scoop.crawler.weibo.parser.FansParser;
 import com.scoop.crawler.weibo.parser.FollowParser;
 import com.scoop.crawler.weibo.repository.DataSource;
@@ -21,7 +22,6 @@ import com.scoop.crawler.weibo.util.ThreadUtils;
 public class WeiboUserRelationRunnable extends Thread implements Runnable {
 	protected DataSource dataSource;
 	protected FailedHandler handler;
-	private static long interval = 4 * 3600 * 1000L;
 	private long preTime = System.currentTimeMillis();
 
 	public WeiboUserRelationRunnable(DataSource dataSource, FailedHandler handler) {
@@ -43,7 +43,7 @@ public class WeiboUserRelationRunnable extends Thread implements Runnable {
 			// 循环获取用户信息
 			for (User u = dataSource.getOneUnfetchedUser(); u != null; u = dataSource.getOneUnfetchedUser()) {
 				try {
-					if (System.currentTimeMillis() - preTime >= interval) {
+					if (System.currentTimeMillis() - preTime >= LogonInfo.DRIVER_INTERVAL) {
 						driver.quit();
 						driver = ExploreRequest.getDriver("http://weibo.com/");
 						if (driver == null) {

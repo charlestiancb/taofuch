@@ -3,6 +3,7 @@ package com.scoop.crawler.weibo.runnable;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.openqa.selenium.WebDriver;
 
+import com.scoop.crawler.weibo.entity.LogonInfo;
 import com.scoop.crawler.weibo.parser.CommentParser;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.Weibo;
@@ -14,7 +15,6 @@ import com.scoop.crawler.weibo.util.ThreadUtils;
 public class WeiboCommentRunnable extends Thread implements Runnable {
 	protected DataSource dataSource;
 	protected FailedHandler handler;
-	private static long interval = 4 * 3600 * 1000L;
 	private long preTime = System.currentTimeMillis();
 
 	public WeiboCommentRunnable(DataSource dataSource, FailedHandler handler) {
@@ -35,7 +35,7 @@ public class WeiboCommentRunnable extends Thread implements Runnable {
 			}
 			for (Weibo w = dataSource.getOneUnfetchedWeibo(); w != null; w = dataSource.getOneUnfetchedWeibo()) {
 				try {
-					if (System.currentTimeMillis() - preTime >= interval) {
+					if (System.currentTimeMillis() - preTime >= LogonInfo.DRIVER_INTERVAL) {
 						driver.quit();
 						driver = ExploreRequest.getDriver("http://weibo.com/");
 						if (driver == null) {
