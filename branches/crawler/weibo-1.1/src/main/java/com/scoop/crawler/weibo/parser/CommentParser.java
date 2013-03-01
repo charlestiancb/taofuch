@@ -26,6 +26,9 @@ import com.scoop.crawler.weibo.util.Logger;
  * 
  */
 public class CommentParser extends Parser {
+	private String preContent = "";
+	private int tryTimes = 0;
+
 	public CommentParser(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
 	}
@@ -116,6 +119,16 @@ public class CommentParser extends Parser {
 			}
 			ele.click();
 			Thread.sleep(2000);// 等待两秒，等数据加载完毕！
+			String html = driver.getPageSource();
+			if (html.equals(preContent) && tryTimes < 3) {
+				// 如果此次获取的内容与上一次一样，说明翻页失败，重新刷新一下页面再翻页
+				driver.navigate().refresh();
+				++tryTimes;
+				return loadNextPage(driver);
+			} else {
+				preContent = html;
+				tryTimes = 0;
+			}
 		} catch (Throwable e) {
 			return null;
 		}
