@@ -62,6 +62,7 @@ CREATE TABLE `user` (
   `NAME` varchar(100) DEFAULT NULL COMMENT '用户姓名',
   `url` varchar(1000) DEFAULT NULL COMMENT '用户的微博主页',
   `gender` varchar(10) DEFAULT NULL COMMENT '性别',
+  `introduce` varchar(3000) DEFAULT NULL COMMENT '简介',
   `addr` varchar(500) DEFAULT NULL COMMENT '所在地',
   `blog` varchar(500) DEFAULT NULL COMMENT '博客',
   `email` varchar(100) DEFAULT NULL COMMENT '邮箱',
