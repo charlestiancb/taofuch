@@ -8,6 +8,16 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * 这的信息有：<br>
+ * http://www.weibo.com/1097414213/info：昵称、所在地、性别、博客、简介、邮箱、公司、大学、标签、 <br>
+ * http://www.weibo.com/1280846847/info：生日<br>
+ * 所有：关注数、粉丝数、微博数
+ * 
+ * 
+ * @author taofucheng
+ * 
+ */
 @Entity
 @Table(name = "USER")
 public class User implements Serializable {
