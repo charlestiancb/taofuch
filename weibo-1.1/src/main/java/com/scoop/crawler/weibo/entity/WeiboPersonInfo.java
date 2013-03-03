@@ -90,13 +90,31 @@ public class WeiboPersonInfo extends Info {
 			_url = _url.substring(0, _url.indexOf("\""));
 			contentHtml = SinaWeiboRequest.request(client, _url, getHandler(), FailedNode.PERSON);
 		}
+		collectInfos();
+	}
+
+	private void collectInfos() {
 		Document docInfo = parseToDoc(contentHtml, "plc_main");
-		if (docInfo != null) {
-			personInfo = docInfo.getElementsByAttributeValue("class", "profile_pinfo");
-			if (personInfo != null && personInfo.size() > 0) {
-				personInfo = personInfo.first().getElementsByAttributeValue("class", "infoblock");
-				if (personInfo != null && personInfo.size() > 0) {
-					personInfo = personInfo.select(".pf_item");// 每一项信息
+		Elements eles = docInfo.getElementsByTag("div");
+		if (eles != null && eles.size() > 0) {
+			for (int i = 0; i < eles.size(); i++) {
+				// 获取需要解析的元素，并一个个地解析
+				Document tmp = parseToDoc(contentHtml, eles.get(i).attr("id"));
+				if (tmp == null) {
+					continue;
+				}
+				Elements tmpInfo = tmp.getElementsByAttributeValue("class", "infoblock");
+				if (tmpInfo != null && tmpInfo.size() > 0) {
+					if (tmpInfo != null && tmpInfo.size() > 0) {
+						tmpInfo = tmpInfo.select(".pf_item");
+						if (tmpInfo != null && tmpInfo.size() > 0) {
+							if (personInfo == null) {
+								personInfo = tmpInfo;// 每一项信息
+							} else {
+								personInfo.addAll(tmpInfo);
+							}
+						}
+					}
 				}
 			}
 		}
@@ -167,27 +185,6 @@ public class WeiboPersonInfo extends Info {
 			}
 		}
 		return name;
-	}
-
-	/**
-	 * 解析指定的字段的信息。如果没有返回" "
-	 * 
-	 * @param label
-	 * @return
-	 */
-	private String parseFieldValue(String label) {
-		if (personInfo != null && personInfo.size() > 0) {
-			for (int i = 0; i < personInfo.size(); i++) {
-				Element e = personInfo.get(i);
-				Elements _tmpLabel = e.getElementsByAttributeValue("class", "label S_txt2");
-				if (_tmpLabel != null && _tmpLabel.size() > 0
-						&& StringUtils.trimToEmpty(_tmpLabel.text()).equals(label)) {
-					// 如果有值，则表示找到对应的信息。返回该值！
-					return StringUtils.trim(e.getElementsByAttributeValue("class", "con").text());
-				}
-			}
-		}
-		return " ";
 	}
 
 	public String getBlog() {
@@ -329,6 +326,27 @@ public class WeiboPersonInfo extends Info {
 			fieldValue = parseFieldValue(fieldLabel);
 		}
 		return fieldValue;
+	}
+
+	/**
+	 * 解析指定的字段的信息。如果没有返回" "
+	 * 
+	 * @param label
+	 * @return
+	 */
+	private String parseFieldValue(String label) {
+		if (personInfo != null && personInfo.size() > 0) {
+			for (int i = 0; i < personInfo.size(); i++) {
+				Element e = personInfo.get(i);
+				Elements _tmpLabel = e.getElementsByAttributeValue("class", "label S_txt2");
+				if (_tmpLabel != null && _tmpLabel.size() > 0
+						&& StringUtils.trimToEmpty(_tmpLabel.text()).equals(label)) {
+					// 如果有值，则表示找到对应的信息。返回该值！
+					return StringUtils.trim(e.getElementsByAttributeValue("class", "con").text());
+				}
+			}
+		}
+		return " ";
 	}
 
 	public void setId(String id) {
