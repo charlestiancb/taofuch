@@ -92,9 +92,9 @@ public class CsvDataSource implements DataSource {
 		line.add(comment.getPerson().getUrl());// 评论者主页URL
 		line.add(comment.getPerson().getId());// 评论者ID
 		line.add(comment.getPerson().getName());// 评论者姓名
-		line.add(comment.getPerson().getInfo());// 评论者所在地
-		line.add(comment.getPerson().getFavorite());// 评论者兴趣爱好
-		line.add(comment.getPerson().getIntro());// 评论者简介
+		line.add(comment.getPerson().getAddr());// 评论者所在地
+		line.add(comment.getPerson().getTagInfo());// 评论者兴趣爱好
+		line.add(comment.getPerson().getIntroduce());// 评论者简介
 		line.add(comment.getPerson().getFollowNum());// 评论者关注数
 		line.add(comment.getPerson().getFansNum());// 评论者粉丝数
 		line.add(comment.getPerson().getPublishNum());// 评论者发布微博数

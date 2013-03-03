@@ -1,7 +1,5 @@
 package com.scoop.crawler.weibo.entity;
 
-import java.util.Iterator;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.Jsoup;
@@ -19,20 +17,30 @@ import com.scoop.crawler.weibo.request.failed.FailedNode;
  * 
  */
 public class WeiboPersonInfo extends Info {
-	private Document _doc;
-	private Document doc_base;
 	private Document doc_stat;
+	/** 用户的每个字段的内容 */
+	private Elements personInfo;
 	// ========下面是微博中解析出来的各项内容！===============//
 	/** 微博主人的ID */
 	private String id;
 	/** 微博主人的姓名 */
 	private String name;
+	/** 性别 */
+	private String gender;
+	/** 博客 */
+	private String blog;
+	/** 邮箱 */
+	private String email;
+	/** 公司 */
+	private String company;
+	/** 大学与专业 */
+	private String university;
+	/** 生日 */
+	private String birthday;
 	/** 所在地 */
 	private String addr;
-	/** 兴趣爱好 */
-	private String favorite;
 	/** 简介 */
-	private String intro;
+	private String introduce;
 	/** 关注数 */
 	private String followNum;
 	/** 粉丝数 */
@@ -67,7 +75,6 @@ public class WeiboPersonInfo extends Info {
 		try {
 			hasInit = true;
 			getContentHtml();
-			parseBaseInfo();
 			parseStatisticInfo();
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -83,26 +90,22 @@ public class WeiboPersonInfo extends Info {
 			_url = _url.substring(0, _url.indexOf("\""));
 			contentHtml = SinaWeiboRequest.request(client, _url, getHandler(), FailedNode.PERSON);
 		}
-		_doc = Jsoup.parse(contentHtml);
+		Document docInfo = parseToDoc(contentHtml, "plc_main");
+		if (docInfo != null) {
+			personInfo = docInfo.getElementsByAttributeValue("class", "profile_pinfo");
+			if (personInfo != null && personInfo.size() > 0) {
+				personInfo = personInfo.first().getElementsByAttributeValue("class", "infoblock");
+				if (personInfo != null && personInfo.size() > 0) {
+					personInfo = personInfo.select(".pf_item");// 每一项信息
+				}
+			}
+		}
 	}
 
 	private void parseStatisticInfo() {
 		doc_stat = parseToDoc(contentHtml, "pl_profile_photo");
 		if (doc_stat == null) {
 			doc_stat = parseToDoc(contentHtml, "pl_content_litePersonInfo");
-		}
-		if (doc_stat == null) {
-			doc_stat = _doc;
-		}
-	}
-
-	private void parseBaseInfo() {
-		doc_base = parseToDoc(contentHtml, "pl_profile_hisInfo");
-		if (doc_base == null) {
-			doc_base = parseToDoc(contentHtml, "pl_content_hisPersonalInfo");
-		}
-		if (doc_base == null) {
-			doc_base = _doc;
 		}
 	}
 
@@ -112,7 +115,7 @@ public class WeiboPersonInfo extends Info {
 			return "";
 		}
 		if (id == null || "".equals(id)) {
-			String userUrlPreffix = "http://weibo.com/u/";
+			String userUrlPreffix = "http://weibo.com/";
 			if (StringUtils.isNotBlank(getUrl()) && getUrl().trim().toLowerCase().startsWith(userUrlPreffix)) {
 				// 如果是以带有id的链接，则直接解析。
 				id = getUrl().trim().toLowerCase().substring(userUrlPreffix.length());
@@ -147,7 +150,7 @@ public class WeiboPersonInfo extends Info {
 	public String getName() {
 		initIfNeccessory();
 		if (!valid) {
-			return "";
+			return " ";
 		}
 		if (StringUtils.isEmpty(name)) {
 			try {
@@ -158,28 +161,7 @@ public class WeiboPersonInfo extends Info {
 					name = name.substring(0, name.indexOf("';"));
 					return name;
 				}
-				try {
-					name = StringUtils.trimToEmpty(doc_base.getElementsByAttributeValue("class", "pf_name bsp clearfix")
-															.select(".name")
-															.text());
-				} catch (Exception e1) {
-				}
-				if (StringUtils.isBlank(name)) {
-					try {
-						name = StringUtils.trimToEmpty(doc_base.getElementsByAttributeValue("class", "tit_prf clearFix")
-																.select(".lf")
-																.text());
-					} catch (Exception e) {
-					}
-				}
-				if (StringUtils.isBlank(name)) {
-					try {
-						name = _doc.getElementsByClass("title_big").get(0).text().trim();
-					} catch (Exception e) {
-					}
-				}
-				name = name.endsWith("(设置备注)") ? name.substring(0, name.length() - 6) : name;
-				name = StringUtils.trim(name);
+				name = parseFieldValue("昵称");
 			} catch (Exception e) {
 				name = " ";
 			}
@@ -187,114 +169,62 @@ public class WeiboPersonInfo extends Info {
 		return name;
 	}
 
-	public String getInfo() {
-		initIfNeccessory();
-		if (!valid) {
-			return "";
-		}
-		if (StringUtils.isEmpty(addr)) {
-			try {
-				try {
-					addr = StringUtils.trim(StringUtils.replace(doc_base.getElementsByAttributeValue(	"class",
-																										"pf_tags bsp")
-																		.select(".tags")
-																		.text(),
-																"&nbsp;",
-																""));
-				} catch (Exception e) {
+	/**
+	 * 解析指定的字段的信息。如果没有返回" "
+	 * 
+	 * @param label
+	 * @return
+	 */
+	private String parseFieldValue(String label) {
+		if (personInfo != null && personInfo.size() > 0) {
+			for (int i = 0; i < personInfo.size(); i++) {
+				Element e = personInfo.get(i);
+				Elements _tmpLabel = e.getElementsByAttributeValue("class", "label S_txt2");
+				if (_tmpLabel != null && _tmpLabel.size() > 0
+						&& StringUtils.trimToEmpty(_tmpLabel.text()).equals(label)) {
+					// 如果有值，则表示找到对应的信息。返回该值！
+					return StringUtils.trim(e.getElementsByAttributeValue("class", "con").text());
 				}
-				if (StringUtils.isBlank(addr)) {
-					try {
-						addr = StringUtils.trim(StringUtils.replace(doc_base.getElementsByClass("info").text(),
-																	"&nbsp;",
-																	""));
-					} catch (Exception e) {
-					}
-				}
-				addr = addr.endsWith("标签") ? addr.substring(0, addr.lastIndexOf("标签")) : addr;
-			} catch (Exception e) {
-				addr = " ";
 			}
 		}
-		return addr;
+		return " ";
 	}
 
-	public String getFavorite() {
-		initIfNeccessory();
-		if (!valid) {
-			return "";
-		}
-		if (StringUtils.isEmpty(favorite)) {
-			try {
-				Elements eles = null;
-				try {
-					eles = _doc.getElementById("pl_profile_extraInfo")
-								.getElementsByAttributeValue("class", "pf_star_info bsp S_txt2")
-								.select("p");
-				} catch (Exception e) {
-				}
-				if (eles == null || eles.isEmpty()) {
-					try {
-						eles = doc_stat.getElementsByAttributeValue("class", "pf_verified_info bsp S_txt2")
-										.select("dd");
-					} catch (Exception e) {
-					}
-				}
-				if (eles == null || eles.isEmpty()) {
-					favorite = " ";
-					return favorite;
-				}
-				for (int i = 0; i < eles.size(); i++) {
-					String tmp = StringUtils.trim(StringUtils.replace(eles.get(i).text(), "&nbsp;", ""));
-					if (tmp.startsWith("兴趣：")) {
-						favorite = tmp.substring(3);
-						break;
-					}
-				}
-				if (StringUtils.isEmpty(favorite)) {
-					favorite = " ";
-				}
-			} catch (Exception e) {
-				favorite = " ";
-			}
-		}
-		return favorite;
+	public String getBlog() {
+		return blog = setFieldValue(blog, "博客");
 	}
 
-	public String getIntro() {
-		initIfNeccessory();
-		if (!valid) {
-			return "";
-		}
-		if (StringUtils.isEmpty(intro)) {
-			try {
-				try {
-					intro = StringUtils.trim(StringUtils.replace(	doc_base.getElementsByAttributeValue(	"class",
-																											"pf_intro bsp")
-																			.select(".S_txt2")
-																			.text(),
-																	"&nbsp;",
-																	""));
-				} catch (Exception e) {
-				}
-				if (StringUtils.isBlank(intro)) {
-					try {
-						intro = StringUtils.trim(StringUtils.replace(	doc_base.getElementsByAttributeValue(	"class",
-																												"tCon MIB_txtb MIB_linkb")
-																				.select("#epintro")
-																				.text(),
-																		"&nbsp;",
-																		""));
-					} catch (Exception e) {
-					}
-				}
-				intro = intro.startsWith("简介：") ? intro.substring(3) : intro;
-				intro = intro.endsWith("更多资料>>") ? intro.substring(0, intro.length() - 6) : intro;
-			} catch (Exception e) {
-				intro = " ";
-			}
-		}
-		return intro;
+	public String getGender() {
+		return gender = setFieldValue(gender, "性别");
+	}
+
+	public String getEmail() {
+		return email = setFieldValue(email, "邮箱");
+	}
+
+	public String getCompany() {
+		// TODO
+		return company = setFieldValue(company, "公司");
+	}
+
+	public String getUniversity() {
+		return university = setFieldValue(university, "大学");
+	}
+
+	public String getBirthday() {
+		return birthday = setFieldValue(birthday, "生日");
+	}
+
+	public String getAddr() {
+		return addr = setFieldValue(addr, "所在地");
+	}
+
+	public String getIntroduce() {
+		return introduce = setFieldValue(introduce, "简介");
+	}
+
+	public String getTagInfo() {
+		return tagInfo = setFieldValue(tagInfo, "标签");
 	}
 
 	/**
@@ -311,39 +241,6 @@ public class WeiboPersonInfo extends Info {
 			followNum = parseStatisticInfo("关注");
 		}
 		return followNum;
-	}
-
-	/**
-	 * 用于解析统计信息中的关注数、粉丝数、发布的微博数等
-	 * 
-	 * @param text
-	 * @return
-	 */
-	private String parseStatisticInfo(String text) {
-		String tmp = "0";
-		try {
-			Elements eles = doc_stat.getElementsByClass("user_atten").select("li");
-			// 从后往前找，这样避免转发的微博信息
-			for (int i = eles.size() - 1; i >= 0; i--) {
-				Element e = eles.get(i);
-				Elements es = e.getElementsMatchingOwnText("^" + text + "$");
-				if (es.size() > 0) {
-					// 如果存在，则取之！
-					e = es.last().previousElementSibling();
-					if (e != null) {
-						tmp = StringUtils.trim(e.text());
-						if (StringUtils.isBlank(tmp)) {
-							tmp = "0";
-							continue;
-						}
-						break;
-					}
-				}
-			}
-		} catch (Exception e) {
-			tmp = "0";
-		}
-		return tmp;
 	}
 
 	/**
@@ -379,50 +276,60 @@ public class WeiboPersonInfo extends Info {
 	}
 
 	/**
-	 * 解析个人的标签信息
+	 * 用于解析统计信息中的关注数、粉丝数、发布的微博数等
 	 * 
+	 * @param text
 	 * @return
 	 */
-	public String getTagInfo() {
-		initIfNeccessory();
-		if (!valid) {
-			return "";
-		}
-		if (StringUtils.isEmpty(tagInfo)) {
-			Elements eles = null;
-			try {
-				eles = doc_base.getElementsByAttributeValue("class", "pf_tags bsp")
-								.first()
-								.getElementsByAttributeValue("class", "layer_menulist_tags S_line3 S_bg5")
-								.select("li")
-								.select(".S_func1")
-								.select("span");
-			} catch (Exception e) {
-			}
-			try {
-				if (eles == null || eles.isEmpty()) {
-					Document doc = parseToDoc(contentHtml, "pl_content_hisTags");
-					eles = doc.getElementsByTag("a");
+	private String parseStatisticInfo(String text) {
+		String tmp = "0";
+		try {
+			Elements eles = doc_stat.getElementsByClass("user_atten").select("li");
+			// 从后往前找，这样避免转发的微博信息
+			for (int i = eles.size() - 1; i >= 0; i--) {
+				Element e = eles.get(i);
+				Elements es = e.getElementsMatchingOwnText("^" + text + "$");
+				if (es.size() > 0) {
+					// 如果存在，则取之！
+					e = es.last().previousElementSibling();
+					if (e != null) {
+						tmp = StringUtils.trim(e.text());
+						if (StringUtils.isBlank(tmp)) {
+							tmp = "0";
+							continue;
+						}
+						break;
+					}
 				}
-				Iterator<Element> es = eles.iterator();
-				StringBuffer sb = new StringBuffer();
-				while (es.hasNext()) {
-					Element e = es.next();
-					sb.append(",");
-					sb.append(StringUtils.trimToEmpty(e.text()));
-				}
-				tagInfo = sb.length() > 0 ? sb.substring(1) : "";
-			} catch (Exception e) {
-				tagInfo = " ";
 			}
+		} catch (Exception e) {
+			tmp = "0";
 		}
-		return tagInfo;
+		return tmp;
 	}
 
 	private Document parseToDoc(String html, String contentPart) {
 		String detailStart = "<script>STK && STK.pageletM && STK.pageletM.view({\"pid\":\"" + contentPart + "\",";
 		String tmp = cut(html, detailStart);
 		return StringUtils.isBlank(tmp) ? null : Jsoup.parse(tmp);
+	}
+
+	/**
+	 * 给指定的字段解析出指定的值，并存储
+	 * 
+	 * @param fieldValue
+	 * @param fieldLabel
+	 * @return
+	 */
+	private String setFieldValue(String fieldValue, String fieldLabel) {
+		initIfNeccessory();
+		if (!valid) {
+			return " ";
+		}
+		if (StringUtils.isEmpty(fieldValue)) {
+			fieldValue = parseFieldValue(fieldLabel);
+		}
+		return fieldValue;
 	}
 
 	public void setId(String id) {

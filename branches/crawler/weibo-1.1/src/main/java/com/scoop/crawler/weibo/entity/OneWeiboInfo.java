@@ -142,12 +142,14 @@ public class OneWeiboInfo extends Info {
 		if (rwNum == null || "".equals(rwNum)) {
 			requestIfNeccessory();
 			try {
-				Elements eles = doc.getElementsByAttributeValue("class", "WB_handle").first()
-						.getElementsByAttributeValue("node-type", "forward_counter");
+				Elements eles = doc.getElementsByAttributeValue("class", "WB_handle")
+									.first()
+									.getElementsByAttributeValue("node-type", "forward_counter");
 				if (eles == null || eles.isEmpty()) {
 					// 兼容升级以前的
-					eles = doc.getElementsByAttributeValue("class", "tab_c W_textb").first()
-							.getElementsByAttributeValue("node-type", "forward_counter");
+					eles = doc.getElementsByAttributeValue("class", "tab_c W_textb")
+								.first()
+								.getElementsByAttributeValue("node-type", "forward_counter");
 				}
 				if (eles != null && eles.size() > 0) {
 					rwNum = eles.get(eles.size() - 1).text();
@@ -170,11 +172,13 @@ public class OneWeiboInfo extends Info {
 		if (commentNum == null || "".equals(commentNum)) {
 			requestIfNeccessory();
 			try {
-				Elements eles = doc.getElementsByAttributeValue("class", "WB_handle").first()
-						.getElementsByAttributeValue("node-type", "comment_counter");
+				Elements eles = doc.getElementsByAttributeValue("class", "WB_handle")
+									.first()
+									.getElementsByAttributeValue("node-type", "comment_counter");
 				if (eles == null || eles.isEmpty()) {
-					eles = doc.getElementsByAttributeValue("class", "tab_c W_textb").first()
-							.getElementsByAttributeValue("node-type", "comment_counter");
+					eles = doc.getElementsByAttributeValue("class", "tab_c W_textb")
+								.first()
+								.getElementsByAttributeValue("node-type", "comment_counter");
 				}
 				if (eles != null && eles.size() > 0) {
 					commentNum = eles.get(eles.size() - 1).text();
@@ -222,7 +226,7 @@ public class OneWeiboInfo extends Info {
 				String userId = contentHtml.substring(contentHtml.indexOf("$CONFIG['oid'] = '"));
 				userId = userId.substring("$CONFIG['oid'] = '".length());
 				userId = userId.substring(0, userId.indexOf("';"));
-				publisher = new WeiboPersonInfo("http://weibo.com/u/" + userId, client);
+				publisher = new WeiboPersonInfo("http://weibo.com/" + userId + "/info", client);
 				publisher.setHandler(getHandler());
 				publisher.setId(userId);
 			} catch (Exception e) {

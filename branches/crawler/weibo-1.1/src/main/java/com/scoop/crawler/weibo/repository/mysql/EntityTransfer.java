@@ -29,9 +29,14 @@ public class EntityTransfer {
 		user.setUserId(person.getId());
 		user.setName(person.getName());
 		user.setUrl(person.getUrl());
-		user.setIntroduce(person.getIntro());
-		user.setFavor(person.getFavorite());
-		user.setInfo(person.getInfo());
+		user.setAddr(person.getAddr());
+		user.setBirthday(person.getBirthday());
+		user.setBlog(person.getBlog());
+		user.setCompany(person.getCompany());
+		user.setEmail(person.getEmail());
+		user.setGender(person.getGender());
+		user.setIntroduce(person.getIntroduce());
+		user.setUniversity(person.getUniversity());
 		user.setTagInfo(person.getTagInfo());
 		user.setWeiboNum(Long.valueOf(person.getPublishNum()));
 		user.setFansNum(Long.valueOf(person.getFansNum()));
