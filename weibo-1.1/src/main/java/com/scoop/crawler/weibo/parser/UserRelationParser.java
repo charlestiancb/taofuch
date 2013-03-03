@@ -130,7 +130,7 @@ public class UserRelationParser extends Parser {
 			while (es.hasNext()) {
 				String userId = es.next().attr("action-data");
 				userId = userId.substring("uid=".length(), userId.indexOf("&"));
-				WeiboPersonInfo person = new WeiboPersonInfo("http://weibo.com/u/" + userId, client);
+				WeiboPersonInfo person = new WeiboPersonInfo("http://weibo.com/" + userId + "/info", client);
 				person.setId(userId);
 				person.setHandler(getHandler());
 				person.setNeedFetchRelation(false);
