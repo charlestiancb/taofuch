@@ -98,6 +98,13 @@ public class ExploreRequest {
 				driver = null;
 			} else {
 				driver.findElement(By.className("W_btn_g")).click();
+				verifycode = driver.findElement(By.name("verifycode"));
+				if (verifycode != null && verifycode.isDisplayed()) {
+					Logger.log("你也看到了，要输入验证码的，我做不了了！我撤了，拜拜~");
+					Thread.sleep(5 * 1000);// 等待5s
+					driver.quit();
+					driver = null;
+				}
 				Thread.sleep(5 * 1000);// 等待5s
 				// 解析页面
 				driver.navigate().to(url);// 打开指定页面
