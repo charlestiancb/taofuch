@@ -203,7 +203,6 @@ public class WeiboPersonInfo extends Info {
 	}
 
 	public String getCompany() {
-		// TODO
 		return company = setFieldValue(company, "公司");
 	}
 
