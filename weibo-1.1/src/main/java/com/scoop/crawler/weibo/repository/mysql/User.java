@@ -30,9 +30,14 @@ public class User implements Serializable {
 	private String userId;
 	private String name;
 	private String url;
-	private String info;
-	private String favor;
+	private String gender;
 	private String introduce;
+	private String addr;
+	private String blog;
+	private String email;
+	private String company;
+	private String university;
+	private String birthday;
 	private Long followNum;
 	private Long fansNum;
 	private Long weiboNum;
@@ -63,20 +68,12 @@ public class User implements Serializable {
 		this.url = url;
 	}
 
-	public String getInfo() {
-		return info;
+	public String getGender() {
+		return gender;
 	}
 
-	public void setInfo(String info) {
-		this.info = info;
-	}
-
-	public String getFavor() {
-		return favor;
-	}
-
-	public void setFavor(String favor) {
-		this.favor = favor;
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 
 	public String getIntroduce() {
@@ -85,6 +82,54 @@ public class User implements Serializable {
 
 	public void setIntroduce(String introduce) {
 		this.introduce = introduce;
+	}
+
+	public String getAddr() {
+		return addr;
+	}
+
+	public void setAddr(String addr) {
+		this.addr = addr;
+	}
+
+	public String getBlog() {
+		return blog;
+	}
+
+	public void setBlog(String blog) {
+		this.blog = blog;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
+	public String getUniversity() {
+		return university;
+	}
+
+	public void setUniversity(String university) {
+		this.university = university;
+	}
+
+	public String getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
 	}
 
 	public Long getFollowNum() {
