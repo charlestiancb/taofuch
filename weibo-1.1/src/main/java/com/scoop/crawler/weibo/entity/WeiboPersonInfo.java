@@ -56,6 +56,7 @@ public class WeiboPersonInfo extends Info {
 	 * 指定具体的微博信息，然后会判断内容是否存在，并将存在的微博内容请求出来备用！
 	 * 
 	 * @param url
+	 *            结果类似：http://weibo.com/123454/info
 	 * @param client
 	 */
 	public WeiboPersonInfo(String url, DefaultHttpClient client) {
@@ -146,7 +147,9 @@ public class WeiboPersonInfo extends Info {
 						id = id.substring(0, idx);
 					}
 				}
-			} else {
+				id = StringUtils.trim(id);
+			}
+			if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
 				initIfNeccessory();
 				try {
 					String userId = contentHtml.substring(contentHtml.indexOf("$CONFIG['oid'] = '"));
