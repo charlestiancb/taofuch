@@ -55,8 +55,7 @@ public class CommentParser extends Parser {
 					if (tmp != null) {
 						// 获取对应的评论者主页URL。
 						try {
-							// TODO 获取信息页面url。
-							String userInfoUrl = parseToUrl(tmp, w.getUrl());
+							String userInfoUrl = parseToUserUrl(tmp);
 							WeiboPersonInfo person = new WeiboPersonInfo(userInfoUrl, client);
 							person.setHandler(getHandler());
 							WeiboComment comment = new WeiboComment(tmp);
@@ -64,6 +63,7 @@ public class CommentParser extends Parser {
 							comment.setPerson(person);
 							dataSource.saveComment(comment);
 						} catch (Exception e) {
+							Logger.log("当前评论解析失败！错误信息：" + e);
 							e.printStackTrace();
 						}
 						Logger.log("当前评论解析完毕！");
@@ -143,11 +143,11 @@ public class CommentParser extends Parser {
 	 * @param weiboUrl
 	 * @return
 	 */
-	protected String parseToUrl(Element tmp, String weiboUrl) {
+	protected String parseToUserUrl(Element tmp) {
 		Elements eles = tmp.getElementsByTag("a");
-		String userInfoUrl = eles.get(0).attr("href");
-		userInfoUrl = userInfoUrl.startsWith("http://") ? userInfoUrl
-				: (userInfoUrl.startsWith("/") ? "http://weibo.com" + userInfoUrl : weiboUrl + userInfoUrl);
+		String userInfoUrl = eles.get(0).attr("usercard");
+		userInfoUrl = userInfoUrl.startsWith("id=") ? userInfoUrl.substring(3) : userInfoUrl;
+		userInfoUrl = "http://weibo.com/" + userInfoUrl + "/info";
 		return userInfoUrl;
 	}
 
