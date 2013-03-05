@@ -26,7 +26,6 @@ import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.parser.WeiboParser;
 import com.scoop.crawler.weibo.repository.entity.EntityManager;
 import com.scoop.crawler.weibo.repository.entity.EntitySql;
-import com.scoop.crawler.weibo.repository.entity.EntitySql.SqlType;
 import com.scoop.crawler.weibo.repository.entity.FetchType;
 import com.scoop.crawler.weibo.repository.mysql.Comment;
 import com.scoop.crawler.weibo.repository.mysql.EntityTransfer;
@@ -73,14 +72,10 @@ public class JdbcDataSource extends DatabaseDataSource {
 			if (!isWeiboExists(weibo.getId())) {
 				executeSql(EntityManager.createInsertSQL(EntityTransfer.parseWeibo(weibo)));
 				saveFetchIfNeccessory(weibo.getId(), FetchType.weibo);
+				saveUserIfNeccessory(weibo.getPublisher());
 			} else {
 				Logger.log("该微博已经存在！");
 			}
-			saveUserIfNeccessory(weibo.getPublisher());
-			EntitySql sqlObj = new EntitySql();
-			sqlObj.setSql("select count(1) from weibo_info");
-			sqlObj.setType(SqlType.SELECT);
-			System.out.println("当前总数：" + executeSql(sqlObj));
 		} catch (Exception e) {
 			Logger.log("保存微博失败！" + e);
 		}
