@@ -98,6 +98,7 @@ public class RequestFailedHandler extends FailedHandler {
 				case FANS:
 					String url = req.getUrl();
 					url = url.substring(0, url.lastIndexOf("/"));
+					url = url + "/info";
 					WeiboPersonInfo _person = new WeiboPersonInfo(url, getClient());
 					getDataSource().savePerson(_person);
 					break;
