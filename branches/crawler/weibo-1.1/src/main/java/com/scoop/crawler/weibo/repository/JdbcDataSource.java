@@ -73,10 +73,10 @@ public class JdbcDataSource extends DatabaseDataSource {
 			if (!isWeiboExists(weibo.getId())) {
 				executeSql(EntityManager.createInsertSQL(EntityTransfer.parseWeibo(weibo)));
 				saveFetchIfNeccessory(weibo.getId(), FetchType.weibo);
-				saveUserIfNeccessory(weibo.getPublisher());
 			} else {
 				Logger.log("该微博已经存在！");
 			}
+			saveUserIfNeccessory(weibo.getPublisher());
 			EntitySql sqlObj = new EntitySql();
 			sqlObj.setSql("select count(1) from weibo_info");
 			sqlObj.setType(SqlType.SELECT);
@@ -182,7 +182,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 	 */
 	protected void saveUserIfNeccessory(WeiboPersonInfo person) {
 		try {
-			if (!isUserExists(person.getId())) {
+			if (StringUtils.isNotBlank(person.getId()) && !isUserExists(person.getId())) {
 				// 如果用户不存在，则保存！
 				executeSql(EntityManager.createInsertSQL(EntityTransfer.parseUser(person)));
 			} else {
