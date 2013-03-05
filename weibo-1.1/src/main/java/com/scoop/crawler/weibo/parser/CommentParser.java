@@ -55,6 +55,7 @@ public class CommentParser extends Parser {
 					if (tmp != null) {
 						// 获取对应的评论者主页URL。
 						try {
+							// TODO 获取信息页面url。
 							String userInfoUrl = parseToUrl(tmp, w.getUrl());
 							WeiboPersonInfo person = new WeiboPersonInfo(userInfoUrl, client);
 							person.setHandler(getHandler());
