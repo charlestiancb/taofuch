@@ -2,7 +2,6 @@ package com.scoop.crawler.weibo;
 
 import java.io.UnsupportedEncodingException;
 
-import com.scoop.crawler.weibo.entity.LogonInfo;
 import com.scoop.crawler.weibo.fetch.FetchSinaWeibo;
 
 /**
@@ -27,7 +26,6 @@ public class Main {
 		// url =
 		// "http://s.weibo.com/user/%25E7%25A4%25BE%25E4%25BC%259A%25E8%25AE%25A1%25E7%25AE%2597";
 		// 抓取指定页面的微博
-		LogonInfo.store("sszcgfss@gmail.com", "jmi2009095");
 		FetchSinaWeibo.fetch("sszcgfss@gmail.com", "jmi2009095", url, new String[] { "F:/tmp/words.txt" });
 	}
 }
