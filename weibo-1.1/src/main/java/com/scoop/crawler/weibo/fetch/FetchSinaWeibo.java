@@ -60,8 +60,6 @@ public class FetchSinaWeibo extends FetchSina {
 			return false;
 		}
 		client = SinaWeiboRequest.getHttpClient(sinaUserName, password);
-		// 将客户端放到池中，方便调用
-		ThreadUtils.setClient(client);
 		try {
 			if (dataSource == null) {
 				dataSource = new JdbcDataSource();

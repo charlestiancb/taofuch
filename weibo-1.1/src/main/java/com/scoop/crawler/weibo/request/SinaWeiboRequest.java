@@ -35,6 +35,7 @@ import com.scoop.crawler.weibo.repository.mysql.FailedRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
 import com.scoop.crawler.weibo.util.Logger;
+import com.scoop.crawler.weibo.util.ThreadUtils;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 @SuppressWarnings("restriction")
@@ -179,6 +180,8 @@ public class SinaWeiboRequest {
 				Logger.log("登录结果：" + EntityUtils.toString(res.getEntity(), "UTF-8"));
 				EntityUtils.consumeQuietly(res.getEntity());
 			}
+			// 将客户端放到池中，方便调用
+			ThreadUtils.setClient(client);
 			Logger.log("程序登录成功！开始工作！");
 			return client;
 		} catch (Exception e) {
