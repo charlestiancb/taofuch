@@ -29,7 +29,7 @@ public class WeiboCommentRunnable extends Thread implements Runnable {
 		Logger.log("开始解析所有评论信息……");
 		try {
 			// 整个线程使用一个webDriver，即一个浏览器界面。防止过多的登录被新浪封闭
-			WebDriver driver = ExploreRequest.getDriver("http://weibo.com/");
+			WebDriver driver = ExploreRequest.getDriver(null);
 			if (driver == null) {
 				Logger.log("浏览器打开失败！停止运行！");
 				System.exit(0);
@@ -38,7 +38,7 @@ public class WeiboCommentRunnable extends Thread implements Runnable {
 				try {
 					if (System.currentTimeMillis() - preTime >= LogonInfo.DRIVER_INTERVAL) {
 						driver.quit();
-						driver = ExploreRequest.getDriver("http://weibo.com/");
+						driver = ExploreRequest.getDriver(null);
 						if (driver == null) {
 							Logger.log("浏览器打开失败！停止运行！");
 							return;
