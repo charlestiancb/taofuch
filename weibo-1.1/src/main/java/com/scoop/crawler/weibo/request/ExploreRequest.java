@@ -106,9 +106,11 @@ public class ExploreRequest {
 					driver = null;
 				}
 				Thread.sleep(5 * 1000);// 等待5s
-				// 解析页面
-				driver.navigate().to(url);// 打开指定页面
-				Thread.sleep(3 * 1000);// 等待5s
+				if (StringUtils.isNotBlank(url)) {
+					// 解析页面
+					driver.navigate().to(url);// 打开指定页面
+					Thread.sleep(3 * 1000);// 等待5s
+				}
 			}
 			return driver;
 		} catch (UnreachableBrowserException e) {
