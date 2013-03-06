@@ -1,5 +1,9 @@
 package com.scoop.crawler.weibo.entity;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.Jsoup;
@@ -51,6 +55,12 @@ public class WeiboPersonInfo extends Info {
 	private String tagInfo;
 	/** 是否需要抓取其粉丝与关注信息 */
 	private boolean needFetchRelation = true;
+
+	//
+	/** 粉丝的编号 */
+	private List<WeiboPersonInfo> fans;
+	/** 被关注者编号 */
+	private List<WeiboPersonInfo> follows;
 
 	/**
 	 * 指定具体的微博信息，然后会判断内容是否存在，并将存在的微博内容请求出来备用！
@@ -362,5 +372,80 @@ public class WeiboPersonInfo extends Info {
 
 	public void setNeedFetchRelation(boolean needFetchRelation) {
 		this.needFetchRelation = needFetchRelation;
+	}
+
+	public List<WeiboPersonInfo> getFans() {
+		if (fans == null) {
+			fans = new ArrayList<WeiboPersonInfo>();
+			String url = "http://weibo.com/" + getId() + "/fans";
+			if (StringUtils.isNotBlank(getId())) {
+				parseRelation(url, FailedNode.FANS, fans);
+			}
+		}
+		return fans;
+	}
+
+	public List<WeiboPersonInfo> getFollows() {
+		if (follows == null) {
+			follows = new ArrayList<WeiboPersonInfo>();
+			String url = "http://weibo.com/" + getId() + "/follow";
+			if (StringUtils.isNotBlank(getId())) {
+				parseRelation(url, FailedNode.FOLLOWS, follows);
+			}
+		}
+		return follows;
+	}
+
+	/**
+	 * 解析用户的关系
+	 * 
+	 * @param url
+	 * @param list
+	 */
+	private void parseRelation(String url, FailedNode node, List<WeiboPersonInfo> list) {
+		try {
+			String text = SinaWeiboRequest.request(client, url, getHandler(), node);
+			Document doc = null;
+			if (FailedNode.FANS.compareTo(node) == 0) {
+				doc = parseToDoc(text, "pl_relation_hisFans");
+			} else {
+				doc = parseToDoc(text, "pl_relation_hisFollow");
+			}
+			Elements eles = doc.getElementsByAttributeValue("node-type", "userListBox");
+			if (eles.isEmpty()) {
+				return;
+			}
+			eles = eles.first().getElementsByTag("li");
+			if (eles.isEmpty()) {
+				return;
+			}
+			Iterator<Element> es = eles.iterator();
+			while (es.hasNext()) {
+				String userId = es.next().attr("action-data");
+				userId = userId.substring("uid=".length(), userId.indexOf("&"));
+				WeiboPersonInfo person = new WeiboPersonInfo("http://weibo.com/" + userId + "/info", client);
+				person.setId(userId);
+				person.setHandler(getHandler());
+				list.add(person);
+			}
+			eles = doc.getElementsByAttributeValue("class", "W_pages W_pages_comment").select(".W_btn_a");
+			if (eles.size() > 0) {
+				// 如果有下一页，则读取下一页的内容
+				Element e = eles.last();
+				if ("下一页".equals(e.text())) {
+					try {
+						// 每页之间停顿1秒，为了不被新浪屏蔽。
+						Thread.sleep(1000);
+					} catch (Exception e1) {
+					}
+					String _url = e.attr("href");
+					_url = _url.startsWith("/") ? "http://weibo.com" + _url : url
+							.substring(0, url.lastIndexOf("/") + 1) + _url;
+					parseRelation(_url, node, list);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
