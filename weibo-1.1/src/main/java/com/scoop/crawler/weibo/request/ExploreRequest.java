@@ -131,9 +131,6 @@ public class ExploreRequest {
 	 */
 	public static WebDriver getDriver(String url) {
 		url = StringUtils.trim(url);
-		if (StringUtils.isEmpty(url)) {
-			return null;
-		}
 		return firefox(url);
 	}
 }
