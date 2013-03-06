@@ -4,11 +4,12 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.openqa.selenium.WebDriver;
 
 import com.scoop.crawler.weibo.entity.LogonInfo;
-import com.scoop.crawler.weibo.parser.FansParser;
-import com.scoop.crawler.weibo.parser.FollowParser;
+import com.scoop.crawler.weibo.parser.httpclient.FansParserHttpclient;
+import com.scoop.crawler.weibo.parser.httpclient.FollowParserHttpclient;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.User;
 import com.scoop.crawler.weibo.request.ExploreRequest;
+import com.scoop.crawler.weibo.request.SinaWeiboRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.util.Logger;
 import com.scoop.crawler.weibo.util.ThreadUtils;
@@ -31,8 +32,8 @@ public class WeiboUserRelationRunnable extends Thread implements Runnable {
 
 	public void run() {
 		DefaultHttpClient client = ThreadUtils.allocateHttpClient();
-		FansParser fansp = new FansParser(dataSource, handler);
-		FollowParser followP = new FollowParser(dataSource, handler);
+		FansParserHttpclient fansp = new FansParserHttpclient(dataSource, handler);
+		FollowParserHttpclient followP = new FollowParserHttpclient(dataSource, handler);
 		Logger.log("开始解析所有用户粉丝与关注信息……");
 		try {
 			WebDriver driver = ExploreRequest.getDriver("http://weibo.com/");
@@ -49,6 +50,8 @@ public class WeiboUserRelationRunnable extends Thread implements Runnable {
 						if (driver == null) {
 							Logger.log("浏览器打开失败！停止运行！");
 							return;
+						} else {
+							SinaWeiboRequest.setCookieToClient(client, driver);
 						}
 						preTime = System.currentTimeMillis();
 					}

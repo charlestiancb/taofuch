@@ -4,7 +4,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.openqa.selenium.WebDriver;
 
 import com.scoop.crawler.weibo.entity.LogonInfo;
-import com.scoop.crawler.weibo.parser.CommentParser;
+import com.scoop.crawler.weibo.parser.httpclient.CommentParserHttpclient;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.Weibo;
 import com.scoop.crawler.weibo.request.ExploreRequest;
@@ -25,7 +25,7 @@ public class WeiboCommentRunnable extends Thread implements Runnable {
 
 	public void run() {
 		DefaultHttpClient client = ThreadUtils.allocateHttpClient();
-		CommentParser cp = new CommentParser(dataSource, handler);
+		CommentParserHttpclient cp = new CommentParserHttpclient(dataSource, handler);
 		Logger.log("开始解析所有评论信息……");
 		try {
 			// 整个线程使用一个webDriver，即一个浏览器界面。防止过多的登录被新浪封闭
