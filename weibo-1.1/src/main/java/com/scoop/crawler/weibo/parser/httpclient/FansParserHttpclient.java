@@ -28,7 +28,7 @@ public class FansParserHttpclient extends UserRelationParser {
 		Logger.log("开始解析用户[" + u + "]的粉丝信息……");
 		WeiboPersonInfo person = new WeiboPersonInfo(u.getUrl(), client);
 		List<WeiboPersonInfo> fans = person.getFans();
-		Logger.log("用户[" + u + "]共有粉丝：" + u.getFansNum() + "个！实际解析出：" + fans.size() + "个");
+		Logger.log("记录的用户[" + u + "]共有粉丝：" + u.getFansNum() + "个！实际解析出：" + fans.size() + "个");
 		dataSource.saveFans(person.getId(), fans);
 		Logger.log("用户[" + u + "]的粉丝信息解析完毕！");
 	}
