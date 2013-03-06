@@ -41,16 +41,18 @@ public class CommentParserHttpclient extends Parser {
 			// 获取所有评论信息，并进行循环处理。
 			Elements eles = wb.getDetailDoc().getElementsByAttributeValue("class", "comment_lists");
 			if (eles == null || eles.isEmpty()) {
-				Logger.log("当前微博没有评论内容！");
+				Logger.log("当前微博没有评论内容！记录的微博评论的总数：" + w.getCommentNum() + "个");
 				return;
 			}
 			eles = eles.select("dd");
 			if (eles == null || eles.isEmpty()) {
-				Logger.log("当前微博没有评论内容！");
+				Logger.log("当前微博没有评论内容！记录的微博评论的总数：" + w.getCommentNum() + "个");
 				return;
 			}
 			Comments comments = new Comments(wb.getDetail());
+			int cnt = 0;
 			while (eles != null && eles.size() > 0) {
+				cnt += eles.size();
 				Element tmp = null;
 				for (int i = 0; i < eles.size(); i++) {
 					Logger.log("解析其中一条评论信息……");
@@ -67,6 +69,7 @@ public class CommentParserHttpclient extends Parser {
 							comment.setPerson(person);
 							dataSource.saveComment(comment);
 						} catch (Exception e) {
+							--cnt;
 							e.printStackTrace();
 						}
 					}
@@ -74,6 +77,7 @@ public class CommentParserHttpclient extends Parser {
 				// 加载下一页评论，并进行分析
 				eles = loadNextPage(comments, client);
 			}
+			Logger.log("当前微博评论解析完毕！共解析出：" + cnt + "个，记录的微博评论的总数：" + w.getCommentNum() + "个");
 		} catch (Exception e) {
 			Logger.log("解析微博[" + wb + "]的评论失败！" + e);
 		}

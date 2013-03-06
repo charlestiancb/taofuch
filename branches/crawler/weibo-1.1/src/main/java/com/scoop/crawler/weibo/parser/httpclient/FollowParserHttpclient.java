@@ -28,7 +28,7 @@ public class FollowParserHttpclient extends UserRelationParser {
 		Logger.log("开始解析用户[" + u + "]的关注信息……");
 		WeiboPersonInfo person = new WeiboPersonInfo(u.getUrl(), client);
 		List<WeiboPersonInfo> follows = person.getFollows();
-		Logger.log("用户[" + u + "]共有关注：" + follows.size() + "个！");
+		Logger.log("用户[" + u + "]共有关注：" + u.getFollowNum() + "个！实际解析出：" + follows.size() + "个");
 		dataSource.saveFollows(person.getId(), follows);
 		Logger.log("用户[" + u + "]的关注信息解析完毕！");
 	}
