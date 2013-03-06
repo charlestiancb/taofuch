@@ -104,16 +104,12 @@ public class CommentParserHttpclient extends Parser {
 				String html = SinaWeiboRequest.request(client, url, getHandler(), FailedNode.COMMENT);
 				comments.setCurrentPageComments(JSONUtils.getSinaHtml(html));
 				eles = Jsoup.parse(comments.getCurrentPageComments()).getElementsByAttributeValue("class",
-						"comment_list S_line1");
+						"comment_list");
 				if (eles != null) {
-					eles = eles.select("dd");
-				}
-				if (eles != null) {
-					return eles;
+					return eles.select("dd");
 				}
 			}
 		}
-		Logger.log("当前微博评论信息读取完毕！");
 		return null;
 	}
 
