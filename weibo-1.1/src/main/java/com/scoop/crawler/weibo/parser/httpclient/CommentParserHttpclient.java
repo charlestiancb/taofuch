@@ -100,11 +100,10 @@ public class CommentParserHttpclient extends Parser {
 			String url = "http://weibo.com/aj/comment/big?";
 			String param = eles.first().attr("action-data");
 			if (param != null && param.trim().length() > 0) {
-				url = url + param;
+				url = url + JSONUtils.unEscapeHtml(param);
 				String html = SinaWeiboRequest.request(client, url, getHandler(), FailedNode.COMMENT);
 				comments.setCurrentPageComments(JSONUtils.getSinaHtml(html));
-				eles = Jsoup.parse(comments.getCurrentPageComments()).getElementsByAttributeValue("class",
-						"comment_list");
+				eles = Jsoup.parse(comments.getCurrentPageComments()).getElementsByClass("comment_list");
 				if (eles != null) {
 					return eles.select("dd");
 				}
