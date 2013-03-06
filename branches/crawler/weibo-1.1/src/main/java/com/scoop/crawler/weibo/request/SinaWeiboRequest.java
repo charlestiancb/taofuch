@@ -192,7 +192,7 @@ public class SinaWeiboRequest {
 	private static void setCookie(DefaultHttpClient client) {
 		WebDriver driver = null;
 		try {
-			driver = ExploreRequest.getDriver("http://weibo.com/u/2210871673");
+			driver = ExploreRequest.getDriver(null);
 			setCookieToClient(client, driver);
 		} catch (Exception e) {
 			e.printStackTrace();

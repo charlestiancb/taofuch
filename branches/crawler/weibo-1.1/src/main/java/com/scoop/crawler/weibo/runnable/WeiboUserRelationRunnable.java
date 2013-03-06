@@ -36,7 +36,7 @@ public class WeiboUserRelationRunnable extends Thread implements Runnable {
 		FollowParserHttpclient followP = new FollowParserHttpclient(dataSource, handler);
 		Logger.log("开始解析所有用户粉丝与关注信息……");
 		try {
-			WebDriver driver = ExploreRequest.getDriver("http://weibo.com/");
+			WebDriver driver = ExploreRequest.getDriver(null);
 			if (driver == null) {
 				Logger.log("浏览器打开失败！停止运行！");
 				return;
@@ -46,7 +46,7 @@ public class WeiboUserRelationRunnable extends Thread implements Runnable {
 				try {
 					if (System.currentTimeMillis() - preTime >= LogonInfo.DRIVER_INTERVAL) {
 						driver.quit();
-						driver = ExploreRequest.getDriver("http://weibo.com/");
+						driver = ExploreRequest.getDriver(null);
 						if (driver == null) {
 							Logger.log("浏览器打开失败！停止运行！");
 							return;
