@@ -37,7 +37,7 @@ public class CommentParserHttpclient extends Parser {
 		OneWeiboInfo wb = new OneWeiboInfo(w.getUrl(), client);
 		wb.setHandler(getHandler());
 		try {
-			Logger.log("解析评论信息……");
+			Logger.log("解析微博[" + w + "]的评论信息……");
 			// 获取所有评论信息，并进行循环处理。
 			Elements eles = wb.getDetailDoc().getElementsByAttributeValue("class", "comment_lists");
 			if (eles == null || eles.isEmpty()) {
@@ -84,13 +84,14 @@ public class CommentParserHttpclient extends Parser {
 	}
 
 	protected Elements loadNextPage(Comments comments, DefaultHttpClient client) {
+		Logger.log("获取下一 页评论信息……");
 		try {
 			Thread.sleep(1000);// 等待一秒钟。
 		} catch (Exception e) {
 		}
 		// 这里取下一页的URL是否正确！
 		Elements eles = Jsoup.parse(comments.getCurrentPageComments()).getElementsByAttributeValue("class",
-				"W_pages W_pages_comment");
+				"W_pages_minibtn");
 		if (eles != null && eles.size() > 0) {
 			eles = eles.first().getElementsMatchingOwnText("下一页");
 		}
@@ -103,9 +104,11 @@ public class CommentParserHttpclient extends Parser {
 				String html = SinaWeiboRequest.request(client, url, getHandler(), FailedNode.COMMENT);
 				comments.setCurrentPageComments(JSONUtils.getSinaHtml(html));
 				eles = Jsoup.parse(comments.getCurrentPageComments()).getElementsByAttributeValue("class",
-						"comment_list W_linecolor clearfix");
+						"comment_list S_line1");
 				if (eles != null) {
-					Logger.log("获取下一 页评论信息……");
+					eles = eles.select("dd");
+				}
+				if (eles != null) {
 					return eles;
 				}
 			}
