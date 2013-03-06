@@ -8,6 +8,7 @@ import com.scoop.crawler.weibo.parser.CommentParser;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.Weibo;
 import com.scoop.crawler.weibo.request.ExploreRequest;
+import com.scoop.crawler.weibo.request.SinaWeiboRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.util.Logger;
 import com.scoop.crawler.weibo.util.ThreadUtils;
@@ -41,6 +42,8 @@ public class WeiboCommentRunnable extends Thread implements Runnable {
 						if (driver == null) {
 							Logger.log("浏览器打开失败！停止运行！");
 							return;
+						} else {
+							SinaWeiboRequest.setCookieToClient(client, driver);
 						}
 						preTime = System.currentTimeMillis();
 					}
