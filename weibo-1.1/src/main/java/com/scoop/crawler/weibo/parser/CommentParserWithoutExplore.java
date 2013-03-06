@@ -19,6 +19,7 @@ import com.scoop.crawler.weibo.request.SinaWeiboRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
 import com.scoop.crawler.weibo.util.JSONUtils;
+import com.scoop.crawler.weibo.util.Logger;
 
 /**
  * 微博评论解析器。不使用浏览器，直接使用HttpClient请求与解析。
@@ -35,14 +36,23 @@ public class CommentParserWithoutExplore extends Parser {
 		OneWeiboInfo wb = new OneWeiboInfo(w.getUrl(), client);
 		wb.setHandler(getHandler());
 		try {
-			System.out.println("解析评论信息……");
+			Logger.log("解析评论信息……");
 			// 获取所有评论信息，并进行循环处理。
-			Elements eles = wb.getDetailDoc().getElementsByAttributeValue("class", "comment_lists").select("dd");
+			Elements eles = wb.getDetailDoc().getElementsByAttributeValue("class", "comment_lists");
+			if (eles == null || eles.isEmpty()) {
+				Logger.log("当前微博没有评论内容！");
+				return;
+			}
+			eles = eles.select("dd");
+			if (eles == null || eles.isEmpty()) {
+				Logger.log("当前微博没有评论内容！");
+				return;
+			}
 			Comments comments = new Comments(wb.getDetail());
 			while (eles != null && eles.size() > 0) {
 				Element tmp = null;
 				for (int i = 0; i < eles.size(); i++) {
-					System.out.println("解析其中一条评论信息……");
+					Logger.log("解析其中一条评论信息……");
 					tmp = eles.get(i);
 					if (tmp != null) {
 						// 获取对应的评论者主页URL。
@@ -64,14 +74,13 @@ public class CommentParserWithoutExplore extends Parser {
 				eles = loadNextPage(comments, client);
 			}
 		} catch (Exception e) {
-			System.err.println("解析微博[" + wb + "]的评论失败！");
-			e.printStackTrace();
+			Logger.log("解析微博[" + wb + "]的评论失败！" + e);
 		}
 	}
 
 	protected Elements loadNextPage(Comments comments, DefaultHttpClient client) {
 		// 这里取下一页的URL是否正确！
-		Elements eles = Jsoup.parse(comments.getCurrentPage()).getElementsByAttributeValue("class",
+		Elements eles = Jsoup.parse(comments.getCurrentPageComments()).getElementsByAttributeValue("class",
 				"W_pages W_pages_comment");
 		if (eles != null && eles.size() > 0) {
 			eles = eles.first().getElementsMatchingOwnText("下一页");
@@ -83,16 +92,16 @@ public class CommentParserWithoutExplore extends Parser {
 			if (param != null && param.trim().length() > 0) {
 				url = url + param;
 				String html = SinaWeiboRequest.request(client, url, getHandler(), FailedNode.COMMENT);
-				comments.setCurrentPage(JSONUtils.getSinaHtml(html));
-				eles = Jsoup.parse(comments.getCurrentPage()).getElementsByAttributeValue("class",
+				comments.setCurrentPageComments(JSONUtils.getSinaHtml(html));
+				eles = Jsoup.parse(comments.getCurrentPageComments()).getElementsByAttributeValue("class",
 						"comment_list W_linecolor clearfix");
 				if (eles != null) {
-					System.out.println("获取下一 页评论信息……");
+					Logger.log("获取下一 页评论信息……");
 					return eles;
 				}
 			}
 		}
-		System.out.println("当前微博评论信息读取完毕！");
+		Logger.log("当前微博评论信息读取完毕！");
 		return null;
 	}
 
@@ -149,21 +158,21 @@ public class CommentParserWithoutExplore extends Parser {
 	 */
 	public class Comments {
 		/** 当前一整页的所有评论信息的页面！ */
-		private String currentPage;
+		private String currentPageComments;
 
 		/**
 		 * 一个完整页面的评论信息，其中包含当前页的评论和下一页的评论
 		 */
-		public Comments(String currentPage) {
-			this.currentPage = currentPage;
+		public Comments(String currentPageComments) {
+			this.currentPageComments = currentPageComments;
 		}
 
-		public String getCurrentPage() {
-			return currentPage;
+		public String getCurrentPageComments() {
+			return currentPageComments;
 		}
 
-		public void setCurrentPage(String currentPage) {
-			this.currentPage = currentPage;
+		public void setCurrentPageComments(String currentPageComments) {
+			this.currentPageComments = currentPageComments;
 		}
 	}
 }
