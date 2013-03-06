@@ -145,6 +145,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 				} catch (Exception e) {
 				}
 				saveUserIfNeccessory(fansUser);
+				Logger.log("保存用户信息[" + fansUser.getId() + ":" + fansUser.getName() + "]成功！");
 			}
 		}
 	}
@@ -166,6 +167,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 				} catch (Exception e) {
 				}
 				saveUserIfNeccessory(followUser);
+				Logger.log("保存用户信息[" + followUser.getId() + ":" + followUser.getName() + "]成功！");
 			}
 		}
 	}
