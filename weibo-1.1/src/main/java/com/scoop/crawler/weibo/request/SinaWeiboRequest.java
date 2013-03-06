@@ -139,7 +139,7 @@ public class SinaWeiboRequest {
 			nvps.add(new BasicNameValuePair("encoding", "UTF-8"));
 			nvps.add(new BasicNameValuePair("returntype", "META"));
 			nvps.add(new BasicNameValuePair("url",
-											"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
+					"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
 			HttpEntity entity = new UrlEncodedFormEntity(nvps, "UTF-8");
 			post.setEntity(entity);
 			// 获取跳转登录
@@ -190,16 +190,7 @@ public class SinaWeiboRequest {
 		WebDriver driver = null;
 		try {
 			driver = ExploreRequest.getDriver("http://weibo.com/u/2210871673");
-			Set<org.openqa.selenium.Cookie> cs = driver.manage().getCookies();
-			CookieStore cookieStore = client.getCookieStore();
-			for (org.openqa.selenium.Cookie c : cs) {
-				BasicClientCookie2 cookie = new BasicClientCookie2(c.getName(), c.getValue());
-				cookie.setDomain(c.getDomain());
-				cookie.setExpiryDate(c.getExpiry());
-				cookie.setPath(c.getPath());
-				cookieStore.addCookie(cookie);
-			}
-			client.setCookieStore(cookieStore);
+			setCookieToClient(client, driver);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -207,6 +198,28 @@ public class SinaWeiboRequest {
 				driver.quit();
 			}
 		}
+	}
+
+	/**
+	 * 将driver中的cookie设置给client类。
+	 * 
+	 * @param client
+	 * @param driver
+	 */
+	public static void setCookieToClient(DefaultHttpClient client, WebDriver driver) {
+		if (driver == null || client == null) {
+			return;
+		}
+		Set<org.openqa.selenium.Cookie> cs = driver.manage().getCookies();
+		CookieStore cookieStore = client.getCookieStore();
+		for (org.openqa.selenium.Cookie c : cs) {
+			BasicClientCookie2 cookie = new BasicClientCookie2(c.getName(), c.getValue());
+			cookie.setDomain(c.getDomain());
+			cookie.setExpiryDate(c.getExpiry());
+			cookie.setPath(c.getPath());
+			cookieStore.addCookie(cookie);
+		}
+		client.setCookieStore(cookieStore);
 	}
 
 	/**
@@ -348,13 +361,13 @@ public class SinaWeiboRequest {
 
 	private static void setProxy(DefaultHttpClient client) {
 		// 代理方式访问网络
-		client.getCredentialsProvider().setCredentials(	new AuthScope("192.168.16.187", 8080),
-														new UsernamePasswordCredentials("taofucheng", "taofuchok"));
+		client.getCredentialsProvider().setCredentials(new AuthScope("192.168.16.187", 8080),
+				new UsernamePasswordCredentials("taofucheng", "taofuchok"));
 		client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, new HttpHost("192.168.16.187", 8080));
 	}
 
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		System.err.println(URLDecoder.decode(	"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB",
-												"GBK"));
+		System.err.println(URLDecoder.decode(
+				"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB", "GBK"));
 	}
 }
