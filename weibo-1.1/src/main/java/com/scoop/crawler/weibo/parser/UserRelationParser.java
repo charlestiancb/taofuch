@@ -79,18 +79,19 @@ public class UserRelationParser extends Parser {
 					} catch (InterruptedException e) {
 					}
 				}
-				saveRelations(u, client, driver, node);
+				afterSave(u, node, saveRelations(u, client, driver, node));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	protected void saveRelations(User u, DefaultHttpClient client, WebDriver driver, FailedNode node) {
+	protected long saveRelations(User u, DefaultHttpClient client, WebDriver driver, FailedNode node) {
 		if (node == null) {
 			node = FailedNode.FANS;
 		}
 		// 这里使用循环而不使用递归，是因为递归有次数限制！
+		long cnt = 0;
 		while (true) {
 			String html = driver.getPageSource();
 			Document doc = Jsoup.parse(html);
@@ -114,17 +115,17 @@ public class UserRelationParser extends Parser {
 			}
 			if (relations == null) {
 				Logger.log("当前用户[" + u.getUserId() + ":" + u.getName() + "]没有" + node.name() + "信息");
-				return;
+				return cnt;
 			}
 			Elements eles = relations.getElementsByAttributeValue("node-type", "userListBox");
 			if (eles.isEmpty()) {
 				Logger.log("当前用户[" + u.getUserId() + ":" + u.getName() + "]没有" + node.name() + "信息");
-				return;
+				return cnt;
 			}
 			eles = eles.first().getElementsByTag("li");
 			if (eles.isEmpty()) {
 				Logger.log("当前用户[" + u.getUserId() + ":" + u.getName() + "]没有" + node.name() + "信息");
-				return;
+				return cnt;
 			}
 			Iterator<Element> es = eles.iterator();
 			while (es.hasNext()) {
@@ -146,6 +147,7 @@ public class UserRelationParser extends Parser {
 					follow.setFollowId(userId);
 					dataSource.saveFollows(follow);// 保存用户与关注的关系信息
 				}
+				cnt++;
 				Logger.log("保存用户信息[" + person.getId() + ":" + person.getName() + "]成功！");
 			}
 			// 获取下一页的消息
@@ -155,7 +157,7 @@ public class UserRelationParser extends Parser {
 				if (pages != null && pages.size() > 0) {
 					ele = pages.get(0).findElement(By.linkText("下一页"));
 				} else {
-					return;
+					return cnt;
 				}
 			} catch (Throwable e) {
 			}
@@ -166,11 +168,34 @@ public class UserRelationParser extends Parser {
 					ele.click();
 					Thread.sleep(1000);// 等待1s，让页面加载完毕！
 				} catch (Exception e) {
-					return;
+					return cnt;
 				}
 			} else {
+				return cnt;
+			}
+		}
+	}
+
+	protected void afterSave(User u, FailedNode node, long cnt) {
+		Logger.log("当前用户的" + node.name() + "信息解析完毕！共解析出：" + cnt + "个");
+		if (StringUtils.isNotBlank(u.getUserId())) {
+			User update = new User();
+			update.setUserId(u.getUserId());
+			switch (node) {
+			case FANS:
+				if (cnt > u.getFansNum()) {
+					update.setFansNum(cnt);
+				}
+				break;
+			case FOLLOWS:
+				if (cnt > u.getFansNum()) {
+					update.setFollowNum(cnt);
+				}
+				break;
+			default:
 				return;
 			}
+			dataSource.mergeUser(update);
 		}
 	}
 

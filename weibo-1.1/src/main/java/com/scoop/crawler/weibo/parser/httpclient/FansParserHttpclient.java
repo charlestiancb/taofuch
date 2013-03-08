@@ -6,10 +6,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.openqa.selenium.WebDriver;
 
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
-import com.scoop.crawler.weibo.parser.UserRelationParser;
+import com.scoop.crawler.weibo.parser.FansParser;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.User;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
+import com.scoop.crawler.weibo.request.failed.FailedNode;
 import com.scoop.crawler.weibo.util.Logger;
 
 /**
@@ -18,7 +19,7 @@ import com.scoop.crawler.weibo.util.Logger;
  * @author taofucheng
  * 
  */
-public class FansParserHttpclient extends UserRelationParser {
+public class FansParserHttpclient extends FansParser {
 
 	public FansParserHttpclient(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
@@ -30,6 +31,7 @@ public class FansParserHttpclient extends UserRelationParser {
 		List<WeiboPersonInfo> fans = person.getFans();
 		Logger.log("记录的用户[" + u + "]共有粉丝：" + u.getFansNum() + "个！实际解析出：" + fans.size() + "个");
 		dataSource.saveFans(person.getId(), fans);
+		afterSave(u, FailedNode.FANS, fans.size());
 		Logger.log("用户[" + u + "]的粉丝信息解析完毕！");
 	}
 }

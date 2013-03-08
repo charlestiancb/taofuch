@@ -246,6 +246,10 @@ public class JdbcDataSource extends DatabaseDataSource {
 	}
 
 	public boolean isWeiboExists(String weiboId) {
+		weiboId = StringUtils.trim(weiboId);
+		if (StringUtils.isEmpty(weiboId)) {
+			return false;
+		}
 		boolean r = false;
 		try {
 			Weibo w = new Weibo();
@@ -265,6 +269,10 @@ public class JdbcDataSource extends DatabaseDataSource {
 	}
 
 	public boolean isCommentExists(String commentId) {
+		commentId = StringUtils.trim(commentId);
+		if (StringUtils.isEmpty(commentId)) {
+			return false;
+		}
 		boolean r = false;
 		try {
 			Comment c = new Comment();
@@ -276,6 +284,10 @@ public class JdbcDataSource extends DatabaseDataSource {
 	}
 
 	public boolean isUserExists(String userId) {
+		userId = StringUtils.trim(userId);
+		if (StringUtils.isEmpty(userId)) {
+			return false;
+		}
 		boolean r = false;
 		try {
 			User u = new User();
@@ -445,6 +457,36 @@ public class JdbcDataSource extends DatabaseDataSource {
 		List<Map<String, Object>> result = (List<Map<String, Object>>) executeSql(EntityManager.createSelectSQL(follow));
 		if (result == null || result.isEmpty()) {
 			executeSql(EntityManager.createInsertSQL(follow));
+		}
+	}
+
+	public void mergeWeibo(Weibo weibo) {
+		try {
+			if (isWeiboExists(weibo.getWeiboId())) {
+				// 如果存在，则修改
+				Weibo where = new Weibo();
+				where.setWeiboId(weibo.getWeiboId());
+				executeSql(EntityManager.createUpdateSQL(weibo, where));
+			} else {
+				executeSql(EntityManager.createInsertSQL(weibo));
+			}
+		} catch (Exception e) {
+			Logger.log("mergeWeibo[" + weibo + "]时失败！");
+		}
+	}
+
+	public void mergeUser(User user) {
+		try {
+			if (isUserExists(user.getUserId())) {
+				// 如果存在，则修改
+				User where = new User();
+				where.setUserId(user.getUserId());
+				executeSql(EntityManager.createUpdateSQL(user, where));
+			} else {
+				executeSql(EntityManager.createInsertSQL(user));
+			}
+		} catch (Exception e) {
+			Logger.log("mergeWeibo[" + user + "]时失败！");
 		}
 	}
 }

@@ -47,6 +47,7 @@ public class CommentParser extends Parser {
 				Logger.log("当前微博没有评论信息！");
 			}
 			// 获取所有评论信息，并进行循环处理。
+			int cnt = 0;
 			while (eles != null && eles.size() > 0) {
 				Element tmp = null;
 				for (int i = 0; i < eles.size(); i++) {
@@ -62,6 +63,7 @@ public class CommentParser extends Parser {
 							comment.setWeiboId(w.getWeiboId());
 							comment.setPerson(person);
 							dataSource.saveComment(comment);
+							cnt++;
 						} catch (Exception e) {
 							Logger.log("当前评论解析失败！错误信息：" + e);
 							e.printStackTrace();
@@ -74,11 +76,28 @@ public class CommentParser extends Parser {
 				// 加载下一页评论，并进行分析
 				eles = loadNextPage(driver);
 			}
+			afterSave(w, cnt);
 		} catch (Exception e) {
 			System.err.println("解析微博[" + w + "]的评论失败！");
 			e.printStackTrace();
 		}
 		Logger.log("微博[" + w + "]的评论信息解析完毕！");
+	}
+
+	/**
+	 * 当前微博所有评论保存完之后的操作
+	 * 
+	 * @param w
+	 * @param cnt
+	 */
+	protected void afterSave(Weibo w, long cnt) {
+		if (StringUtils.isNotBlank(w.getWeiboId()) && cnt > w.getCommentNum()) {
+			Weibo update = new Weibo();
+			update.setWeiboId(w.getWeiboId());
+			update.setCommentNum(cnt);
+			dataSource.mergeWeibo(update);
+		}
+		Logger.log("当前微博评论解析完毕！共解析出：" + cnt + "个，记录的微博评论的总数：" + w.getCommentNum() + "个");
 	}
 
 	/**
