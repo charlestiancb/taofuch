@@ -62,8 +62,7 @@ public class ExploreRequest {
 	public static WebDriver firefox(String url) {
 		WebDriver driver = null;
 		try {
-			// System.setProperty("webdriver.firefox.bin",
-			// "D:/Program Files/Mozilla Firefox/firefox.exe");
+			System.setProperty("webdriver.firefox.bin", "D:/Program Files/Mozilla Firefox/firefox.exe");
 			driver = new FirefoxDriver();
 			return loginAndRequest(driver, url);
 		} catch (Throwable t) {
