@@ -19,6 +19,13 @@ public interface DataSource {
 	 */
 	public void saveWeibo(OneWeiboInfo weibo);
 
+	/**
+	 * 保存或修改微博。如果该微博已经存在，则修改，否则添加！
+	 * 
+	 * @param weibo
+	 */
+	public void mergeWeibo(Weibo weibo);
+
 	/** 获取一条没有抓取解析信息的微博 */
 	public Weibo getOneUnfetchedWeibo();
 
@@ -40,6 +47,13 @@ public interface DataSource {
 	 * @param person
 	 */
 	public void savePerson(WeiboPersonInfo person);
+
+	/**
+	 * 添加或修改用户信息。如果用户信息已经存在，则进行修改，否则添加。
+	 * 
+	 * @param user
+	 */
+	public void mergeUser(User user);
 
 	public boolean isWeiboExists(String weiboId);
 

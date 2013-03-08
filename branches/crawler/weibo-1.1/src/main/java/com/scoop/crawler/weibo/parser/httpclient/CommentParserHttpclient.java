@@ -1,19 +1,15 @@
 package com.scoop.crawler.weibo.parser.httpclient;
 
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.WebDriver;
 
 import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.entity.WeiboComment;
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
-import com.scoop.crawler.weibo.parser.Parser;
+import com.scoop.crawler.weibo.parser.CommentParser;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.Weibo;
 import com.scoop.crawler.weibo.request.SinaWeiboRequest;
@@ -28,7 +24,7 @@ import com.scoop.crawler.weibo.util.Logger;
  * @author taofucheng
  * 
  */
-public class CommentParserHttpclient extends Parser {
+public class CommentParserHttpclient extends CommentParser {
 	public CommentParserHttpclient(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
 	}
@@ -52,7 +48,6 @@ public class CommentParserHttpclient extends Parser {
 			Comments comments = new Comments(wb.getDetail());
 			int cnt = 0;
 			while (eles != null && eles.size() > 0) {
-				cnt += eles.size();
 				Element tmp = null;
 				for (int i = 0; i < eles.size(); i++) {
 					Logger.log("解析其中一条评论信息……");
@@ -60,7 +55,7 @@ public class CommentParserHttpclient extends Parser {
 					if (tmp != null) {
 						// 获取对应的评论者主页URL。
 						try {
-							String userInfoUrl = parseToUrl(tmp, wb.getUrl());
+							String userInfoUrl = parseToUserUrl(tmp);
 							WeiboPersonInfo person = new WeiboPersonInfo(userInfoUrl, client);
 							person.setHandler(wb.getHandler());
 							WeiboComment comment = new WeiboComment(tmp);
@@ -68,8 +63,8 @@ public class CommentParserHttpclient extends Parser {
 							comment.setWeiboId(wb.getId());
 							comment.setPerson(person);
 							dataSource.saveComment(comment);
+							cnt++;
 						} catch (Exception e) {
-							--cnt;
 							e.printStackTrace();
 						}
 					}
@@ -77,7 +72,7 @@ public class CommentParserHttpclient extends Parser {
 				// 加载下一页评论，并进行分析
 				eles = loadNextPage(comments, client);
 			}
-			Logger.log("当前微博评论解析完毕！共解析出：" + cnt + "个，记录的微博评论的总数：" + w.getCommentNum() + "个");
+			afterSave(w, cnt);
 		} catch (Exception e) {
 			Logger.log("解析微博[" + wb + "]的评论失败！" + e);
 		}
@@ -110,51 +105,6 @@ public class CommentParserHttpclient extends Parser {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * 获取个人信息的URL。
-	 * 
-	 * @param tmp
-	 * @param weiboUrl
-	 * @return
-	 */
-	protected String parseToUrl(Element tmp, String weiboUrl) {
-		Elements eles = tmp.getElementsByTag("a");
-		String userInfoUrl = eles.get(0).attr("usercard");
-		userInfoUrl = userInfoUrl.startsWith("id=") ? userInfoUrl.substring(3) : userInfoUrl;
-		userInfoUrl = "http://weibo.com/" + userInfoUrl + "/info";
-		return userInfoUrl;
-	}
-
-	/**
-	 * 评论内容
-	 * 
-	 * @param tmp
-	 * @return
-	 */
-	protected String parseToMsg(Elements tmp) {
-		boolean hasContent = false;// 是否是评论内容。
-		String comment = "";// 评论的内容
-		List<TextNode> nl = tmp.first().textNodes();
-		for (int i = 0; i < nl.size(); i++) {
-			TextNode n = nl.get(i);
-			String t = StringUtils.trim(n.text());
-			if (StringUtils.isBlank(t)) {
-				continue;
-			}
-			if (hasContent) {
-				// 如果已经是评论，则这个文本内容时，表示结束了！
-				comment += t;
-				break;
-			} else {
-				// 如果还没有找到评论内容，且这是文本信息，即：首次发现文本信息，则说明这是评论内容的开始！
-				hasContent = true;
-				t = t.startsWith("：") ? t.substring(1) : t;// 去除评论者后面的冒号
-				comment += t;
-			}
-		}
-		return comment;
 	}
 
 	/**
