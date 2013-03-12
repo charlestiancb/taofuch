@@ -181,7 +181,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 	public void parse(String[] wordsFiles) {
 		// 循环读取每行中的词，如果词不为空，则读取并进行查询！
 		if (wordsFiles != null && wordsFiles.length > 0) {
-			WebDriver driver = ExploreRequest.getDriver(null);
+			WebDriver driver = ExploreRequest.getDriver("http://s.weibo.com/weibo/AI");
 			if (driver == null) {
 				Logger.log("打开浏览器失败！停止工作！");
 				return;
@@ -197,7 +197,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 					for (String word = br.readLine(); word != null; word = br.readLine()) {
 						try {
 							if (System.currentTimeMillis() - preTime >= LogonInfo.DRIVER_INTERVAL) {
-								driver = ExploreRequest.getDriver(null);
+								driver = ExploreRequest.getDriver("http://s.weibo.com/weibo/AI");
 								if (driver == null) {
 									Logger.log("打开浏览器失败！停止工作！");
 									continue;
