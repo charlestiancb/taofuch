@@ -12,6 +12,8 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.cfg.ImprovedNamingStrategy;
+import org.hibernate.service.ServiceRegistry;
+import org.hibernate.service.ServiceRegistryBuilder;
 import org.hibernate.service.jdbc.connections.internal.DriverManagerConnectionProviderImpl;
 
 import com.scoop.crawler.weibo.entity.OneWeiboInfo;
@@ -35,7 +37,6 @@ public class HibernateDataSource extends DatabaseDataSource {
 	/**
 	 * 用于操作Mysql的数据源方式！
 	 */
-	@SuppressWarnings("deprecation")
 	public HibernateDataSource() {
 		super();
 		if (sessionFactory == null) {
@@ -67,7 +68,8 @@ public class HibernateDataSource extends DatabaseDataSource {
 			// 字段自动转换与数据库保持一致
 			c.setNamingStrategy(ImprovedNamingStrategy.INSTANCE);
 			// 创建SessionFactory！
-			sessionFactory = c.buildSessionFactory();
+			ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(pro).buildServiceRegistry();
+			sessionFactory = c.buildSessionFactory(serviceRegistry);
 		}
 	}
 
