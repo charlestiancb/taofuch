@@ -197,6 +197,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 					for (String word = br.readLine(); word != null; word = br.readLine()) {
 						try {
 							if (System.currentTimeMillis() - preTime >= LogonInfo.DRIVER_INTERVAL) {
+								driver.quit();
 								driver = ExploreRequest.getDriver("http://s.weibo.com/weibo/AI");
 								if (driver == null) {
 									Logger.log("打开浏览器失败！停止工作！");
