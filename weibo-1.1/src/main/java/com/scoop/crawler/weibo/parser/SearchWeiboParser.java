@@ -217,11 +217,11 @@ public class SearchWeiboParser extends JsonStyleParser {
 								parseHtmlToWeibo(driver);
 							}
 						} catch (Throwable t) {
-							Logger.log("当前文件[" + file + "]中的词[" + word + "]出现问题，继续下一个词语搜索！");
+							Logger.log("当前文件[" + file + "]中的词[" + word + "]出现问题，继续下一个词语搜索！" + t);
 						}
 					}
 				} catch (Throwable t) {
-					Logger.log("当前文件[" + file + "]处理过程中出现问题，继续下一个文件操作！");
+					Logger.log("当前文件[" + file + "]处理过程中出现问题，继续下一个文件操作！" + t);
 					// t.printStackTrace();
 				}
 				saveQuery(null);
