@@ -7,6 +7,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.tfc.system.relationship.dao.HibernateDao;
 
 @Entity
 @Table(name = "SYSTEM_RELATIONSHIP")
@@ -17,7 +20,12 @@ public class SystemRelationship implements Serializable {
 	private Long recId;
 	private Long mid;
 	private Long sid;
-	private String style;
+	private String introduce;
+
+	@Transient
+	private SystemInfo master;
+	@Transient
+	private SystemInfo slave;
 
 	public Long getRecId() {
 		return recId;
@@ -43,11 +51,35 @@ public class SystemRelationship implements Serializable {
 		this.sid = sid;
 	}
 
-	public String getStyle() {
-		return style;
+	public String getIntroduce() {
+		return introduce;
 	}
 
-	public void setStyle(String style) {
-		this.style = style;
+	public void setIntroduce(String introduce) {
+		if (!"无".equals(introduce)) {
+			this.introduce = introduce;
+		}
+	}
+
+	public SystemInfo getMaster() {
+		if (master == null) {
+			master = HibernateDao.getById(SystemInfo.class, getMid());
+		}
+		return master;
+	}
+
+	public void setMaster(SystemInfo master) {
+		this.master = master;
+	}
+
+	public SystemInfo getSlave() {
+		if (slave == null) {
+			slave = HibernateDao.getById(SystemInfo.class, getSid());
+		}
+		return slave;
+	}
+
+	public void setSlave(SystemInfo slave) {
+		this.slave = slave;
 	}
 }
