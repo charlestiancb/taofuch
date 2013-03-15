@@ -10,6 +10,7 @@
 					<th>${title.name}</th>
 				</c:forEach>
 			</tr>
+			<c:set var="r" value="1"/>
 			<c:forEach var="row" items="${systems}">
 				<tr>
 					<th>${row.name}</th>
@@ -18,15 +19,17 @@
 						<td>
 							<c:if test="${row.sysId!=column.sysId}">
 							<c:set var="hasRelation" value="${row.hasRelation(row.sysId, column.sysId)}"/>
-							<input type="checkbox" id="relations_${i}" name="relations" value="${row.sysId}_${column.sysId}"
-								 id="relations_${i}" <c:if test="${hasRelation}">checked</c:if> onclick="changeInput(this)"/>
-							<input type="text" name="introduces" id="introduces_${i}"
+							<input type="checkbox" name="relations" value="${row.sysId}_${column.sysId}"
+								 id="relations_${i}~${r}" <c:if test="${hasRelation}">checked</c:if> onclick="changeInput(this)"/>
+							<br/>
+							<input type="text" name="introduces" id="introduces_${i}~${r}"
 								<c:if test="${hasRelation==false}">disabled="disabled"</c:if> value="${row.getRelation(row.sysId, column.sysId).introduce}" />
 							</c:if>
 						</td>
-						<c:set var="i" value="${i+1}"/>
+					<c:set var="i" value="${i+1}"/>
 					</c:forEach>
 				</tr>
+			<c:set var="r" value="${r+1}"/>
 			</c:forEach>
 		</table>
 		<input type="submit" value="提交">
