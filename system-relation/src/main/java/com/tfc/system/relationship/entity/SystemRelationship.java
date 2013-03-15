@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.tfc.system.relationship.dao.HibernateDao;
 
 @Entity
@@ -52,7 +54,7 @@ public class SystemRelationship implements Serializable {
 	}
 
 	public String getIntroduce() {
-		return introduce;
+		return StringUtils.isEmpty(introduce) ? "无" : introduce;
 	}
 
 	public void setIntroduce(String introduce) {
