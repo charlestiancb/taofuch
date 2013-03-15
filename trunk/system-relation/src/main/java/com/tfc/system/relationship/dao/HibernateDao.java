@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -79,9 +80,8 @@ public class HibernateDao {
 	private static void closeSession(Session s) {
 		try {
 			s.close();
-			s.disconnect();
+			// s.disconnect();
 		} catch (HibernateException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -115,15 +115,17 @@ public class HibernateDao {
 		return result;
 	}
 
-	public static long count(String hqlForCount, Object... args) {
-		Session s = getCurrentSession();
-		Query q = s.createQuery(hqlForCount);
-		if (args != null && args.length > 0) {
-			int i = 0;
-			for (Object arg : args) {
-				q.setParameter(i++, arg);
-			}
+	public static long count(String hql, Object... args) {
+		hql = StringUtils.trim(hql);
+		if (hql == null || hql.isEmpty()) {
+			return 0;
 		}
+		if (!hql.toLowerCase().replaceAll("[ ]+", " ").startsWith("select count(")) {
+			hql = "select count(*) " + hql;
+		}
+		Session s = getCurrentSession();
+		Query q = s.createQuery(hql);
+		setParameters(q, args);
 		long result = (Long) q.uniqueResult();
 		closeSession(s);
 		return result;
@@ -133,14 +135,36 @@ public class HibernateDao {
 	public static <T> List<T> get(String hql, Object... args) {
 		Session s = getCurrentSession();
 		Query q = s.createQuery(hql);
+		setParameters(q, args);
+		List<T> result = q.list();
+		closeSession(s);
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T unique(String hql, Object... args) {
+		Session s = getCurrentSession();
+		Query q = s.createQuery(hql);
+		setParameters(q, args);
+		T result = (T) q.uniqueResult();
+		closeSession(s);
+		return result;
+	}
+
+	public static void executeHql(String hql, Object... args) {
+		Session s = getCurrentSession();
+		Query q = s.createQuery(hql);
+		setParameters(q, args);
+		q.executeUpdate();
+		closeSession(s);
+	}
+
+	private static void setParameters(Query q, Object... args) {
 		if (args != null && args.length > 0) {
 			int i = 0;
 			for (Object arg : args) {
 				q.setParameter(i++, arg);
 			}
 		}
-		List<T> result = q.list();
-		closeSession(s);
-		return result;
 	}
 }

@@ -1,7 +1,9 @@
 package com.tfc.system.relationship.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.tfc.system.relationship.dao.HibernateDao;
@@ -26,6 +28,25 @@ public class SystemService {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public List<SystemInfo> getByIds(String... ids) {
+		List<SystemInfo> result = new ArrayList<SystemInfo>();
+		try {
+			for (String id : ids) {
+				id = StringUtils.trim(id);
+				if (id == null || id.isEmpty()) {
+					continue;
+				}
+				SystemInfo sys = HibernateDao.getById(SystemInfo.class, Long.parseLong(id));
+				if (sys != null) {
+					result.add(sys);
+				}
+			}
+		} catch (Exception e) {
+			return new ArrayList<SystemInfo>();
+		}
+		return result;
 	}
 
 	public void modify(SystemInfo sys) {

@@ -55,7 +55,7 @@ CREATE TABLE `system_relationship` (
   `rec_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增长的记录id',
   `mid` bigint(20) NOT NULL COMMENT '发起调用的系统id.全称为:master_id',
   `sid` bigint(20) NOT NULL COMMENT '被调用的系统id,全称:slave_id',
-  `style` text COMMENT '调用方式说明,如:xmlrpc,hessian,http请求等.',
+  `introduce` text COMMENT '具体的关系说明，如对于调用方式的说明可以是xmlrpc,hessian,http请求等.',
   PRIMARY KEY (`rec_id`),
   UNIQUE KEY `rec_id_UNIQUE` (`rec_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统之间的调用关系';

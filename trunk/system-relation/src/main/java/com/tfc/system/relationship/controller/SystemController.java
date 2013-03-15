@@ -36,7 +36,7 @@ public class SystemController {
 		return "redirect:/sys/";
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/{id}/delete", method = RequestMethod.GET)
 	public String delete(@PathVariable String id) {
 		sysService.delete(id);
 		return "redirect:/sys/";
