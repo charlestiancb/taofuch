@@ -47,7 +47,10 @@ public class SystemInfo implements Serializable {
 	}
 
 	public String getUrl() {
-		return url == null || url.trim().toLowerCase().indexOf("://") != -1 ? url : "http://" + url;
+		if (url == null) {
+			return null;
+		}
+		return url.trim().toLowerCase().indexOf("://") != -1 ? url : "http://" + url;
 	}
 
 	public void setUrl(String url) {
