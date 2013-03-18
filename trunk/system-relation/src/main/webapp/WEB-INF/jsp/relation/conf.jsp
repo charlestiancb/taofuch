@@ -7,22 +7,22 @@
 			<tr>
 				<th> </th>
 				<c:forEach var="title" items="${systems}">
-					<th>${title.name}</th>
+					<th title="${title.introduce}">${title.name}</th>
 				</c:forEach>
 			</tr>
 			<c:set var="r" value="1"/>
 			<c:forEach var="row" items="${systems}">
 				<tr>
-					<th>${row.name}</th>
+					<th title="${row.introduce}">${row.name}</th>
 					<c:set var="i" value="1"/>
 					<c:forEach var="column" items="${systems}">
-						<td>
+						<td title="'${row.name}','${column.name}'">
 							<c:if test="${row.sysId!=column.sysId}">
 							<c:set var="hasRelation" value="${row.hasRelation(row.sysId, column.sysId)}"/>
 							<input type="checkbox" name="relations" value="${row.sysId}_${column.sysId}"
 								 id="relations_${i}~${r}" <c:if test="${hasRelation}">checked</c:if> onclick="changeInput(this)"/>
 							<br/>
-							<input type="text" name="introduces" id="introduces_${i}~${r}"
+							<input type="text" name="introduces" id="introduces_${i}~${r}" onblur="checkValue(this)"
 								<c:if test="${hasRelation==false}">disabled="disabled"</c:if> value="${row.getRelation(row.sysId, column.sysId).introduce}" />
 							</c:if>
 						</td>
@@ -48,5 +48,9 @@
 		}else{
 			inputEle.disabled=true;
 		}
+	}
+	
+	function checkValue(inputEle){
+		inputEle.value=inputEle.value?inputEle.value:"无";
 	}
 </script>
