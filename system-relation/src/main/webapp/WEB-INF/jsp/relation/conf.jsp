@@ -18,12 +18,12 @@
 					<c:forEach var="column" items="${systems}">
 						<td title="'${row.name}','${column.name}'">
 							<c:if test="${row.sysId!=column.sysId}">
-							<c:set var="hasRelation" value="${row.hasRelation(row.sysId, column.sysId)}"/>
-							<input type="checkbox" name="relations" value="${row.sysId}_${column.sysId}"
-								 id="relations_${i}~${r}" <c:if test="${hasRelation}">checked</c:if> onclick="changeInput(this)"/>
-							<br/>
-							<input type="text" name="introduces" id="introduces_${i}~${r}" onblur="checkValue(this)"
-								<c:if test="${hasRelation==false}">disabled="disabled"</c:if> value="${row.getRelation(row.sysId, column.sysId).introduce}" />
+								<c:set var="hasRelation" value="${row.hasRelation(row.sysId, column.sysId)}"/>
+								<input type="checkbox" name="relations" value="${row.sysId}_${column.sysId}"
+									 id="relations_${i}~${r}" <c:if test="${hasRelation}">checked</c:if> onclick="changeInput(this)"/>
+								<br/>
+								<textarea name="introduces" id="introduces_${i}~${r}" onblur="checkValue(this)"
+									<c:if test="${hasRelation==false}">disabled="disabled"</c:if>>${row.getRelation(row.sysId, column.sysId).introduce}</textarea>
 							</c:if>
 						</td>
 					<c:set var="i" value="${i+1}"/>
