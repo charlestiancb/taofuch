@@ -4,15 +4,15 @@
 <form action="/relationship" method="post">
 	<center>
 		<table>
-			<tr>
-				<th> </th>
+			<tr id="header">
+				<td> </td>
 				<c:forEach var="title" items="${systems}">
-					<th title="${title.introduce}">${title.name}</th>
+					<th title="${title.introduce}" style="text-align: center;">${title.name}</th>
 				</c:forEach>
 			</tr>
 			<c:set var="r" value="1"/>
 			<c:forEach var="row" items="${systems}">
-				<tr>
+				<tr id="content_${r}">
 					<th title="${row.introduce}">${row.name}</th>
 					<c:set var="i" value="1"/>
 					<c:forEach var="column" items="${systems}">
@@ -53,4 +53,6 @@
 	function checkValue(inputEle){
 		inputEle.value=inputEle.value?inputEle.value:"无";
 	}
+	
+	function 
 </script>
