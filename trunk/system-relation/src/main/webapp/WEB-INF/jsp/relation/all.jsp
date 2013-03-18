@@ -16,7 +16,9 @@
 					<td align="center">
 						<c:if test="${row.hasRelation(row.sysId, column.sysId)}">
 							<input type="checkbox" name="relations" value="${row.sysId}_${column.sysId}"
-							 disabled="disabled" checked/>${row.getRelation(row.sysId, column.sysId).introduce}
+							 disabled="disabled" checked/>
+							 <br/>
+							 ${row.getRelation(row.sysId, column.sysId).introduce}
 						</c:if>
 					</td>
 				</c:forEach>

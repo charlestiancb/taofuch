@@ -14,7 +14,7 @@
 		<c:forEach var="system" items="${systems}">
 			<tr>
 				<td><a href="/sys/${system.sysId}/show">${system.name}</a></td>
-				<td><a href="${system.url}" target="_blank">${system.url}</a></td>
+				<td><c:if test="${!empty system.url}"><a href="${system.url}" target="_blank">${system.url}</a></c:if></td>
 				<td>${system.introduce}</td>
 				<td nowrap="nowrap"><a href="/sys/${system.sysId}">修改</a>&nbsp;<a
 					href="#" onclick="delSys(${system.sysId})">删除</a>&nbsp;<a
