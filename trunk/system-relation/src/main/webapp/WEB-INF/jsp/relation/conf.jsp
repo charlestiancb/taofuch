@@ -22,7 +22,7 @@
 								<input type="checkbox" name="relations" value="${row.sysId}_${column.sysId}"
 									 id="relations_${i}~${r}" <c:if test="${hasRelation}">checked</c:if> onclick="changeInput(this)"/>
 								<br/>
-								<textarea name="introduces" id="introduces_${i}~${r}" onblur="checkValue(this)"
+								<textarea cols="30" rows="5" style="resize:none;" name="introduces" id="introduces_${i}~${r}" onblur="checkValue(this)"
 									<c:if test="${hasRelation==false}">disabled="disabled"</c:if>>${row.getRelation(row.sysId, column.sysId).introduce}</textarea>
 							</c:if>
 						</td>
@@ -36,6 +36,8 @@
 	</center>
 </form>
 <script>
+	/**选中时，输入框可以输入内容。
+	*/
 	function changeInput(checkboxEle){
 		var id=checkboxEle.id;
 		id=id.substring(id.indexOf("_")+1);
@@ -49,10 +51,26 @@
 			inputEle.disabled=true;
 		}
 	}
-	
+	/**
+	保证输入的内容不为空！
+	*/
 	function checkValue(inputEle){
 		inputEle.value=inputEle.value?inputEle.value:"无";
 	}
 	
-	function 
+	function addEvent(obj,type,fun){
+		if(obj.addEventListener){
+			obj.addEventListener(type,fun);
+			return true;
+		}else if(obj.attachEvent){
+			return obj.attachEvent("on"+type,fun);
+		}else{
+			return false;
+		};
+	}
+	
+	function resetPos(){
+		//alert("ok");
+	}
+	addEvent(window,"scroll",resetPos());
 </script>
