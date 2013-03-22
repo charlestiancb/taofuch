@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <jsp:include page="../include/header.jsp" />
 <center>
+<form action="/relationship/relations" method="post">
 	<table>
 		<tr>
 			<td>系统名称</td>
@@ -13,7 +14,7 @@
 		</tr>
 		<c:forEach var="system" items="${systems}">
 			<tr>
-				<td><a href="/sys/${system.sysId}/show">${system.name}</a></td>
+				<td><input type="checkbox" name="ids" value="${system.sysId}"/><a href="/sys/${system.sysId}/show">${system.name}</a></td>
 				<td><c:if test="${!empty system.url}"><a href="${system.url}" target="_blank">${system.url}</a></c:if></td>
 				<td>${system.introduce}</td>
 				<td nowrap="nowrap"><a href="/sys/${system.sysId}">修改</a>&nbsp;<a
@@ -22,6 +23,8 @@
 			</tr>
 		</c:forEach>
 	</table>
+	<input type="submit" value="查看选中的对象关系"/>
+</form>
 </center>
 <script>
 	function delSys(sysId){
