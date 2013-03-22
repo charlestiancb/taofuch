@@ -6,7 +6,7 @@
 		<c:forEach var="system" items="${systems}">
 			<tr>
 				<th align="right">${system.name}</th>
-				<td>
+				<td style="border:1px solid blue;">
 					<table>
 						<caption>调用以下</caption>
 						<c:forEach var="call" items="${system.calls}">
