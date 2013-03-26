@@ -69,4 +69,11 @@ public class SystemService {
 		HibernateDao.update(sys);
 	}
 
+	public List<SystemInfo> getByGroupId(Long groupId) {
+		if (groupId == null) {
+			return new ArrayList<SystemInfo>();
+		}
+		return HibernateDao.get("from SystemInfo where groupId = ? order by orderNum", groupId);
+	}
+
 }

@@ -69,8 +69,12 @@ public class RelationshipController {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	public String showAll(Model model) {
-		model.addAttribute("systems", sysService.getAll());
+	public String showAll(Long groupId, Model model) {
+		if (groupId != null) {
+			model.addAttribute("systems", sysService.getByGroupId(groupId));
+		} else {
+			model.addAttribute("systems", sysService.getAll());
+		}
 		return "relation/all";
 	}
 }

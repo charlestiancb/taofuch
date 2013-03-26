@@ -26,6 +26,8 @@ public class SystemController {
 
 	@RequestMapping(value = "/new", method = RequestMethod.GET)
 	public String add(Model model) {
+		model.addAttribute(new SystemInfo());
+		model.addAttribute("groups", groupService.getAll());
 		return "sys/add";
 	}
 
@@ -33,14 +35,14 @@ public class SystemController {
 	public String add(SystemInfo sys, Model model) {
 		try {
 			sysService.add(sys);
+			return "redirect:/sys/";
 		} catch (ConstraintViolationException e) {
 			model.addAttribute("errMsg", "添加失败！该名称的系统的已经存在！");
-			return "sys/add";
 		} catch (Exception e) {
 			model.addAttribute("errMsg", "添加失败！原因：" + e);
-			return "sys/add";
 		}
-		return "redirect:/sys/";
+		model.addAttribute("groups", groupService.getAll());
+		return "sys/add";
 	}
 
 	@RequestMapping(value = "/{id}/delete", method = RequestMethod.GET)
@@ -52,6 +54,7 @@ public class SystemController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public String modify(@PathVariable String id, Model model) {
 		model.addAttribute(sysService.getById(id));
+		model.addAttribute("groups", groupService.getAll());
 		return "sys/modify";
 	}
 
@@ -61,6 +64,7 @@ public class SystemController {
 			sysService.modify(sys);
 		} catch (Exception e) {
 			model.addAttribute("errMsg", "修改失败！原因：" + e.getMessage());
+			model.addAttribute("groups", groupService.getAll());
 			return "sys/modify";
 		}
 		return "redirect:/sys/";
