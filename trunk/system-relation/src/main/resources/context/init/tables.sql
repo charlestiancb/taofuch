@@ -29,6 +29,7 @@ CREATE TABLE `system_info` (
   `name` varchar(100) NOT NULL COMMENT '系统的名称',
   `url` varchar(1000) DEFAULT NULL COMMENT '系统的首页URL',
   `introduce` text COMMENT '系统简介信息',
+  `order_num` int(11) NOT NULL DEFAULT '0' COMMENT '指定排序的字段',
   PRIMARY KEY (`sys_id`),
   UNIQUE KEY `sys_id_UNIQUE` (`sys_id`),
   UNIQUE KEY `name_UNIQUE` (`name`)

@@ -6,12 +6,12 @@
 		<tr>
 			<th> </th>
 			<c:forEach var="title" items="${systems}">
-				<th style="text-align: center;">${title.name}</th>
+				<th title="${title.introduce}" style="text-align: center;">${title.name}</th>
 			</c:forEach>
 		</tr>
 		<c:forEach var="row" items="${systems}">
 			<tr>
-				<th>${row.name}</th>
+				<th title="${row.introduce}">${row.name}</th>
 				<c:forEach var="column" items="${systems}">
 					<td align="center">
 						<c:if test="${row.hasRelation(row.sysId, column.sysId)}">

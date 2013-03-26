@@ -11,5 +11,8 @@
 		<tr>
 			<th>系统简介：</th><td>${systemInfo.introduce}</td>
 		</tr>
+		<tr>
+			<th>系统排序：</th><td>${systemInfo.orderNum}</td>
+		</tr>
 	</table>
 </center>
