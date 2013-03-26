@@ -60,7 +60,7 @@ public class SystemService {
 	}
 
 	public List<SystemInfo> getAll() {
-		return HibernateDao.get("from SystemInfo order by orderNum");
+		return HibernateDao.get("from SystemInfo order by groupId,orderNum");
 	}
 
 	public void changeOrder(String sysId, Long orderNum) {

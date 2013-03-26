@@ -23,6 +23,7 @@ public class SystemInfo implements Serializable {
 	private String url;
 	private String introduce;
 	private long orderNum;
+	private Long groupId = 1L;
 
 	/** 调用的对象 */
 	@Transient
@@ -113,5 +114,13 @@ public class SystemInfo implements Serializable {
 
 	public void setOrderNum(long orderNum) {
 		this.orderNum = orderNum;
+	}
+
+	public Long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
 	}
 }

@@ -12,77 +12,75 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.tfc.system.relationship.entity.SystemInfo;
+import com.tfc.system.relationship.entity.SystemGroup;
 import com.tfc.system.relationship.service.GroupService;
-import com.tfc.system.relationship.service.SystemService;
 
 @Controller
-@RequestMapping("/sys")
-public class SystemController {
-	@Autowired
-	private SystemService sysService;
+@RequestMapping("/group")
+public class GroupController {
 	@Autowired
 	private GroupService groupService;
 
 	@RequestMapping(value = "/new", method = RequestMethod.GET)
 	public String add(Model model) {
-		return "sys/add";
+		return "group/add";
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String add(SystemInfo sys, Model model) {
+	public String add(SystemGroup group, Model model) {
 		try {
-			sysService.add(sys);
+			groupService.add(group);
 		} catch (ConstraintViolationException e) {
-			model.addAttribute("errMsg", "添加失败！该名称的系统的已经存在！");
-			return "sys/add";
+			model.addAttribute("errMsg", "添加失败！该名称的分组信息已经存在！" + e);
+			return "group/add";
 		} catch (Exception e) {
 			model.addAttribute("errMsg", "添加失败！原因：" + e);
-			return "sys/add";
+			return "group/add";
 		}
-		return "redirect:/sys/";
+		return "redirect:/group/";
 	}
 
 	@RequestMapping(value = "/{id}/delete", method = RequestMethod.GET)
 	public String delete(@PathVariable String id) {
-		sysService.delete(id);
-		return "redirect:/sys/";
+		groupService.delete(id);
+		return "redirect:/group/";
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public String modify(@PathVariable String id, Model model) {
-		model.addAttribute(sysService.getById(id));
-		return "sys/modify";
+		model.addAttribute(groupService.getById(id));
+		return "group/modify";
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public String modify(SystemInfo sys, Model model) {
+	public String modify(SystemGroup group, Model model) {
 		try {
-			sysService.modify(sys);
+			groupService.modify(group);
 		} catch (Exception e) {
 			model.addAttribute("errMsg", "修改失败！原因：" + e.getMessage());
-			return "sys/modify";
+			return "group/modify";
 		}
-		return "redirect:/sys/";
+		return "redirect:/group/";
 	}
 
 	@RequestMapping(value = "/{id}/show", method = RequestMethod.GET)
 	public String show(@PathVariable String id, Model model) {
-		model.addAttribute(sysService.getById(id));
-		return "sys/show";
+		model.addAttribute(groupService.getById(id));
+		return "group/show";
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String list(Model model) {
 		model.addAttribute("groups", groupService.getAll());
-		return "sys/list";
+		return "group/list";
 	}
 
-	@RequestMapping(value = "/{sysId}/order", method = RequestMethod.POST)
-	public void changeOrder(@PathVariable String sysId, Long orderNum, HttpServletResponse response) throws IOException {
+	@RequestMapping(value = "/{groupId}/order", method = RequestMethod.POST)
+	public void changeOrder(@PathVariable String groupId, Long orderNum, HttpServletResponse response)
+			throws IOException {
 		String msg = "";
 		try {
-			sysService.changeOrder(sysId, orderNum);
+			groupService.changeOrder(groupId, orderNum);
 			msg = "SUCC!";
 		} catch (Exception e) {
 			msg = "FAILED! " + e;
