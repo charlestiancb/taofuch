@@ -24,6 +24,19 @@ public class SystemInfo implements Serializable {
 	private String introduce;
 	private long orderNum;
 	private Long groupId = 1L;
+	@Transient
+	private SystemGroup group;
+
+	public SystemGroup getGroup() {
+		if (group == null && sysId != null && groupId != null) {
+			group = HibernateDao.getById(SystemGroup.class, groupId);
+		}
+		return group;
+	}
+
+	public void setGroup(SystemGroup group) {
+		this.group = group;
+	}
 
 	/** 调用的对象 */
 	@Transient

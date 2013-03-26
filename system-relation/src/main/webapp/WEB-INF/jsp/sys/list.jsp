@@ -6,7 +6,7 @@
 <form action="/relationship/relations" method="post">
 <c:forEach var="group" items="${groups}">
 	<table>
-		<caption>组名：${group.groupName}</caption>
+		<caption>组名：${group.groupName}&nbsp;&nbsp;<a href="/relationship?groupId=${group.groupId}">组内整体关系一览</a></caption>
 		<tr>
 			<td>系统名称</td>
 			<td>主页地址</td>
