@@ -4,16 +4,19 @@
 <jsp:include page="../include/header.jsp" />
 <center>
 <form action="/relationship/relations" method="post">
+<c:forEach var="group" items="${groups}">
 	<table>
+		<caption>组名：${group.groupName}</caption>
 		<tr>
 			<td>系统名称</td>
 			<td>主页地址</td>
 			<td>简介</td>
 			<td>排序</td>
 			<td nowrap="nowrap"><a href="/sys/new">添加</a>&nbsp;<a
-				href="/relationship">整体关系一览</a></td>
+				href="/relationship">整体关系一览</a>&nbsp;<a
+				href="/group">分组信息</a></td>
 		</tr>
-		<c:forEach var="system" items="${systems}">
+		<c:forEach var="system" items="${group.systems}">
 			<tr>
 				<td><input type="checkbox" name="ids" value="${system.sysId}"/><a href="/sys/${system.sysId}/show">${system.name}</a></td>
 				<td><c:if test="${!empty system.url}"><a href="${system.url}" target="_blank">${system.url}</a></c:if></td>
@@ -28,6 +31,7 @@
 			</tr>
 		</c:forEach>
 	</table>
+</c:forEach>
 	<input type="submit" value="查看选中的对象关系"/>
 </form>
 </center>
