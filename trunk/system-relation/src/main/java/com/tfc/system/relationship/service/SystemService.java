@@ -75,5 +75,4 @@ public class SystemService {
 		}
 		return HibernateDao.get("from SystemInfo where groupId = ? order by orderNum", groupId);
 	}
-
 }

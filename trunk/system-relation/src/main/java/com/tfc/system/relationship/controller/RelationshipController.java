@@ -1,5 +1,9 @@
 package com.tfc.system.relationship.controller;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +26,39 @@ public class RelationshipController {
 	public String conf(Model model) {
 		model.addAttribute("systems", sysService.getAll());
 		return "relation/conf";
+	}
+
+	/**
+	 * 配置指定系统的关系
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/{sysId}/conf", method = RequestMethod.GET)
+	public String modify(@PathVariable String sysId, Model model) {
+		model.addAttribute(sysService.getById(sysId));
+		model.addAttribute("systems", sysService.getAll());
+		return "relation/modify";
+	}
+
+	@RequestMapping(value = "/{sysId}/conf", method = RequestMethod.POST)
+	public void modify(
+			@PathVariable String sysId,
+			String selectedSysId,
+			String introduce,
+			int RelationType,
+			int operType,
+			HttpServletResponse response) throws IOException {
+		String msg = "";
+		try {
+			relationService.modifyRelation(Long.parseLong(sysId), Long.parseLong(selectedSysId), introduce,
+					RelationType, operType);
+			msg = "更新成功！";
+		} catch (Exception e) {
+			msg = "更新失败！" + e;
+		}
+		response.getWriter().write(msg);
+		response.getWriter().flush();
 	}
 
 	@RequestMapping(method = RequestMethod.POST)

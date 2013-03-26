@@ -10,14 +10,20 @@
 					<table>
 						<caption>调用以下</caption>
 						<c:forEach var="call" items="${system.calls}">
-							<tr><td><label title="${call.slave.introduce}">${call.slave.name}</label></td></tr>
+							<tr>
+								<td width="200px"><label title="${call.slave.name}：${call.slave.introduce}">${call.slave.name}</label></td>
+								<td>${system.getRelation(system.sysId,call.slave.sysId).introduce}</td>
+							</tr>
 						</c:forEach>
 					</table>
 					<br/>
 					<table>
 						<caption>被以下调用</caption>
 						<c:forEach var="called" items="${system.calleds}">
-							<tr><td><label title="${called.master.introduce}">${called.master.name}</label></td></tr>
+							<tr>
+								<td width="200px"><label title="${called.master.name}：${called.master.introduce}">${called.master.name}</label></td>
+								<td>${system.getRelation(called.master.sysId,system.sysId).introduce}</td>
+							</tr>
 						</c:forEach>
 					</table>
 				</td>

@@ -12,8 +12,7 @@
 			<td>主页地址</td>
 			<td>简介</td>
 			<td>排序</td>
-			<td nowrap="nowrap"><a href="/sys/new">添加</a>&nbsp;<a
-				href="/relationship">整体关系一览</a>&nbsp;<a
+			<td nowrap="nowrap"><a href="/sys/new?groupId=${group.groupId}">添加</a>&nbsp;&nbsp;<a
 				href="/group">分组信息</a></td>
 		</tr>
 		<c:forEach var="system" items="${group.systems}">
@@ -27,7 +26,8 @@
 				</td>
 				<td nowrap="nowrap"><a href="/sys/${system.sysId}">修改</a>&nbsp;<a
 					href="#" onclick="delSys(${system.sysId})">删除</a>&nbsp;<a
-					href="/relationship/${system.sysId}">查看调用关系</a></td>
+					href="/relationship/${system.sysId}">查看调用关系</a>&nbsp;<a
+					href="/relationship/${system.sysId}/conf">配置调用关系</a></td>
 			</tr>
 		</c:forEach>
 	</table>
