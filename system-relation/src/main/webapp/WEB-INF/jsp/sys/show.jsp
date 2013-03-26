@@ -14,5 +14,8 @@
 		<tr>
 			<th>系统排序：</th><td>${systemInfo.orderNum}</td>
 		</tr>
+		<tr>
+			<th>隶属分组：</th><td>${systemInfo.group.groupName}</td>
+		</tr>
 	</table>
 </center>
