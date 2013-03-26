@@ -25,8 +25,12 @@ public class SystemController {
 	private GroupService groupService;
 
 	@RequestMapping(value = "/new", method = RequestMethod.GET)
-	public String add(Model model) {
-		model.addAttribute(new SystemInfo());
+	public String add(Long groupId, Model model) {
+		SystemInfo sys = new SystemInfo();
+		if (groupId != null) {
+			sys.setGroupId(groupId);
+		}
+		model.addAttribute(sys);
 		model.addAttribute("groups", groupService.getAll());
 		return "sys/add";
 	}

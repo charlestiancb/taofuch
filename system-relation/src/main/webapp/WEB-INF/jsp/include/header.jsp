@@ -2,4 +2,4 @@
 <title>关系管理</title>
 <script type='text/javascript' src='/script/jquery-1.9.1.min.js'></script>
 <link href="/style/style.css" rel="stylesheet" type="text/css" />
-<a href="/sys">home</a>
+<a href="/sys">home</a>&nbsp;&nbsp;<a href="/relationship">整体关系一览</a>
