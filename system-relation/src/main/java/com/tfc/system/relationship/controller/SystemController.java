@@ -1,5 +1,9 @@
 package com.tfc.system.relationship.controller;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -69,5 +73,18 @@ public class SystemController {
 	public String list(Model model) {
 		model.addAttribute("systems", sysService.getAll());
 		return "sys/list";
+	}
+
+	@RequestMapping(value = "/{sysId}/order", method = RequestMethod.POST)
+	public void changeOrder(@PathVariable String sysId, Long orderNum, HttpServletResponse response) throws IOException {
+		String msg = "";
+		try {
+			sysService.changeOrder(sysId, orderNum);
+			msg = "SUCC!";
+		} catch (Exception e) {
+			msg = "FAILED! " + e;
+		}
+		response.getWriter().write(msg);
+		response.getWriter().flush();
 	}
 }

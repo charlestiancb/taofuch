@@ -15,6 +15,9 @@
 			<tr>
 				<th>系统简介：</th><td><input type="text" name="introduce" value="${systemInfo.introduce}"/></td>
 			</tr>
+			<tr>
+				<th>系统排序：</th><td><input type="text" name="orderNum" value="${systemInfo.orderNum}"/></td>
+			</tr>
 		</table>
 	</center>
 	<center><input type="submit" value="修改"/></center>

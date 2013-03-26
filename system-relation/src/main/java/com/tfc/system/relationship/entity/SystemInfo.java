@@ -22,6 +22,7 @@ public class SystemInfo implements Serializable {
 	private String name;
 	private String url;
 	private String introduce;
+	private long orderNum;
 
 	/** 调用的对象 */
 	@Transient
@@ -104,5 +105,13 @@ public class SystemInfo implements Serializable {
 		}
 		String hql = "from SystemRelationship where mid = ? and sid = ?";
 		return (SystemRelationship) HibernateDao.unique(hql, mid, sid);
+	}
+
+	public long getOrderNum() {
+		return orderNum;
+	}
+
+	public void setOrderNum(long orderNum) {
+		this.orderNum = orderNum;
 	}
 }
