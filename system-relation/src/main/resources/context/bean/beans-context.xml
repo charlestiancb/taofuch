@@ -21,4 +21,8 @@
 		<property name="defaultEncoding" value="utf-8" />
 	</bean>
 	
+	<bean class="com.tfc.system.relationship.dao.HibernateDao" init-method="init">
+		<property name="jdbc" value="classpath:/context/datasource/jdbc.properties"/>
+	</bean>
+	
 </beans>
