@@ -16,7 +16,7 @@
 								<input type="checkbox" value="${call.sysId}" onclick="saveRelation(${call.sysId},1)"
 								<c:if test="${systemInfo.hasRelation(systemInfo.sysId,call.sysId)}"> checked="checked" </c:if>id="call_${call.sysId}"/>${call.name}
 								<br/>
-								<textarea id="intro_call_${call.sysId}" onblur="saveRelation(${call.sysId},1)">${systemInfo.getRelation(systemInfo.sysId, call.sysId).introduce}</textarea>
+								<textarea rows="7" cols="20" id="intro_call_${call.sysId}" onblur="saveRelation(${call.sysId},1)">${systemInfo.getRelation(systemInfo.sysId, call.sysId).introduce}</textarea>
 							</td>
 						<c:if test="${idx%5==0}"></tr></c:if>
 						<c:set var="idx" value="${idx+1}"/>
@@ -33,7 +33,7 @@
 								<input type="checkbox" value="${called.sysId}" onclick="saveRelation(${called.sysId},2)"
 								<c:if test="${systemInfo.hasRelation(called.sysId,systemInfo.sysId)}"> checked="checked" </c:if>id="called_${called.sysId}"/>${called.name}
 								<br/>
-								<textarea id="intro_called_${called.sysId}" onblur="saveRelation(${called.sysId},2)">${systemInfo.getRelation(called.sysId,systemInfo.sysId).introduce}</textarea>
+								<textarea rows="7" cols="20" id="intro_called_${called.sysId}" onblur="saveRelation(${called.sysId},2)">${systemInfo.getRelation(called.sysId,systemInfo.sysId).introduce}</textarea>
 							</td>
 						<c:if test="${idx%5==0}"></tr></c:if>
 						<c:set var="idx" value="${idx+1}"/>
