@@ -1,5 +1,6 @@
 package com.tfc.system.relationship.dao;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.hibernate.cfg.ImprovedNamingStrategy;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 import org.hibernate.service.jdbc.connections.internal.DriverManagerConnectionProviderImpl;
+import org.springframework.core.io.Resource;
 
 import com.tfc.system.relationship.entity.SystemInfo;
 import com.tfc.system.relationship.utils.ClassUtils;
@@ -25,12 +27,19 @@ import com.tfc.system.relationship.utils.ClassUtils;
 public class HibernateDao {
 	protected static Properties pro = new Properties();
 	private static SessionFactory sessionFactory;
+	private static Resource jdbc;
 
-	static {
-		pro.put(Environment.URL, "jdbc:mysql://localhost:3306/relationship?useUnicode=true&characterEncoding=UTF-8");
-		pro.put(Environment.USER, "root");
-		pro.put(Environment.PASS, "root");
-		pro.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
+	public void init() {
+		try {
+			Properties tmp = new Properties();
+			tmp.load(jdbc.getInputStream());
+			pro.putAll(tmp);
+		} catch (IOException e) {
+			pro.put(Environment.URL, "jdbc:mysql://localhost:3306/relationship?useUnicode=true&characterEncoding=UTF-8");
+			pro.put(Environment.USER, "root");
+			pro.put(Environment.PASS, "root");
+			pro.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
+		}
 		if (sessionFactory == null) {
 			// Hibernate的基本配置
 			pro.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
@@ -166,5 +175,13 @@ public class HibernateDao {
 				q.setParameter(i++, arg);
 			}
 		}
+	}
+
+	public Resource getJdbc() {
+		return jdbc;
+	}
+
+	public void setJdbc(Resource jdbc) {
+		HibernateDao.jdbc = jdbc;
 	}
 }
