@@ -18,6 +18,24 @@ USE `relationship`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `system_group`
+--
+
+DROP TABLE IF EXISTS `system_group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `system_group` (
+  `group_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `group_name` varchar(200) NOT NULL COMMENT '分组的名称',
+  `descript` text COMMENT '对该分组信息的描述.',
+  `order_num` int(11) NOT NULL DEFAULT '1' COMMENT '显示时的排序.',
+  PRIMARY KEY (`group_id`),
+  UNIQUE KEY `group_id_UNIQUE` (`group_id`),
+  UNIQUE KEY `group_name_UNIQUE` (`group_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='分组信息。';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `system_info`
 --
 
@@ -30,20 +48,12 @@ CREATE TABLE `system_info` (
   `url` varchar(1000) DEFAULT NULL COMMENT '系统的首页URL',
   `introduce` text COMMENT '系统简介信息',
   `order_num` int(11) NOT NULL DEFAULT '0' COMMENT '指定排序的字段',
+  `group_id` bigint(20) NOT NULL DEFAULT '1',
   PRIMARY KEY (`sys_id`),
   UNIQUE KEY `sys_id_UNIQUE` (`sys_id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统信息，包括系统名称、系统网址和简介等基本信息';
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8 COMMENT='系统信息，包括系统名称、系统网址和简介等基本信息';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `system_info`
---
-
-LOCK TABLES `system_info` WRITE;
-/*!40000 ALTER TABLE `system_info` DISABLE KEYS */;
-/*!40000 ALTER TABLE `system_info` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `system_relationship`
@@ -58,18 +68,10 @@ CREATE TABLE `system_relationship` (
   `sid` bigint(20) NOT NULL COMMENT '被调用的系统id,全称:slave_id',
   `introduce` text COMMENT '具体的关系说明，如对于调用方式的说明可以是xmlrpc,hessian,http请求等.',
   PRIMARY KEY (`rec_id`),
-  UNIQUE KEY `rec_id_UNIQUE` (`rec_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统之间的调用关系';
+  UNIQUE KEY `rec_id_UNIQUE` (`rec_id`),
+  UNIQUE KEY `msid_unique` (`mid`,`sid`)
+) ENGINE=InnoDB AUTO_INCREMENT=644 DEFAULT CHARSET=utf8 COMMENT='系统之间的调用关系';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `system_relationship`
---
-
-LOCK TABLES `system_relationship` WRITE;
-/*!40000 ALTER TABLE `system_relationship` DISABLE KEYS */;
-/*!40000 ALTER TABLE `system_relationship` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -80,4 +82,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-03-14 10:50:31
+-- Dump completed on 2013-03-27 18:55:34
