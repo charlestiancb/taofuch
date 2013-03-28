@@ -84,7 +84,7 @@ public class UserWeiboParser extends JsonStyleParser {
 			}
 		} catch (Throwable e) {
 		}
-		String html = driver.getPageSource();
+		String html = ExploreRequest.getPageHtml(driver);
 		Document doc = Jsoup.parse(html);
 		Element weibos = doc.getElementById("pl_content_hisFeed");
 		if (weibos == null) {
@@ -102,10 +102,8 @@ public class UserWeiboParser extends JsonStyleParser {
 			for (int i = 0; i < eles.size(); i++) {
 				Logger.log("解析用户主页上的每一条微博");
 				// 一条条的微博进行处理，解析每条微博的信息
-				parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-							StringUtils.trim(parseMsgPublishTime(eles.get(i))),
-							getClient(),
-							dataSource);
+				parseWeibo(StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
+						StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
 			}
 			// 加载下一屏的内容
 			WebElement ele = null;

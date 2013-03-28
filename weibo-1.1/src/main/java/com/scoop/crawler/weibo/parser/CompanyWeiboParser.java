@@ -76,7 +76,7 @@ public class CompanyWeiboParser extends WeiboParser {
 				System.exit(0);
 				return;
 			}
-			String html = driver.getPageSource();
+			String html = ExploreRequest.getPageHtml(driver);
 			setCurPage(1);
 			while (StringUtils.isNotBlank(html)) {
 				goEnd(driver);
@@ -93,15 +93,15 @@ public class CompanyWeiboParser extends WeiboParser {
 					if ("下一页".equals(StringUtils.trim(nextpage.getText()))) {
 						nextpage.click();
 						Thread.sleep(3 * 1000);// 等待5秒，等页面加载完毕！
-						html = driver.getPageSource();
+						html = ExploreRequest.getPageHtml(driver);
 						setCurPage(getCurPage() + 1);
 					} else {
 						html = null;
-						Logger.log("没有下一页了，抓取完毕！" + driver.getPageSource());
+						Logger.log("没有下一页了，抓取完毕！" + ExploreRequest.getPageHtml(driver));
 					}
 				} else {
 					html = null;
-					Logger.log("没有下一页了，抓取完毕！" + driver.getPageSource());
+					Logger.log("没有下一页了，抓取完毕！" + ExploreRequest.getPageHtml(driver));
 				}
 			}
 		} catch (Throwable e) {

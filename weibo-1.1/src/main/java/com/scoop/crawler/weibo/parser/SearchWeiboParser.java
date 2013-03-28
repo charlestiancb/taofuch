@@ -68,7 +68,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 	}
 
 	private void parseHtmlToWeibo(WebDriver driver) {
-		String html = driver.getPageSource();
+		String html = ExploreRequest.getPageHtml(driver);
 		Document doc = Jsoup.parse(html);
 		// 判断是否没有查询结果！
 		Elements noresult = doc.getElementsByAttributeValue("class", "search_noresult");
@@ -81,7 +81,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 		if ((weibo == null || StringUtils.isEmpty(weibo.text())) && (user == null || StringUtils.isEmpty(user.text()))) {
 			weibo = null;
 			user = null;
-			html = driver.getPageSource();
+			html = ExploreRequest.getPageHtml(driver);
 			// 将其中的html转义字符转换成正常的字符！
 			html = JSONUtils.unEscapeHtml(html);
 			String hit = weiboStart;

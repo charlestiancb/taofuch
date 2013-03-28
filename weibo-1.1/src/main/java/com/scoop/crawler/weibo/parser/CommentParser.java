@@ -16,6 +16,7 @@ import com.scoop.crawler.weibo.entity.WeiboComment;
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.Weibo;
+import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.util.Logger;
 
@@ -107,7 +108,7 @@ public class CommentParser extends Parser {
 	 * @return
 	 */
 	private Elements getComments(WebDriver driver) {
-		String html = driver.getPageSource();
+		String html = ExploreRequest.getPageHtml(driver);
 		// html = cut(html, detailStart);//获取是就是已经解析好的内容！
 		Elements eles = Jsoup.parse(html).getElementsByAttributeValue("class", "comment_lists");
 		if (eles != null) {
@@ -139,7 +140,7 @@ public class CommentParser extends Parser {
 			}
 			ele.click();
 			Thread.sleep(2000);// 等待两秒，等数据加载完毕！
-			String html = driver.getPageSource();
+			String html = ExploreRequest.getPageHtml(driver);
 			if (html.equals(preContent) && tryTimes < 3) {
 				// 如果此次获取的内容与上一次一样，说明翻页失败，重新刷新一下页面再翻页
 				driver.navigate().refresh();

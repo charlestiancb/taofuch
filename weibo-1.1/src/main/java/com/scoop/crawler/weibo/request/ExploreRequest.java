@@ -62,8 +62,7 @@ public class ExploreRequest {
 	public static WebDriver firefox(String url) {
 		WebDriver driver = null;
 		try {
-			// System.setProperty("webdriver.firefox.bin",
-			// "D:/Program Files/Mozilla Firefox/firefox.exe");
+			//System.setProperty("webdriver.firefox.bin", "D:/Program Files/Mozilla Firefox/firefox.exe");
 			driver = new FirefoxDriver();
 			return loginAndRequest(driver, url);
 		} catch (Throwable t) {
@@ -132,5 +131,22 @@ public class ExploreRequest {
 	public static WebDriver getDriver(String url) {
 		url = StringUtils.trim(url);
 		return firefox(url);
+	}
+
+	public static String getPageHtml(WebDriver driver) {
+		if (driver == null) {
+			return "";
+		}
+		String html = driver.getPageSource();
+		while (html.indexOf("$CONFIG['oid'] = '") == -1) {
+			// 如果没有当前人信息，则是没有登录的！
+			driver = getDriver(null);
+			if (driver == null) {
+				Logger.log("登录失败！停止抓取！请重新启动！");
+				System.exit(-1);
+			}
+			html = driver.getPageSource();
+		}
+		return html;
 	}
 }
