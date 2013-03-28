@@ -15,10 +15,12 @@
 				<c:forEach var="column" items="${systems}">
 					<td align="center">
 						<c:if test="${row.hasRelation(row.sysId, column.sysId)}">
+						<span title="${row.name}  调用  ${column.name}" width="100%">
 							<input type="checkbox" name="relations" value="${row.sysId}_${column.sysId}"
 							 disabled="disabled" checked/>
 							 <br/>
 							 ${row.getRelation(row.sysId, column.sysId).introduce}
+						</span>
 						</c:if>
 					</td>
 				</c:forEach>
