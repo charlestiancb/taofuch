@@ -19,7 +19,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie2;
 import org.apache.http.message.BasicNameValuePair;
@@ -244,17 +243,7 @@ public class SinaWeiboRequest {
 			HttpConnectionParams.setConnectionTimeout(ps, timeout);
 			HttpConnectionParams.setSoTimeout(ps, timeout);
 			weiboMethod.setParams(ps);
-			if (LogonInfo.shouldLogAgain()) {
-				LogonInfo log = LogonInfo.getLogonInfo();
-				DefaultHttpClient _client = getHttpClient(log.getUsername(), log.getPassword());
-				List<Cookie> cs = _client.getCookieStore().getCookies();
-				if (cs != null && cs.size() > 0) {
-					client.getCookieStore().clear();
-					for (Cookie c : cs) {
-						client.getCookieStore().addCookie(c);
-					}
-				}
-			}
+
 			HttpParams hps = client.getParams();
 			HttpConnectionParams.setConnectionTimeout(hps, timeout);
 			HttpConnectionParams.setSoTimeout(hps, timeout);
@@ -273,6 +262,11 @@ public class SinaWeiboRequest {
 			// 获取登录过的微博页面
 			String html = EntityUtils.toString(res.getEntity(), "UTF-8");
 			EntityUtils.consumeQuietly(res.getEntity());
+			if (html.indexOf("$CONFIG['oid'] = '") == -1) {
+				// 不是登录状态。
+				client = getHttpClient(LogonInfo.getLogonInfo().getUsername(), LogonInfo.getLogonInfo().getPassword());
+				return request(client, url, handler, node);
+			}
 			if (html.indexOf("<p class=\\\"code_tit\\\">\\u4f60\\u7684\\u884c\\u4e3a\\u6709\\u4e9b\\u5f02\\u5e38\\uff0c\\u8bf7\\u8f93\\u5165\\u9a8c\\u8bc1\\u7801\\uff1a<\\/p>\\n") > -1) {
 				// 如果存在这样的提示信息，则表示账号不能正常访问，所以，应该提示并等待！
 				Logger.log("账号无法进行正常使用，被封了！休息一会儿！");

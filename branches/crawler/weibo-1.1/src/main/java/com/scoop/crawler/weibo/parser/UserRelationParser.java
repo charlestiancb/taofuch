@@ -18,6 +18,7 @@ import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.repository.mysql.Fans;
 import com.scoop.crawler.weibo.repository.mysql.Follow;
 import com.scoop.crawler.weibo.repository.mysql.User;
+import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
 import com.scoop.crawler.weibo.util.JSONUtils;
@@ -93,7 +94,7 @@ public class UserRelationParser extends Parser {
 		// 这里使用循环而不使用递归，是因为递归有次数限制！
 		long cnt = 0;
 		while (true) {
-			String html = driver.getPageSource();
+			String html = ExploreRequest.getPageHtml(driver);
 			Document doc = Jsoup.parse(html);
 			Element relations = null;
 			if (FailedNode.FANS.compareTo(node) == 0) {
