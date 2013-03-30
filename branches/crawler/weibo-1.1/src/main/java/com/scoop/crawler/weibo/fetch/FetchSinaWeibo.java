@@ -98,6 +98,7 @@ public class FetchSinaWeibo extends FetchSina {
 			// ThreadUtils.executeUserRelation(userRun);
 		} catch (Exception e) {
 			e.printStackTrace();
+			Logger.log("抓取结束，因为发生了错误：" + e);
 		} finally {
 			try {
 				if (dataSource != null) {

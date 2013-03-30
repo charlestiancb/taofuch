@@ -62,7 +62,8 @@ public class ExploreRequest {
 	public static WebDriver firefox(String url) {
 		WebDriver driver = null;
 		try {
-			//System.setProperty("webdriver.firefox.bin", "D:/Program Files/Mozilla Firefox/firefox.exe");
+			// System.setProperty("webdriver.firefox.bin",
+			// "D:/Program Files/Mozilla Firefox/firefox.exe");
 			driver = new FirefoxDriver();
 			return loginAndRequest(driver, url);
 		} catch (Throwable t) {
@@ -117,6 +118,7 @@ public class ExploreRequest {
 			Logger.log("页面中有超时的链接，应该不影响结果，继续操作！");
 		} catch (Throwable e) {
 			e.printStackTrace();
+			Logger.log("发生了问题：" + e);
 			driver.quit();
 		}
 		return null;
@@ -137,16 +139,22 @@ public class ExploreRequest {
 		if (driver == null) {
 			return "";
 		}
-		String html = driver.getPageSource();
-		while (html.indexOf("$CONFIG['oid'] = '") == -1) {
-			// 如果没有当前人信息，则是没有登录的！
-			driver = getDriver(null);
-			if (driver == null) {
-				Logger.log("登录失败！停止抓取！请重新启动！");
-				System.exit(-1);
-			}
+		String html;
+		try {
 			html = driver.getPageSource();
+			while (html.indexOf("$CONFIG['oid'] = '") == -1) {
+				// 如果没有当前人信息，则是没有登录的！
+				driver = getDriver(null);
+				if (driver == null) {
+					Logger.log("登录失败！停止抓取！请重新启动！");
+					System.exit(-1);
+				}
+				html = driver.getPageSource();
+			}
+			return html;
+		} catch (Exception e) {
+			Logger.log("抓取" + driver.getCurrentUrl() + "失败，原因：" + e);
+			return "";
 		}
-		return html;
 	}
 }

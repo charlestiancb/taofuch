@@ -118,6 +118,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 				ele = eles.get(0).findElement(By.linkText("下一页"));
 			}
 		} catch (Throwable e) {
+			Logger.log("抓取下一页信息失败！原因：" + e);
 		}
 		if (ele != null && ele.isEnabled()) {
 			ele.click();
@@ -141,8 +142,10 @@ public class SearchWeiboParser extends JsonStyleParser {
 			for (int i = 0; i < eles.size(); i++) {
 				try {
 					// 一条条的微博进行处理，解析每条微博的信息
-					parseWeibo(StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-							StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
+					parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
+								StringUtils.trim(parseMsgPublishTime(eles.get(i))),
+								getClient(),
+								dataSource);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
