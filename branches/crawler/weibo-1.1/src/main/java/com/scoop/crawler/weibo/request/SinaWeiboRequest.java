@@ -139,7 +139,7 @@ public class SinaWeiboRequest {
 			nvps.add(new BasicNameValuePair("encoding", "UTF-8"));
 			nvps.add(new BasicNameValuePair("returntype", "META"));
 			nvps.add(new BasicNameValuePair("url",
-					"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
+											"http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack"));
 			HttpEntity entity = new UrlEncodedFormEntity(nvps, "UTF-8");
 			post.setEntity(entity);
 			// 获取跳转登录
@@ -262,8 +262,9 @@ public class SinaWeiboRequest {
 			// 获取登录过的微博页面
 			String html = EntityUtils.toString(res.getEntity(), "UTF-8");
 			EntityUtils.consumeQuietly(res.getEntity());
-			if (html.indexOf("$CONFIG['oid'] = '") == -1) {
+			if (!html.startsWith("{\"") && html.indexOf("$CONFIG['oid'] = '") == -1) {
 				// 不是登录状态。
+				Logger.log("现在[" + url + "]是非登录状态，自动重新登录……");
 				client = getHttpClient(LogonInfo.getLogonInfo().getUsername(), LogonInfo.getLogonInfo().getPassword());
 				return request(client, url, handler, node);
 			}
@@ -358,13 +359,13 @@ public class SinaWeiboRequest {
 
 	private static void setProxy(DefaultHttpClient client) {
 		// 代理方式访问网络
-		client.getCredentialsProvider().setCredentials(new AuthScope("192.168.16.187", 8080),
-				new UsernamePasswordCredentials("taofucheng", "taofuchok"));
+		client.getCredentialsProvider().setCredentials(	new AuthScope("192.168.16.187", 8080),
+														new UsernamePasswordCredentials("taofucheng", "taofuchok"));
 		client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, new HttpHost("192.168.16.187", 8080));
 	}
 
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		System.err.println(URLDecoder.decode(
-				"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB", "GBK"));
+		System.err.println(URLDecoder.decode(	"%CE%AA%C1%CB%C4%FA%B5%C4%D5%CA%BA%C5%B0%B2%C8%AB%A3%AC%C7%EB%CA%E4%C8%EB%D1%E9%D6%A4%C2%EB",
+												"GBK"));
 	}
 }
