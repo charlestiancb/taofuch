@@ -3,13 +3,17 @@ package com.scoop.crawler.weibo.request.failed;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.openqa.selenium.WebDriver;
 
 import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
 import com.scoop.crawler.weibo.fetch.FetchSinaWeibo;
+import com.scoop.crawler.weibo.parser.CommentParser;
 import com.scoop.crawler.weibo.parser.UserWeiboParser;
 import com.scoop.crawler.weibo.repository.DataSource;
+import com.scoop.crawler.weibo.repository.mysql.EntityTransfer;
 import com.scoop.crawler.weibo.repository.mysql.FailedRequest;
+import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.util.Logger;
 
 /**
@@ -88,7 +92,11 @@ public class RequestFailedHandler extends FailedHandler {
 					getDataSource().saveWeibo(new OneWeiboInfo(req.getUrl(), getClient()));
 					break;
 				case COMMENT:
-
+					WebDriver driver = ExploreRequest.getDriver(null);
+					OneWeiboInfo weibo = new OneWeiboInfo(req.getUrl(), getClient());
+					new CommentParser(getDataSource(), this).fetchWeiboComments(driver,
+																				EntityTransfer.parseWeibo(weibo),
+																				getClient());
 					break;
 				case PERSON:
 					WeiboPersonInfo person = new WeiboPersonInfo(req.getUrl(), getClient());
