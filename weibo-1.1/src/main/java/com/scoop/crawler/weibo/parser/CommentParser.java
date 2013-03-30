@@ -79,7 +79,7 @@ public class CommentParser extends Parser {
 			}
 			afterSave(w, cnt);
 		} catch (Exception e) {
-			System.err.println("解析微博[" + w + "]的评论失败！");
+			System.err.println("解析微博[" + w + "]的评论失败！" + e);
 			e.printStackTrace();
 		}
 		Logger.log("微博[" + w + "]的评论信息解析完毕！");

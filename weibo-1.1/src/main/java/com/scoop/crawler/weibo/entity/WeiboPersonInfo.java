@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 
 import com.scoop.crawler.weibo.request.SinaWeiboRequest;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
+import com.scoop.crawler.weibo.util.Logger;
 
 /**
  * 抓取每个微博个人首页的详细信息，如姓名、所在地等。。
@@ -439,13 +440,14 @@ public class WeiboPersonInfo extends Info {
 					} catch (Exception e1) {
 					}
 					String _url = e.attr("href");
-					_url = _url.startsWith("/") ? "http://weibo.com" + _url : url
-							.substring(0, url.lastIndexOf("/") + 1) + _url;
+					_url = _url.startsWith("/") ? "http://weibo.com" + _url
+							: url.substring(0, url.lastIndexOf("/") + 1) + _url;
 					parseRelation(_url, node, list);
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			Logger.log("解析用户关系信息时失败：" + e);
 		}
 	}
 }
