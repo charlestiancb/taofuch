@@ -15,6 +15,7 @@ public class ThreadUtils {
 	private static ExecutorService exec = Executors.newFixedThreadPool(5);
 	private static boolean hasCommentExecuted = false;
 	private static boolean hasUserRelationExecuted = false;
+	private static long preTime = System.currentTimeMillis();
 
 	public static ExecutorService getRunnaleExecutor() {
 		return exec;
@@ -71,11 +72,20 @@ public class ThreadUtils {
 	 * @return
 	 */
 	public static DefaultHttpClient allocateHttpClient() {
-		if (client == null) {
+		if (client == null || shouldLogAgain()) {
 			LogonInfo log = LogonInfo.getLogonInfo();
 			client = SinaWeiboRequest.getHttpClient(log.getUsername(), log.getPassword());
 		}
 		return client;
+	}
+
+	private static boolean shouldLogAgain() {
+		// 12小时就要重新登录一次
+		boolean need = System.currentTimeMillis() - preTime > 12 * 3600 * 1000;
+		if (need) {
+			preTime = System.currentTimeMillis();
+		}
+		return need;
 	}
 
 	public static void setClient(DefaultHttpClient client) {
