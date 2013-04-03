@@ -38,6 +38,7 @@ public class CommentAndUserMain {
 		// 重启线程专门存储用户关系
 		WeiboUserRelationRunnable userRun = new WeiboUserRelationRunnable(dataSource, handler);
 		userRun.run();
+		handler.reTry();
 		// ThreadUtils.executeUserRelation(userRun);
 	}
 }
