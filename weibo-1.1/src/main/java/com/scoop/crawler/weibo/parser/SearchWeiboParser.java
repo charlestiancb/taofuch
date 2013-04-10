@@ -1,11 +1,15 @@
 package com.scoop.crawler.weibo.parser;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -72,6 +76,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 		// 判断是否没有查询结果！
 		Elements noresult = doc.getElementsByAttributeValue("class", "search_noresult");
 		if (noresult != null && noresult.size() > 0) {
+			Logger.log("查询词[" + getQuery() + "]没有查询结果！");
 			return;
 		}
 		Element weibo = doc.getElementById("pl_weibo_feedlist");
@@ -90,6 +95,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 				hit = userStart;
 			}
 			if (idx == -1) {
+				Logger.log("查询词[" + getQuery() + "]没有查询结果！");
 				return;
 			}
 			String targetContentList = html.substring(idx + hit.length());
@@ -179,7 +185,6 @@ public class SearchWeiboParser extends JsonStyleParser {
 	 * 
 	 * @param wordsFiles
 	 */
-	@SuppressWarnings("resource")
 	public void parse(String[] wordsFiles) {
 		// 循环读取每行中的词，如果词不为空，则读取并进行查询！
 		if (wordsFiles != null && wordsFiles.length > 0) {
@@ -193,28 +198,46 @@ public class SearchWeiboParser extends JsonStyleParser {
 				if (StringUtils.isEmpty(file)) {
 					continue;
 				}
-				try {
-					BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "GBK"));
-					for (String word = br.readLine(); word != null; word = br.readLine()) {
-						try {
-							if (StringUtils.isBlank(word)) {
-								continue;
-							} else {
-								saveQuery(word);
-								// 输入到输入框中，然后点击查询，并开始解析！
-								driver.findElements(By.className("searchInp_form")).get(0).clear();
-								driver.findElements(By.className("searchInp_form")).get(0).sendKeys(word);
-								driver.findElements(By.className("searchBtn")).get(0).click();
-								Thread.sleep(2000);
-								parseHtmlToWeibo(driver);
+				File realFile = new File(file);
+				Collection<File> col = new ArrayList<File>();
+				if (realFile.isFile()) {
+					col.add(realFile);
+				} else if (realFile.isDirectory()) {
+					col = FileUtils.listFiles(realFile, new String[] { "txt" }, true);
+				} else {
+					Logger.log("文件[" + file + "]不是一个有效的文件！");
+					continue;
+				}
+				for (File f : col) {
+					try {
+						BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "GBK"));
+						for (String word = br.readLine(); word != null; word = br.readLine()) {
+							try {
+								if (StringUtils.isBlank(word)) {
+									continue;
+								} else {
+									saveQuery(word);
+									// 输入到输入框中，然后点击查询，并开始解析！
+									driver.findElements(By.className("searchInp_form")).get(0).clear();
+									driver.findElements(By.className("searchInp_form")).get(0).sendKeys(word);
+									driver.findElements(By.className("searchBtn")).get(0).click();
+									Thread.sleep(2000);
+									parseHtmlToWeibo(driver);
+								}
+							} catch (Throwable t) {
+								Logger.log("当前文件[" + f + "]中的词[" + word + "]出现问题，继续下一个词语搜索！" + t);
 							}
-						} catch (Throwable t) {
-							Logger.log("当前文件[" + file + "]中的词[" + word + "]出现问题，继续下一个词语搜索！" + t);
 						}
+						br.close();
+					} catch (Throwable t) {
+						Logger.log("当前文件[" + f + "]处理过程中出现问题，继续下一个文件操作！" + t);
+						// t.printStackTrace();
 					}
-				} catch (Throwable t) {
-					Logger.log("当前文件[" + file + "]处理过程中出现问题，继续下一个文件操作！" + t);
-					// t.printStackTrace();
+					Logger.log("当前文件[" + f + "]已经处理完毕！");
+					try {
+						FileUtils.forceDelete(f);
+					} catch (IOException e) {
+					}
 				}
 				saveQuery(null);
 			}
