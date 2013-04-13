@@ -144,12 +144,13 @@ public class ExploreRequest {
 			html = driver.getPageSource();
 			while (html.indexOf("$CONFIG['oid'] = '") == -1) {
 				// 如果没有当前人信息，则是没有登录的！
-				driver = getDriver(null);
-				if (driver == null) {
+				WebDriver driverTmp = getDriver(null);
+				if (driverTmp == null) {
 					Logger.log("登录失败！停止抓取！请重新启动！");
 					System.exit(-1);
 				}
-				html = driver.getPageSource();
+				html = driverTmp.getPageSource();
+				driverTmp.quit();
 			}
 			return html;
 		} catch (Exception e) {
