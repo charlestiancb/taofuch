@@ -218,8 +218,9 @@ public class SearchWeiboParser extends JsonStyleParser {
 								} else {
 									saveQuery(word);
 									// 输入到输入框中，然后点击查询，并开始解析！
-									driver.findElements(By.className("searchInp_form")).get(0).clear();
-									driver.findElements(By.className("searchInp_form")).get(0).sendKeys(word);
+									WebElement input = driver.findElements(By.className("searchInp_form")).get(0);
+									input.clear();
+									input.sendKeys(word);
 									driver.findElements(By.className("searchBtn")).get(0).click();
 									Thread.sleep(2000);
 									parseHtmlToWeibo(driver);
