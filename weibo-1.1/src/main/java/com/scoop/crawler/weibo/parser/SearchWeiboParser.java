@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -25,6 +27,7 @@ import com.scoop.crawler.weibo.request.ExploreRequest;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 import com.scoop.crawler.weibo.util.JSONUtils;
 import com.scoop.crawler.weibo.util.Logger;
+import com.scoop.crawler.weibo.util.StreamUtils;
 
 /**
  * 微博搜索结果方式的微博，如：http://s.weibo.com/weibo/%25E7%25AF%25AE%25E7%2590%2583?topnav
@@ -148,10 +151,8 @@ public class SearchWeiboParser extends JsonStyleParser {
 			for (int i = 0; i < eles.size(); i++) {
 				try {
 					// 一条条的微博进行处理，解析每条微博的信息
-					parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-								StringUtils.trim(parseMsgPublishTime(eles.get(i))),
-								getClient(),
-								dataSource);
+					parseWeibo(StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
+							StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -209,9 +210,25 @@ public class SearchWeiboParser extends JsonStyleParser {
 					continue;
 				}
 				for (File f : col) {
+					Map<String, Integer> process = StreamUtils.read(StreamUtils.WEIBO_SEARCH_SREAM);
+					if (process == null) {
+						process = new HashMap<String, Integer>();
+					}
+					Integer num = process.get(f.toString());
+					if (num != null && num == -1) {
+						// 表示当前的文件已经全部读取完毕！
+						continue;
+					}
+					int hasReadLine = num == null ? 0 : num;
+					int lineNum = 0;
 					try {
 						BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "GBK"));
 						for (String word = br.readLine(); word != null; word = br.readLine()) {
+							lineNum++;
+							if (lineNum <= hasReadLine) {
+								// 如果还没有到达指定的读取的地方，表示这一行已经解析过，不需要再解析，继续下一行读取
+								continue;
+							}
 							try {
 								if (StringUtils.isBlank(word)) {
 									continue;
@@ -224,20 +241,26 @@ public class SearchWeiboParser extends JsonStyleParser {
 									driver.findElements(By.className("searchBtn")).get(0).click();
 									Thread.sleep(2000);
 									parseHtmlToWeibo(driver);
+									hasReadLine = lineNum;
 								}
 							} catch (Throwable t) {
 								Logger.log("当前文件[" + f + "]中的词[" + word + "]出现问题，继续下一个词语搜索！" + t);
 							}
+							process.put(f.toString(), hasReadLine);
+							StreamUtils.write(StreamUtils.WEIBO_SEARCH_SREAM, process);
 						}
 						br.close();
 					} catch (Throwable t) {
 						Logger.log("当前文件[" + f + "]处理过程中出现问题，继续下一个文件操作！" + t);
 						// t.printStackTrace();
 					}
-					Logger.log("当前文件[" + f + "]已经处理完毕！");
+
 					try {
-						FileUtils.forceDelete(f);
-					} catch (IOException e) {
+						Logger.log("当前文件[" + f + "]已经处理完毕！");
+						// FileUtils.forceDelete(f);
+						process.put(f.toString(), -1);// -1表示整个文件已经读取完毕！
+						StreamUtils.write(StreamUtils.WEIBO_SEARCH_SREAM, process);
+					} catch (Exception e) {
 					}
 				}
 				saveQuery(null);
