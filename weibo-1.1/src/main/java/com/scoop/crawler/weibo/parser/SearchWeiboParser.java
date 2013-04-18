@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -80,7 +81,14 @@ public class SearchWeiboParser extends JsonStyleParser {
 		Elements noresult = doc.getElementsByAttributeValue("class", "search_noresult");
 		if (noresult != null && noresult.size() > 0) {
 			Logger.log("查询词[" + getQuery() + "]没有查询结果！");
+			saveNoResultWord();
 			return;
+		}
+		noresult = doc.getElementsByAttributeValue("class", "W_inputStp");
+		if (noresult != null && noresult.size() > 0) {
+			Logger.log("要输入验证码，停止工作！");
+			driver.quit();
+			System.exit(0);
 		}
 		Element weibo = doc.getElementById("pl_weibo_feedlist");
 		Element user = doc.getElementById("pl_user_feedlist");
@@ -136,6 +144,18 @@ public class SearchWeiboParser extends JsonStyleParser {
 			} catch (Exception e) {
 			}
 			parseHtmlToWeibo(driver);
+		}
+	}
+
+	/**
+	 * 将无结果的查询词保存到指定的文件中。
+	 */
+	private void saveNoResultWord() {
+		try {
+			FileUtils.write(new File(FileUtils.getUserDirectory(), "noresultWords.txt"), getQuery()
+					+ IOUtils.LINE_SEPARATOR, "UTF-8", true);
+		} catch (IOException e) {
+			Logger.log("保存无结果的查询词失败：" + getQuery());
 		}
 	}
 
