@@ -21,6 +21,7 @@ import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.UnreachableBrowserException;
 
 import com.scoop.crawler.weibo.fetch.FetchSinaWeibo;
 import com.scoop.crawler.weibo.repository.DataSource;
@@ -85,10 +86,15 @@ public class SearchWeiboParser extends JsonStyleParser {
 			return;
 		}
 		noresult = doc.getElementsByAttributeValue("class", "W_inputStp");
-		if (noresult != null && noresult.size() > 0) {
-			Logger.log("要输入验证码，停止工作！");
-			driver.quit();
-			System.exit(0);
+		while (noresult != null && noresult.size() > 0) {
+			System.out.println("要输入验证码，请输入！");
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+			}
+			html = ExploreRequest.getPageHtml(driver);
+			doc = Jsoup.parse(html);
+			noresult = doc.getElementsByAttributeValue("class", "W_inputStp");
 		}
 		Element weibo = doc.getElementById("pl_weibo_feedlist");
 		Element user = doc.getElementById("pl_user_feedlist");
@@ -171,8 +177,10 @@ public class SearchWeiboParser extends JsonStyleParser {
 			for (int i = 0; i < eles.size(); i++) {
 				try {
 					// 一条条的微博进行处理，解析每条微博的信息
-					parseWeibo(StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-							StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
+					parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
+								StringUtils.trim(parseMsgPublishTime(eles.get(i))),
+								getClient(),
+								dataSource);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -242,7 +250,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 					int hasReadLine = num == null ? 0 : num;
 					int lineNum = 0;
 					try {
-						BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "GBK"));
+						BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
 						for (String word = br.readLine(); word != null; word = br.readLine()) {
 							lineNum++;
 							if (lineNum <= hasReadLine) {
@@ -262,6 +270,21 @@ public class SearchWeiboParser extends JsonStyleParser {
 									Thread.sleep(2000);
 									parseHtmlToWeibo(driver);
 									hasReadLine = lineNum;
+								}
+							} catch (UnreachableBrowserException e) {
+								try {
+									driver.quit();
+									driver = ExploreRequest.getDriver("http://s.weibo.com/weibo/AI");
+									WebElement input = driver.findElements(By.className("searchInp_form")).get(0);
+									input.clear();
+									input.sendKeys(word);
+									driver.findElements(By.className("searchBtn")).get(0).click();
+									Thread.sleep(2000);
+									parseHtmlToWeibo(driver);
+									hasReadLine = lineNum;
+								} catch (Exception e1) {
+									driver.quit();
+									driver = ExploreRequest.getDriver("http://s.weibo.com/weibo/AI");
 								}
 							} catch (Throwable t) {
 								Logger.log("当前文件[" + f + "]中的词[" + word + "]出现问题，继续下一个词语搜索！" + t);
