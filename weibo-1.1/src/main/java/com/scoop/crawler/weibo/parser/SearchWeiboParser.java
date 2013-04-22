@@ -166,6 +166,18 @@ public class SearchWeiboParser extends JsonStyleParser {
 	}
 
 	/**
+	 * 保存因故没有查询的那些词
+	 */
+	private void saveNotQueryWord() {
+		try {
+			FileUtils.write(new File(FileUtils.getUserDirectory(), "notQueryWords.txt"), getQuery()
+					+ IOUtils.LINE_SEPARATOR, "UTF-8", true);
+		} catch (Exception e) {
+			Logger.log("保存无结果的查询词失败：" + getQuery());
+		}
+	}
+
+	/**
 	 * 解析微博
 	 * 
 	 * @param targetContentList
@@ -177,10 +189,8 @@ public class SearchWeiboParser extends JsonStyleParser {
 			for (int i = 0; i < eles.size(); i++) {
 				try {
 					// 一条条的微博进行处理，解析每条微博的信息
-					parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-								StringUtils.trim(parseMsgPublishTime(eles.get(i))),
-								getClient(),
-								dataSource);
+					parseWeibo(StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
+							StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -282,12 +292,19 @@ public class SearchWeiboParser extends JsonStyleParser {
 									Thread.sleep(2000);
 									parseHtmlToWeibo(driver);
 									hasReadLine = lineNum;
-								} catch (Exception e1) {
-									driver.quit();
+								} catch (Throwable e1) {
+									if (driver != null) {
+										driver.quit();
+									}
 									driver = ExploreRequest.getDriver("http://s.weibo.com/weibo/AI");
+									if (driver == null) {
+										Logger.log("打开浏览器并登录失败！");
+										System.exit(0);
+									}
 								}
 							} catch (Throwable t) {
 								Logger.log("当前文件[" + f + "]中的词[" + word + "]出现问题，继续下一个词语搜索！" + t);
+								saveNotQueryWord();
 							}
 							process.put(f.toString(), hasReadLine);
 							StreamUtils.write(StreamUtils.WEIBO_SEARCH_SREAM, process);
@@ -295,12 +312,11 @@ public class SearchWeiboParser extends JsonStyleParser {
 						br.close();
 					} catch (Throwable t) {
 						Logger.log("当前文件[" + f + "]处理过程中出现问题，继续下一个文件操作！" + t);
-						// t.printStackTrace();
 					}
 
 					try {
 						Logger.log("当前文件[" + f + "]已经处理完毕！");
-						// FileUtils.forceDelete(f);
+						FileUtils.forceDelete(f);
 						process.put(f.toString(), -1);// -1表示整个文件已经读取完毕！
 						StreamUtils.write(StreamUtils.WEIBO_SEARCH_SREAM, process);
 					} catch (Exception e) {
