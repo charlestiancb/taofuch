@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -227,7 +229,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 	public void parse(String[] wordsFiles) {
 		// 循环读取每行中的词，如果词不为空，则读取并进行查询！
 		if (wordsFiles != null && wordsFiles.length > 0) {
-			WebDriver driver = ExploreRequest.getDriver("http://s.weibo.com/weibo/AI");
+			WebDriver driver = ExploreRequest.getDriver(null);
 			if (driver == null) {
 				Logger.log("打开浏览器失败！停止工作！");
 				return;
@@ -273,30 +275,20 @@ public class SearchWeiboParser extends JsonStyleParser {
 								} else {
 									saveQuery(word);
 									// 输入到输入框中，然后点击查询，并开始解析！
-									WebElement input = driver.findElements(By.className("searchInp_form")).get(0);
-									input.clear();
-									input.sendKeys(word);
-									driver.findElements(By.className("searchBtn")).get(0).click();
-									Thread.sleep(4000);
-									parseHtmlToWeibo(driver);
+									search(driver, word);
 									hasReadLine = lineNum;
 								}
 							} catch (UnreachableBrowserException e) {
 								try {
 									driver.quit();
-									driver = ExploreRequest.getDriver("http://s.weibo.com/weibo/AI");
-									WebElement input = driver.findElements(By.className("searchInp_form")).get(0);
-									input.clear();
-									input.sendKeys(word);
-									driver.findElements(By.className("searchBtn")).get(0).click();
-									Thread.sleep(4000);
-									parseHtmlToWeibo(driver);
+									driver = ExploreRequest.getDriver(null);
+									search(driver, word);
 									hasReadLine = lineNum;
 								} catch (Throwable e1) {
 									if (driver != null) {
 										driver.quit();
 									}
-									driver = ExploreRequest.getDriver("http://s.weibo.com/weibo/AI");
+									driver = ExploreRequest.getDriver(null);
 									if (driver == null) {
 										Logger.log("“打开浏览器并登录”操作失败！");
 										System.exit(0);
@@ -326,5 +318,34 @@ public class SearchWeiboParser extends JsonStyleParser {
 			}
 			driver.quit();
 		}
+	}
+
+	/**
+	 * 查询指定的词，并进行解析！
+	 * 
+	 * @param driver
+	 * @param word
+	 * @throws InterruptedException
+	 * @throws UnsupportedEncodingException
+	 */
+	private void search(WebDriver driver, String word) throws InterruptedException, UnsupportedEncodingException {
+		// 使用链接跳转方式抓取！
+		driver.navigate().to("http://s.weibo.com/weibo/" + URLEncoder.encode(word, "UTF-8"));
+		Thread.sleep(3000);
+
+		// if (!driver.getCurrentUrl().startsWith("http://s.weibo.com/weibo/"))
+		// {
+		// driver.navigate().to("http://s.weibo.com/weibo/" +
+		// URLEncoder.encode(word, "UTF-8"));
+		// Thread.sleep(2000);
+		// }
+		// // 使用界面输入方式抓取！
+		// WebElement input =
+		// driver.findElements(By.className("searchInp_form")).get(0);
+		// input.clear();
+		// input.sendKeys(word);
+		// driver.findElements(By.className("searchBtn")).get(0).click();
+		// Thread.sleep(2000);
+		parseHtmlToWeibo(driver);
 	}
 }
