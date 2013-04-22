@@ -18,7 +18,8 @@ public class Logger {
 	private static File logFile = null;
 	private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS  ");
 	static {
-		logFile = new File(FileUtils.getUserDirectory(), "weibo_logs_" + System.nanoTime() + ".log");
+		logFile = new File(FileUtils.getUserDirectory(), "weibo_logs_"
+				+ new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) + ".log");
 		try {
 			if (logFile.exists()) {
 				FileUtils.forceDelete(logFile);
