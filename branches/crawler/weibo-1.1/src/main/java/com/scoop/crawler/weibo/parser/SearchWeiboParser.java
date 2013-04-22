@@ -333,19 +333,20 @@ public class SearchWeiboParser extends JsonStyleParser {
 		driver.navigate().to("http://s.weibo.com/weibo/" + URLEncoder.encode(word, "UTF-8"));
 		Thread.sleep(3000);
 
+		// // 使用界面输入方式抓取！
 		// if (!driver.getCurrentUrl().startsWith("http://s.weibo.com/weibo/"))
 		// {
 		// driver.navigate().to("http://s.weibo.com/weibo/" +
 		// URLEncoder.encode(word, "UTF-8"));
 		// Thread.sleep(2000);
 		// }
-		// // 使用界面输入方式抓取！
 		// WebElement input =
 		// driver.findElements(By.className("searchInp_form")).get(0);
 		// input.clear();
 		// input.sendKeys(word);
 		// driver.findElements(By.className("searchBtn")).get(0).click();
 		// Thread.sleep(2000);
+
 		parseHtmlToWeibo(driver);
 	}
 }
