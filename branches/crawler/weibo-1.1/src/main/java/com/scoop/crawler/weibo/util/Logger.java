@@ -18,7 +18,7 @@ public class Logger {
 	private static File logFile = null;
 	private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS  ");
 	static {
-		logFile = new File(FileUtils.getUserDirectory(), "weibo_logs_"+Thread.currentThread().getId() + ".log");
+		logFile = new File(FileUtils.getUserDirectory(), "weibo_logs_" + format.format(new Date()).trim() + ".log");
 		try {
 			if (logFile.exists()) {
 				FileUtils.forceDelete(logFile);
@@ -43,8 +43,9 @@ public class Logger {
 				if (t != null) {
 					System.out.println(formatCurTime());
 					t.printStackTrace();
-					FileUtils.writeStringToFile(logFile, ExceptionUtils.getFullStackTrace(t) + IOUtils.LINE_SEPARATOR,
-							true);
+					FileUtils.writeStringToFile(logFile,
+												ExceptionUtils.getFullStackTrace(t) + IOUtils.LINE_SEPARATOR,
+												true);
 				}
 			} catch (Exception e) {
 				System.out.println(formatCurTime() + "保存日志失败！");
