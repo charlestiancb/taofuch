@@ -277,7 +277,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 									input.clear();
 									input.sendKeys(word);
 									driver.findElements(By.className("searchBtn")).get(0).click();
-									Thread.sleep(2000);
+									Thread.sleep(4000);
 									parseHtmlToWeibo(driver);
 									hasReadLine = lineNum;
 								}
@@ -289,7 +289,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 									input.clear();
 									input.sendKeys(word);
 									driver.findElements(By.className("searchBtn")).get(0).click();
-									Thread.sleep(2000);
+									Thread.sleep(4000);
 									parseHtmlToWeibo(driver);
 									hasReadLine = lineNum;
 								} catch (Throwable e1) {
