@@ -298,7 +298,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 									}
 									driver = ExploreRequest.getDriver("http://s.weibo.com/weibo/AI");
 									if (driver == null) {
-										Logger.log("打开浏览器并登录失败！");
+										Logger.log("“打开浏览器并登录”操作失败！");
 										System.exit(0);
 									}
 								}
