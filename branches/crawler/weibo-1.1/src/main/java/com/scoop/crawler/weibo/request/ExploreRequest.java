@@ -83,7 +83,8 @@ public class ExploreRequest {
 		try {
 			driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 			// driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
-			driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
+			// driver.manage().timeouts().setScriptTimeout(30,
+			// TimeUnit.SECONDS);
 			driver.get("http://www.weibo.com/");
 			// 这次访问肯定需要登录！因此登录之
 			driver.findElement(By.name("username")).sendKeys(LogonInfo.getLogonInfo().getUsername());
@@ -149,7 +150,7 @@ public class ExploreRequest {
 				WebDriver driverTmp = getDriver(null);
 				if (driverTmp == null) {
 					Logger.log("登录失败！停止抓取！请重新启动！");
-					System.exit(-1);
+					System.exit(0);
 				}
 				html = driverTmp.getPageSource();
 				driverTmp.quit();
