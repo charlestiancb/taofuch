@@ -76,13 +76,13 @@ public class HibernateDataSource extends DatabaseDataSource {
 	public void saveWeibo(OneWeiboInfo weibo) {
 		// 保存微博信息，先判断存不存在，如果不存在才插入！
 		try {
-			if (!isWeiboExists(weibo.getId())) {
+			if (!isWeiboExists(EntityTransfer.parseWeiboId(weibo))) {
 				Session s = getCurrentSession();
 				Transaction t = s.beginTransaction();
 				try {
 					Weibo w = EntityTransfer.parseWeibo(weibo);
 					s.save(w);
-					saveFetchIfNeccessory(weibo.getId(), FetchType.weibo);
+					saveFetchIfNeccessory(w.getWeiboId(), FetchType.weibo);
 				} catch (Exception e) {
 				}
 				t.commit();

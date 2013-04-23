@@ -11,9 +11,13 @@ import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
  * 
  */
 public class EntityTransfer {
+	public static String parseWeiboId(OneWeiboInfo weibo) {
+		return weibo.getPublisher().getId() + "_" + weibo.getId();
+	}
+
 	public static Weibo parseWeibo(OneWeiboInfo weibo) {
 		Weibo w = new Weibo();
-		w.setWeiboId(weibo.getPublisher().getId() + "_" + weibo.getId());
+		w.setWeiboId(parseWeiboId(weibo));
 		w.setContent(weibo.getMsg());
 		w.setOrign(weibo.getOrigin());
 		w.setPublishTime(weibo.getPublishTime());
