@@ -80,14 +80,15 @@ public class HibernateDataSource extends DatabaseDataSource {
 				Session s = getCurrentSession();
 				Transaction t = s.beginTransaction();
 				try {
-					s.save(EntityTransfer.parseWeibo(weibo));
+					Weibo w = EntityTransfer.parseWeibo(weibo);
+					s.save(w);
+					saveFetchIfNeccessory(weibo.getId(), FetchType.weibo);
 				} catch (Exception e) {
 				}
 				t.commit();
 			}
 		} catch (Exception e) {
 		}
-		saveFetchIfNeccessory(weibo.getId(), FetchType.weibo);
 		saveUserIfNeccessory(weibo.getPublisher());
 	}
 
@@ -103,8 +104,10 @@ public class HibernateDataSource extends DatabaseDataSource {
 			if (fi.needSave()) {
 				Session s = getCurrentSession();
 				Object obj = s.createQuery("from FetchInfo where queryStr=? and relationId=? and relationType=?")
-						.setString(0, fi.getQueryStr()).setString(1, fi.getRelationId())
-						.setString(2, fi.getRelationType()).uniqueResult();
+								.setString(0, fi.getQueryStr())
+								.setString(1, fi.getRelationId())
+								.setString(2, fi.getRelationType())
+								.uniqueResult();
 				if (obj == null) {
 					Transaction t = s.beginTransaction();
 					try {
@@ -274,8 +277,9 @@ public class HibernateDataSource extends DatabaseDataSource {
 	}
 
 	public FailedRequest pop() {
-		FailedRequest req = (FailedRequest) getCurrentSession().createCriteria(FailedRequest.class).setFetchSize(1)
-				.uniqueResult();
+		FailedRequest req = (FailedRequest) getCurrentSession().createCriteria(FailedRequest.class)
+																.setFetchSize(1)
+																.uniqueResult();
 		if (req != null && req.getRecId() != null) {
 			try {
 				Session s = getCurrentSession();
