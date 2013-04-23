@@ -90,6 +90,7 @@ public class CommentParser extends Parser {
 	 * 
 	 * @param w
 	 * @param cnt
+	 *            当前抓取的总共的评论数
 	 */
 	protected void afterSave(Weibo w, long cnt) {
 		if (StringUtils.isNotBlank(w.getWeiboId()) && cnt > w.getCommentNum()) {
