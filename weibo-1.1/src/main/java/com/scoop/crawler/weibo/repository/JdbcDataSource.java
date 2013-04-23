@@ -70,7 +70,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 	public void saveWeibo(OneWeiboInfo weibo) {
 		// 保存微博信息，先判断存不存在，如果不存在才插入！
 		try {
-			if (!isWeiboExists(weibo.getId())) {
+			if (!isWeiboExists(EntityTransfer.parseWeiboId(weibo))) {
 				Weibo w = EntityTransfer.parseWeibo(weibo);
 				executeSql(EntityManager.createInsertSQL(w));
 				saveFetchIfNeccessory(w.getWeiboId(), FetchType.weibo);

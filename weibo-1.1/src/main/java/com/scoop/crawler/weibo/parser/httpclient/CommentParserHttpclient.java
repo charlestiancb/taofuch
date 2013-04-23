@@ -60,7 +60,7 @@ public class CommentParserHttpclient extends CommentParser {
 							person.setHandler(wb.getHandler());
 							WeiboComment comment = new WeiboComment(tmp);
 							comment.setHandler(wb.getHandler());
-							comment.setWeiboId(wb.getId());
+							comment.setWeiboId(w.getWeiboId());
 							comment.setPerson(person);
 							dataSource.saveComment(comment);
 							cnt++;
@@ -85,8 +85,8 @@ public class CommentParserHttpclient extends CommentParser {
 		} catch (Exception e) {
 		}
 		// 这里取下一页的URL是否正确！
-		Elements eles = Jsoup.parse(comments.getCurrentPageComments()).getElementsByAttributeValue("class",
-				"W_pages_minibtn");
+		Elements eles = Jsoup.parse(comments.getCurrentPageComments()).getElementsByAttributeValue(	"class",
+																									"W_pages_minibtn");
 		if (eles != null && eles.size() > 0) {
 			eles = eles.first().getElementsMatchingOwnText("下一页");
 		}
