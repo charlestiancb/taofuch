@@ -4,30 +4,35 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.wltea.analyzer.split.WordSplitor;
 
 import com.ss.language.model.data.DatabaseConfig;
-import com.ss.language.model.data.EntityManager;
+import com.ss.language.model.data.EntitySql;
+import com.ss.language.model.data.EntitySql.SqlType;
 import com.ss.language.model.data.entity.WordIdf;
 import com.ss.language.model.data.entity.WordTfIdf;
+import com.ss.language.model.data.repo.TfIdfRepository;
 
 public class DocumentProcessor {
 	/** 每次处理数据数量 */
 	private static final int perPageRecords = 100;
+	private TfIdfRepository repo;
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		new DocumentProcessor().process();
+		System.out.println(Math.log(1.5) / Math.log(10));
 	}
 
 	public void process() {
 		try {
+			if (repo == null) {
+				repo = new TfIdfRepository();
+			}
 			splitWordsAndTf();
 			calcIdfAndTfidf();
 		} catch (Exception e) {
@@ -40,11 +45,11 @@ public class DocumentProcessor {
 	 */
 
 	protected void splitWordsAndTf() throws SQLException {
-		long count = count();
+		long count = count("SELECT count(1) FROM informationscience");
 		long page = count / perPageRecords;
 		page = count % perPageRecords > 0 ? page + 1 : page;
-		System.out.println("---------------正在计算normalTFOfAll值-----------");
-		for (int i = 0; i < count; i++) {
+		System.out.println("---------------正在计算各文档中各个词的tf值-----------");
+		for (int i = 0; i < page; i++) {
 			String sql = "SELECT * FROM informationscience limit " + (i * perPageRecords) + "," + perPageRecords;
 			Connection conn = DatabaseConfig.openConn();
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -60,12 +65,10 @@ public class DocumentProcessor {
 					}// 等待一下让系统回收
 				}
 				String abstr = rs.getString("Abstract");
-				System.out.println("当前处理的记录：" + rs.getString("id") + "，当前内存状态：总内存/可用内存-"
-						+ Runtime.getRuntime().totalMemory() + "/" + Runtime.getRuntime().freeMemory());
 				if (StringUtils.isBlank(abstr)) {
 					continue;
 				}
-				calcTfAndSave(WordSplitor.splitToArr(abstr));
+				calcTfAndSave(rs.getString("Title"), WordSplitor.splitToArr(abstr));
 			}
 			rs.close();
 			ps.close();
@@ -75,45 +78,36 @@ public class DocumentProcessor {
 	/**
 	 * 计算指定文章中每个词的TF值
 	 * 
+	 * @param document
+	 *            文档名称
 	 * @param cutWordResult
 	 * @return
 	 */
-	protected void calcTfAndSave(String[] cutWordResult) {
+	protected void calcTfAndSave(String document, String[] cutWordResult) {
 		if (cutWordResult == null || cutWordResult.length == 0) {
 			return;
 		}
-		Map<String, Integer> tfOfWord = new HashMap<String, Integer>();
-		// TODO 这个地方的性能需要提升！！！！一次循环即可！
+		Map<String, Integer> tfOfWord = new LinkedHashMap<String, Integer>();
 		int wordNum = cutWordResult.length;
-		int wordtf = 1;
 		for (int i = 0; i < wordNum; i++) {
-			wordtf = 1;
-			if (cutWordResult[i].trim().length() > 0) {
-				for (int j = i + 1; j < wordNum; j++) {
-					if (cutWordResult[j].trim().length() == 0) {
-						continue;// 如果为空，则表示已经被统计过清空的。
-					}
-					if (cutWordResult[i].equals(cutWordResult[j])) {
-						cutWordResult[j] = "";
-						wordtf++;
-					}
-				}
-				tfOfWord.put(cutWordResult[i], wordtf);
-				cutWordResult[i] = "";
+			Integer num = tfOfWord.get(cutWordResult[i]);
+			if (num == null) {
+				tfOfWord.put(cutWordResult[i], 1);
+			} else {
+				tfOfWord.put(cutWordResult[i], num + 1);
 			}
 		}
-		// TODO 存储单词与文档的TF！
 		for (String word : tfOfWord.keySet()) {
 			WordIdf idf = new WordIdf(word, 0D);
-			DatabaseConfig.executeSql(EntityManager.createInsertSQL(idf));// 保存单词
-			WordTfIdf tfidf = new WordTfIdf();
+			repo.saveWord(idf);
+			WordTfIdf tfidf = new WordTfIdf(document, idf.getRecId(), tfOfWord.get(word));
+			repo.save(tfidf);
 		}
 	}
 
-	private long count() throws SQLException {
-		String sql = "SELECT count(1) FROM informationscience";
+	private long count(String countSql) throws SQLException {
 		Connection conn = DatabaseConfig.openConn();
-		PreparedStatement ps = conn.prepareStatement(sql);
+		PreparedStatement ps = conn.prepareStatement(countSql);
 		ResultSet rs = ps.executeQuery();
 		long count = 0;
 		while (rs.next()) {
@@ -126,8 +120,30 @@ public class DocumentProcessor {
 
 	/**
 	 * 计算每个词的IDF值及每篇文档中每个词的tf/idf值。
+	 * 
+	 * @throws SQLException
 	 */
-	protected void calcIdfAndTfidf() {
-		// TODO Auto-generated method stub
+	protected void calcIdfAndTfidf() throws SQLException {
+		// idf值=lg(总文档数/含有该词的文档数)
+		long totalDocument = count("select count(1) from WORD_TF_IDF group by document_title");
+		long page = totalDocument / perPageRecords;
+		page = totalDocument % perPageRecords > 0 ? page + 1 : page;
+		for (int i = 0; i < page; i++) {
+			List<WordIdf> idfs = repo.list(WordIdf.class, i * perPageRecords, perPageRecords);
+			if (idfs == null || idfs.isEmpty()) {
+				break;
+			}
+			for (WordIdf wi : idfs) {
+				// 查询该词在多少文档中存在！
+				long documents = count("select count(1) from WORD_TF_IDF where word_id = " + wi.getRecId());
+				wi.setIdf(Math.log(totalDocument / 1.0 / documents) / Math.log(10));
+				repo.merge(wi);
+				// 计算tf/idf值，其值为：每个文档中，每个词的tf*idf
+				EntitySql sqlObj = new EntitySql();
+				sqlObj.setSql("update WORD_TF_IDF set tfIdf = tf*" + wi.getIdf() + " where word_id = " + wi.getRecId());
+				sqlObj.setType(SqlType.UPDATE);
+				DatabaseConfig.executeSql(sqlObj);
+			}
+		}
 	}
 }
