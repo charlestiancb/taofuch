@@ -11,12 +11,14 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.cfg.Environment;
 
 import com.tfc.data.access.MysqlRepository.DbConfig;
 
@@ -28,11 +30,16 @@ import com.tfc.data.access.MysqlRepository.DbConfig;
  */
 public class DatabaseConfig {
 	private static Connection conn;
+	protected static Properties pro = new Properties();
 	static {
-		DbConfig.setUrl("jdbc:mysql://localhost:3306/infordb?useUnicode=true&characterEncoding=UTF-8");
-		DbConfig.setDriverClass("com.mysql.jdbc.Driver");
-		DbConfig.setUser("root");
-		DbConfig.setPassword("root");
+		pro.put(Environment.URL, "jdbc:mysql://localhost:3306/infordb?useUnicode=true&characterEncoding=UTF-8");
+		pro.put(Environment.USER, "root");
+		pro.put(Environment.PASS, "root");
+		pro.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
+		DbConfig.setUrl((String) pro.get(Environment.URL));
+		DbConfig.setDriverClass((String) pro.get(Environment.DRIVER));
+		DbConfig.setUser((String) pro.get(Environment.USER));
+		DbConfig.setPassword((String) pro.get(Environment.PASS));
 		conn = DbConfig.openConn();
 	}
 

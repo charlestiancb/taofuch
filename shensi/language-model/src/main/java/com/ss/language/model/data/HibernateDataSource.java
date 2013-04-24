@@ -2,10 +2,12 @@ package com.ss.language.model.data;
 
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
-import java.util.Properties;
+import java.util.List;
 import java.util.Set;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.cfg.ImprovedNamingStrategy;
@@ -14,21 +16,16 @@ import org.hibernate.service.ServiceRegistryBuilder;
 import org.hibernate.service.jdbc.connections.internal.DriverManagerConnectionProviderImpl;
 
 import com.ss.language.model.data.entity.WordIdf;
+import com.ss.language.model.utils.ClassUtils;
 
 public class HibernateDataSource extends DatabaseConfig {
 	private static SessionFactory sessionFactory;
-	private static Properties pro = new Properties();
 
 	public HibernateDataSource() {
 		if (sessionFactory == null) {
-			pro.put(Environment.URL, "jdbc:mysql://localhost:3306/weibo?useUnicode=true&characterEncoding=UTF-8");
-			pro.put(Environment.USER, "root");
-			pro.put(Environment.PASS, "root");
-			pro.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
 			// Hibernate的基本配置
 			pro.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
 			pro.put(Environment.CONNECTION_PROVIDER, DriverManagerConnectionProviderImpl.class.getName());
-
 			// 使用c3p0连接池
 			pro.put(Environment.C3P0_MIN_SIZE, "5");
 			pro.put(Environment.C3P0_MAX_SIZE, "30");
@@ -56,5 +53,42 @@ public class HibernateDataSource extends DatabaseConfig {
 			ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(pro).buildServiceRegistry();
 			sessionFactory = c.buildSessionFactory(serviceRegistry);
 		}
+	}
+
+	public <T> void save(T obj) {
+		Session s = getCurrentSession();
+		Transaction t = s.beginTransaction();
+		try {
+			s.save(obj);
+		} catch (Exception e) {
+		}
+		t.commit();
+	}
+
+	public <T> void merge(T obj) {
+		Session s = getCurrentSession();
+		Transaction t = s.beginTransaction();
+		try {
+			s.save(obj);
+		} catch (Exception e) {
+		}
+		t.commit();
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> List<T> list(Class<T> entityClass, int firstRow, int maxRows) {
+		Session s = getCurrentSession();
+		return s.createQuery("from " + entityClass.getSimpleName())
+				.setFirstResult(firstRow)
+				.setMaxResults(maxRows)
+				.list();
+	}
+
+	protected Session getCurrentSession() {
+		return sessionFactory.openSession();
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
 	}
 }

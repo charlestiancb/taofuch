@@ -1,8 +1,18 @@
 package com.ss.language.model.data.entity;
 
-import javax.persistence.Id;
+import java.io.Serializable;
 
-public class WordIdf {
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "WORD_IDF")
+public class WordIdf implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2472614033968207868L;
 	@Id
 	private Long recId;
 	private String word;
