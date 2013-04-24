@@ -33,11 +33,22 @@ public class DocumentProcessor {
 			if (repo == null) {
 				repo = new TfIdfRepository();
 			}
+			clearDatas();
 			splitWordsAndTf();
 			calcIdfAndTfidf();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void clearDatas() {
+		EntitySql sqlObj = new EntitySql();
+		sqlObj.setSql("delete from WORD_IDF");
+		sqlObj.setType(SqlType.DELETE);
+		DatabaseConfig.executeSql(sqlObj);
+
+		sqlObj.setSql("delete from WORD_TF_IDF");
+		DatabaseConfig.executeSql(sqlObj);
 	}
 
 	/**
@@ -101,7 +112,7 @@ public class DocumentProcessor {
 			WordIdf idf = new WordIdf(word, 0D);
 			repo.saveWord(idf);
 			WordTfIdf tfidf = new WordTfIdf(document, idf.getRecId(), tfOfWord.get(word));
-			repo.save(tfidf);
+			repo.saveWordTf(tfidf);
 		}
 	}
 
@@ -136,11 +147,15 @@ public class DocumentProcessor {
 			for (WordIdf wi : idfs) {
 				// 查询该词在多少文档中存在！
 				long documents = count("select count(1) from WORD_TF_IDF where word_id = " + wi.getRecId());
+				// TODO 这里的计算可能有问题！！
+				// select ti.document_title,i.word,ti.tf,i.idf,ti.tf_idf from
+				// WORD_TF_IDF ti left join WORD_IDF i on i.rec_id = ti.word_id
+				// order by ti.rec_id
 				wi.setIdf(Math.log(totalDocument / 1.0 / documents) / Math.log(10));
 				repo.merge(wi);
 				// 计算tf/idf值，其值为：每个文档中，每个词的tf*idf
 				EntitySql sqlObj = new EntitySql();
-				sqlObj.setSql("update WORD_TF_IDF set tfIdf = tf*" + wi.getIdf() + " where word_id = " + wi.getRecId());
+				sqlObj.setSql("update WORD_TF_IDF set tf_idf = tf*" + wi.getIdf() + " where word_id = " + wi.getRecId());
 				sqlObj.setType(SqlType.UPDATE);
 				DatabaseConfig.executeSql(sqlObj);
 			}
