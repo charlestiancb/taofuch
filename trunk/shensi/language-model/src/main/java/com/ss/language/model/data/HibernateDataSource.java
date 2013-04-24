@@ -61,6 +61,7 @@ public class HibernateDataSource extends DatabaseConfig {
 		try {
 			s.save(obj);
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		t.commit();
 	}
@@ -69,8 +70,9 @@ public class HibernateDataSource extends DatabaseConfig {
 		Session s = getCurrentSession();
 		Transaction t = s.beginTransaction();
 		try {
-			s.save(obj);
+			s.merge(obj);
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		t.commit();
 	}
