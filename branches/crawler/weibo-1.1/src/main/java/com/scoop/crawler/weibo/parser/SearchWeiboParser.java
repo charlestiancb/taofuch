@@ -186,15 +186,20 @@ public class SearchWeiboParser extends JsonStyleParser {
 	 * @throws ParserException
 	 */
 	private void parseWeibo(Element doc) {
-		Elements eles = doc.getElementsByClass("feed_list");
-		if (eles.size() > 0) {
-			for (int i = 0; i < eles.size(); i++) {
-				try {
-					// 一条条的微博进行处理，解析每条微博的信息
-					parseWeibo(StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-							StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
-				} catch (Exception e) {
-					e.printStackTrace();
+		Elements eles = doc.getElementsByClass("search_feed");
+		if (eles != null && eles.size() > 0) {
+			eles = eles.get(0).getElementsByClass("feed_list");
+			if (eles.size() > 0) {
+				for (int i = 0; i < eles.size(); i++) {
+					try {
+						// 一条条的微博进行处理，解析每条微博的信息
+						parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
+									StringUtils.trim(parseMsgPublishTime(eles.get(i))),
+									getClient(),
+									dataSource);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
