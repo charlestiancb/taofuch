@@ -19,6 +19,9 @@ public class WordIdf implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long recId;
 	private String word;
+	/** 该词在多少文档中出现 */
+	private long df = 0;
+	/** 逆文档频率 */
 	private Double idf;
 
 	public WordIdf() {
@@ -52,4 +55,13 @@ public class WordIdf implements Serializable {
 	public void setIdf(Double idf) {
 		this.idf = idf;
 	}
+
+	public long getDf() {
+		return df;
+	}
+
+	public void setDf(long df) {
+		this.df = df;
+	}
+
 }

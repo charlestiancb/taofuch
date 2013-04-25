@@ -1,5 +1,6 @@
 package com.ss.language.model.dirichlet;
 
+import com.ss.language.model.data.DatabaseConfig;
 import com.ss.language.model.pipe.PipeNode;
 
 /**
@@ -17,6 +18,7 @@ import com.ss.language.model.pipe.PipeNode;
  * 
  */
 public class DirichletDistributionProcess extends PipeNode {
+
 	/**
 	 * @param args
 	 */
@@ -25,7 +27,17 @@ public class DirichletDistributionProcess extends PipeNode {
 	}
 
 	public void process() {
-		// TODO Auto-generated method stub
+		long u = DatabaseConfig.query("select document_title from WORD_TF_IDF group by document_title").size();
+		processPtC();
+	}
+
+	/**
+	 * 计算公式中的P(t|C)值。即语言模型上得到的值。
+	 */
+	private void processPtC() {
+		// TODO 其公式：
+		// 先计算cs值。
+
 	}
 
 }
