@@ -36,15 +36,19 @@ public class ProcessUtils {
 	 * 清除所有已记录的进度。
 	 */
 	public static void clearProcess() {
-		if (record == null) {
-			record = new File(FileUtils.getUserDirectory(), "language_model.process.percent.dat");
-		}
+		initFile();
 		if (record.isFile()) {
 			try {
 				FileUtils.forceDelete(record);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	private static void initFile() {
+		if (record == null) {
+			record = new File(FileUtils.getUserDirectory(), "language_model.process.percent.dat");
 		}
 	}
 
@@ -55,14 +59,12 @@ public class ProcessUtils {
 	 * @return
 	 */
 	public static boolean hasProcessed(String processNode) {
-		if (record == null) {
-			record = new File(FileUtils.getUserDirectory(), "language_model.process.percent.dat");
-			if (!record.isFile()) {
-				try {
-					record.createNewFile();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+		initFile();
+		if (!record.isFile()) {
+			try {
+				record.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 		try {
