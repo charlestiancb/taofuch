@@ -20,9 +20,11 @@ public class WordIdf implements Serializable {
 	private Long recId;
 	private String word;
 	/** 该词在多少文档中出现 */
-	private long df = 0;
+	private long df;
 	/** 逆文档频率 */
 	private Double idf;
+	/** 该词在所有文档中总共出现的次数 */
+	private long cf;
 
 	public WordIdf() {
 	}
@@ -62,6 +64,14 @@ public class WordIdf implements Serializable {
 
 	public void setDf(long df) {
 		this.df = df;
+	}
+
+	public long getCf() {
+		return cf;
+	}
+
+	public void setCf(long cf) {
+		this.cf = cf;
 	}
 
 }
