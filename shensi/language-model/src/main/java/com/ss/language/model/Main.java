@@ -1,11 +1,13 @@
 package com.ss.language.model;
 
+import com.ss.language.model.tf_idf.DocumentProcessor;
+
 public class Main {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		new DocumentProcessor().process();// 计算tf*idf值。
 	}
 }
