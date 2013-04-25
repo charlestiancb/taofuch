@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -153,6 +154,10 @@ public class ExploreRequest {
 					System.exit(0);
 				}
 				html = driverTmp.getPageSource();
+				driver.manage().deleteAllCookies();
+				for (Cookie c : driverTmp.manage().getCookies()) {
+					driver.manage().addCookie(c);
+				}
 				driverTmp.quit();
 			}
 			return html;
