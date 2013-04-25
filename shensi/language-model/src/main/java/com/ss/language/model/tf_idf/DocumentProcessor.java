@@ -17,6 +17,7 @@ import com.ss.language.model.data.EntitySql.SqlType;
 import com.ss.language.model.data.entity.WordIdf;
 import com.ss.language.model.data.entity.WordTfIdf;
 import com.ss.language.model.data.repo.TfIdfRepository;
+import com.ss.language.model.utils.ProcessUtils;
 
 public class DocumentProcessor {
 	/** 每次处理数据数量 */
@@ -36,6 +37,7 @@ public class DocumentProcessor {
 			clearDatas();
 			splitWordsAndTf();
 			calcIdfAndTfidf();
+			ProcessUtils.recordProcess(this.getClass());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -84,6 +86,7 @@ public class DocumentProcessor {
 			rs.close();
 			ps.close();
 		}
+		System.out.println("---------------完成计算各文档中各个词的tf值-----------");
 	}
 
 	/**
@@ -135,8 +138,10 @@ public class DocumentProcessor {
 	 * @throws SQLException
 	 */
 	protected void calcIdfAndTfidf() throws SQLException {
+		System.out.println("---------------正在计算各文档中各个词的idf值与tf*idf值-----------");
 		// idf值=lg(总文档数/含有该词的文档数)
-		long totalDocument = DatabaseConfig.query("select count(1) from WORD_TF_IDF group by document_title").size();
+		long totalDocument = DatabaseConfig.query("select document_title from WORD_TF_IDF group by document_title")
+				.size();
 		long page = totalDocument / perPageRecords;
 		page = totalDocument % perPageRecords > 0 ? page + 1 : page;
 		for (int i = 0; i < page; i++) {
@@ -156,5 +161,6 @@ public class DocumentProcessor {
 				DatabaseConfig.executeSql(sqlObj);
 			}
 		}
+		System.out.println("---------------完成计算各文档中各个词的idf值与tf*idf值-----------");
 	}
 }
