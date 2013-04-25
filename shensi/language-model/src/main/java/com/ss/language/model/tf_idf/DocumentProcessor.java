@@ -136,7 +136,7 @@ public class DocumentProcessor {
 	 */
 	protected void calcIdfAndTfidf() throws SQLException {
 		// idf值=lg(总文档数/含有该词的文档数)
-		long totalDocument = count("select count(1) from WORD_TF_IDF group by document_title");
+		long totalDocument = DatabaseConfig.query("select count(1) from WORD_TF_IDF group by document_title").size();
 		long page = totalDocument / perPageRecords;
 		page = totalDocument % perPageRecords > 0 ? page + 1 : page;
 		for (int i = 0; i < page; i++) {
@@ -147,10 +147,6 @@ public class DocumentProcessor {
 			for (WordIdf wi : idfs) {
 				// 查询该词在多少文档中存在！
 				long documents = count("select count(1) from WORD_TF_IDF where word_id = " + wi.getRecId());
-				// TODO 这里的计算可能有问题！！
-				// select ti.document_title,i.word,ti.tf,i.idf,ti.tf_idf from
-				// WORD_TF_IDF ti left join WORD_IDF i on i.rec_id = ti.word_id
-				// order by ti.rec_id
 				wi.setIdf(Math.log(totalDocument / 1.0 / documents) / Math.log(10));
 				repo.merge(wi);
 				// 计算tf/idf值，其值为：每个文档中，每个词的tf*idf
