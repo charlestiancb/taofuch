@@ -153,6 +153,7 @@ public class DocumentProcessor extends PipeNode {
 				long documents = count("select count(1) from WORD_TF_IDF where word_id = " + wi.getRecId());
 				wi.setIdf(Math.log(totalDocument / 1.0 / documents) / Math.log(10));
 				wi.setDf(documents);
+				wi.setCf(count("select sum(tf) from WORD_TF_IDF where word_id =" + wi.getRecId()));
 				repo.merge(wi);
 				// 计算tf/idf值，其值为：每个文档中，每个词的tf*idf
 				EntitySql sqlObj = new EntitySql();
