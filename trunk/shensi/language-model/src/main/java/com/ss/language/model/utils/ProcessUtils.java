@@ -22,10 +22,10 @@ public class ProcessUtils {
 	 * 
 	 * @param clazz
 	 */
-	public static void recordProcess(Class<?> clazz) {
-		if (!hasProcessed(clazz)) {
+	public static void recordProcess(String processNode) {
+		if (!hasProcessed(processNode)) {
 			try {
-				FileUtils.writeStringToFile(record, clazz.getName() + IOUtils.LINE_SEPARATOR, "UTF-8", true);
+				FileUtils.writeStringToFile(record, processNode + IOUtils.LINE_SEPARATOR, "UTF-8", true);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -54,7 +54,7 @@ public class ProcessUtils {
 	 * @param clazz
 	 * @return
 	 */
-	public static boolean hasProcessed(Class<?> clazz) {
+	public static boolean hasProcessed(String processNode) {
 		if (record == null) {
 			record = new File(FileUtils.getUserDirectory(), "language_model.process.percent.dat");
 			if (!record.isFile()) {
@@ -69,7 +69,7 @@ public class ProcessUtils {
 			List<String> lines = FileUtils.readLines(record, "UTF-8");
 			if (lines != null && lines.size() > 0) {
 				for (String line : lines) {
-					if (StringUtils.isNotBlank(line) && line.trim().equals(clazz.getName())) {
+					if (StringUtils.isNotBlank(line) && line.trim().equals(processNode)) {
 						return true;
 					}
 				}
