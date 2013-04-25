@@ -53,6 +53,7 @@ DROP TABLE IF EXISTS `word_idf`;
 CREATE TABLE `word_idf` (
   `rec_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `word` varchar(100) COLLATE utf8_bin NOT NULL,
+  `df` INT DEFAULT NULL,
   `idf` double DEFAULT NULL,
   PRIMARY KEY (`rec_id`),
   UNIQUE KEY `word_UNIQUE` (`word`)
