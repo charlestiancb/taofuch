@@ -12,5 +12,8 @@ public class Main {
 	public static void main(String[] args) {
 		PipeManager.regist(new DocumentProcessor());// 这是tf*idf值计算
 		PipeManager.regist(new DirichletDistributionProcess());// 这是狄利克雷分布计算平滑参数。
+
+		// 开始运行！
+		PipeManager.clearAndstart();
 	}
 }
