@@ -17,9 +17,9 @@ import com.ss.language.model.data.EntitySql.SqlType;
 import com.ss.language.model.data.entity.WordIdf;
 import com.ss.language.model.data.entity.WordTfIdf;
 import com.ss.language.model.data.repo.TfIdfRepository;
-import com.ss.language.model.utils.ProcessUtils;
+import com.ss.language.model.pipe.PipeNode;
 
-public class DocumentProcessor {
+public class DocumentProcessor extends PipeNode {
 	/** 每次处理数据数量 */
 	private static final int perPageRecords = 100;
 	private TfIdfRepository repo;
@@ -37,7 +37,6 @@ public class DocumentProcessor {
 			clearDatas();
 			splitWordsAndTf();
 			calcIdfAndTfidf();
-			ProcessUtils.recordProcess(this.getClass());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

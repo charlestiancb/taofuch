@@ -1,5 +1,7 @@
 package com.ss.language.model;
 
+import com.ss.language.model.dirichlet.DirichletDistributionProcess;
+import com.ss.language.model.pipe.PipeManager;
 import com.ss.language.model.tf_idf.DocumentProcessor;
 
 public class Main {
@@ -8,6 +10,7 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new DocumentProcessor().process();// 计算tf*idf值。
+		PipeManager.regist(new DocumentProcessor());// 这是tf*idf值计算
+		PipeManager.regist(new DirichletDistributionProcess());// 这是狄利克雷分布计算平滑参数。
 	}
 }
