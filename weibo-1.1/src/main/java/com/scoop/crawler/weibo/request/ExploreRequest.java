@@ -170,6 +170,7 @@ public class ExploreRequest {
 		} catch (Exception e) {
 			Logger.log("抓取" + driver.getCurrentUrl() + "失败，原因：" + e);
 		}
+		_html.delete(0, _html.length());
 		_html.append(html);
 		return driver;
 	}
