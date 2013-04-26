@@ -94,8 +94,9 @@ public class UserRelationParser extends Parser {
 		// 这里使用循环而不使用递归，是因为递归有次数限制！
 		long cnt = 0;
 		while (true) {
-			String html = ExploreRequest.getPageHtml(driver);
-			Document doc = Jsoup.parse(html);
+			StringBuffer html = new StringBuffer();
+			driver = ExploreRequest.getPageHtml(driver, html);
+			Document doc = Jsoup.parse(html.toString());
 			Element relations = null;
 			if (FailedNode.FANS.compareTo(node) == 0) {
 				relations = doc.getElementById("pl_relation_hisFans");
@@ -104,11 +105,11 @@ public class UserRelationParser extends Parser {
 			}
 			if (relations == null || StringUtils.isBlank(relations.text())) {
 				Logger.log("对当前用户[" + u.getUserId() + ":" + u.getName() + "]进行json方式解析。");
-				html = JSONUtils.unEscapeHtml(html);
+				html = new StringBuffer(JSONUtils.unEscapeHtml(html.toString()));
 				if (FailedNode.FANS.compareTo(node) == 0) {
-					doc = parseToDoc(html, "pl_relation_hisFans");
+					doc = parseToDoc(html.toString(), "pl_relation_hisFans");
 				} else {
-					doc = parseToDoc(html, "pl_relation_hisFollow");
+					doc = parseToDoc(html.toString(), "pl_relation_hisFollow");
 				}
 				if (doc != null) {
 					relations = doc.append("");

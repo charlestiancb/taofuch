@@ -109,9 +109,10 @@ public class CommentParser extends Parser {
 	 * @return
 	 */
 	private Elements getComments(WebDriver driver) {
-		String html = ExploreRequest.getPageHtml(driver);
+		StringBuffer html = new StringBuffer();
+		driver = ExploreRequest.getPageHtml(driver, html);
 		// html = cut(html, detailStart);//获取是就是已经解析好的内容！
-		Elements eles = Jsoup.parse(html).getElementsByAttributeValue("class", "comment_lists");
+		Elements eles = Jsoup.parse(html.toString()).getElementsByAttributeValue("class", "comment_lists");
 		if (eles != null) {
 			return eles.select("dd");
 		} else {
@@ -141,14 +142,15 @@ public class CommentParser extends Parser {
 			}
 			ele.click();
 			Thread.sleep(2000);// 等待两秒，等数据加载完毕！
-			String html = ExploreRequest.getPageHtml(driver);
+			StringBuffer html = new StringBuffer();
+			driver = ExploreRequest.getPageHtml(driver, html);
 			if (html.equals(preContent) && tryTimes < 3) {
 				// 如果此次获取的内容与上一次一样，说明翻页失败，重新刷新一下页面再翻页
 				driver.navigate().refresh();
 				++tryTimes;
 				return loadNextPage(driver);
 			} else {
-				preContent = html;
+				preContent = html.toString();
 				tryTimes = 0;
 			}
 		} catch (Throwable e) {
