@@ -34,8 +34,10 @@ public class CompanyWeiboParser extends WeiboParser {
 		for (int i = 0; i < eles.size(); i++) {
 			// 一条条的微博进行处理，解析每条微博的信息
 			Logger.log("解析当前微博第" + getCurPage() + "页，第" + (i + 1) + "条微博！");
-			parseWeibo(StringUtils.trim(parseMsgUrlFromHtmlStyle(eles.get(i))),
-					StringUtils.trim(parseMsgPublishTime(eles.get(i))), getClient(), dataSource);
+			parseWeibo(	StringUtils.trim(parseMsgUrlFromHtmlStyle(eles.get(i))),
+						StringUtils.trim(parseMsgPublishTime(eles.get(i))),
+						getClient(),
+						dataSource);
 			Logger.log("当前微博第" + getCurPage() + "页，第" + (i + 1) + "条微博解析完毕！");
 		}
 	}
@@ -76,11 +78,12 @@ public class CompanyWeiboParser extends WeiboParser {
 				System.exit(0);
 				return;
 			}
-			String html = ExploreRequest.getPageHtml(driver);
+			StringBuffer html = new StringBuffer();
+			driver = ExploreRequest.getPageHtml(driver, html);
 			setCurPage(1);
-			while (StringUtils.isNotBlank(html)) {
+			while (StringUtils.isNotBlank(html.toString())) {
 				goEnd(driver);
-				Document doc = Jsoup.parse(html);
+				Document doc = Jsoup.parse(html.toString());
 				// 将一条条的微博根据标签的特征统一取出来
 				Elements eles = doc.getElementsByClass("MIB_feed_c");
 				if (eles.size() > 0) {
@@ -93,15 +96,16 @@ public class CompanyWeiboParser extends WeiboParser {
 					if ("下一页".equals(StringUtils.trim(nextpage.getText()))) {
 						nextpage.click();
 						Thread.sleep(3 * 1000);// 等待5秒，等页面加载完毕！
-						html = ExploreRequest.getPageHtml(driver);
+						html = new StringBuffer();
+						driver = ExploreRequest.getPageHtml(driver, html);
 						setCurPage(getCurPage() + 1);
 					} else {
 						html = null;
-						Logger.log("没有下一页了，抓取完毕！" + ExploreRequest.getPageHtml(driver));
+						Logger.log("没有下一页了，抓取完毕！");
 					}
 				} else {
 					html = null;
-					Logger.log("没有下一页了，抓取完毕！" + ExploreRequest.getPageHtml(driver));
+					Logger.log("没有下一页了，抓取完毕！");
 				}
 			}
 		} catch (Throwable e) {

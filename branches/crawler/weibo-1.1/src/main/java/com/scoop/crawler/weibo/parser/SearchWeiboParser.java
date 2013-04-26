@@ -78,8 +78,9 @@ public class SearchWeiboParser extends JsonStyleParser {
 	}
 
 	private void parseHtmlToWeibo(WebDriver driver) {
-		String html = ExploreRequest.getPageHtml(driver);
-		Document doc = Jsoup.parse(html);
+		StringBuffer html = new StringBuffer();
+		driver = ExploreRequest.getPageHtml(driver, html);
+		Document doc = Jsoup.parse(html.toString());
 		// 判断是否没有查询结果！
 		Elements noresult = doc.getElementsByAttributeValue("class", "search_noresult");
 		if (noresult != null && noresult.size() > 0) {
@@ -94,8 +95,9 @@ public class SearchWeiboParser extends JsonStyleParser {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 			}
-			html = ExploreRequest.getPageHtml(driver);
-			doc = Jsoup.parse(html);
+			html = new StringBuffer();
+			driver = ExploreRequest.getPageHtml(driver, html);
+			doc = Jsoup.parse(html.toString());
 			noresult = doc.getElementsByAttributeValue("class", "W_inputStp");
 		}
 		Element weibo = doc.getElementById("pl_weibo_feedlist");
@@ -104,9 +106,10 @@ public class SearchWeiboParser extends JsonStyleParser {
 		if ((weibo == null || StringUtils.isEmpty(weibo.text())) && (user == null || StringUtils.isEmpty(user.text()))) {
 			weibo = null;
 			user = null;
-			html = ExploreRequest.getPageHtml(driver);
+			html = new StringBuffer();
+			driver = ExploreRequest.getPageHtml(driver, html);
 			// 将其中的html转义字符转换成正常的字符！
-			html = JSONUtils.unEscapeHtml(html);
+			html = new StringBuffer(JSONUtils.unEscapeHtml(html.toString()));
 			String hit = weiboStart;
 			int idx = html.indexOf(weiboStart);
 			if (idx == -1) {

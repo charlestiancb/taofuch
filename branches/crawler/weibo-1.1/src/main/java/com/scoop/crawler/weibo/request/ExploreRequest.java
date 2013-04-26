@@ -4,7 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -139,31 +138,39 @@ public class ExploreRequest {
 		return firefox(url);
 	}
 
-	public static String getPageHtml(WebDriver driver) {
-		if (driver == null) {
-			return "";
+	public static WebDriver getPageHtml(WebDriver driver, StringBuffer _html) {
+		if (_html == null) {
+			return driver;
 		}
-		String html;
+		if (driver == null) {
+			WebDriver driverTmp = getDriver(null);
+			if (driverTmp == null) {
+				Logger.log("登录失败！停止抓取！请重新启动！");
+				System.exit(0);
+			}
+			return driverTmp;
+		}
+		String html = "";
 		try {
 			html = driver.getPageSource();
 			while (html.indexOf("$CONFIG['islogin'] = '1'") == -1) {
+				driver.quit();
 				// 如果没有当前人信息，则是没有登录的！
 				WebDriver driverTmp = getDriver(null);
 				if (driverTmp == null) {
 					Logger.log("登录失败！停止抓取！请重新启动！");
 					System.exit(0);
 				}
-				html = driverTmp.getPageSource();
-				driver.manage().deleteAllCookies();
-				for (Cookie c : driverTmp.manage().getCookies()) {
-					driver.manage().addCookie(c);
+				try {
+					html = driverTmp.getPageSource();
+				} catch (Exception e) {
 				}
-				driverTmp.quit();
+				driver = driverTmp;
 			}
-			return html;
 		} catch (Exception e) {
 			Logger.log("抓取" + driver.getCurrentUrl() + "失败，原因：" + e);
-			return "";
 		}
+		_html.append(html);
+		return driver;
 	}
 }
