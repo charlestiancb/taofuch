@@ -56,9 +56,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 	private void connect() {
 		try {
 			Class.forName(pro.getProperty(Environment.DRIVER));
-			conn = DriverManager.getConnection(	pro.getProperty(Environment.URL),
-												pro.getProperty(Environment.USER),
-												pro.getProperty(Environment.PASS));
+			conn = DriverManager.getConnection(pro.getProperty(Environment.URL), pro.getProperty(Environment.USER),
+					pro.getProperty(Environment.PASS));
 			conn.setAutoCommit(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -70,14 +69,15 @@ public class JdbcDataSource extends DatabaseDataSource {
 	public void saveWeibo(OneWeiboInfo weibo) {
 		// 保存微博信息，先判断存不存在，如果不存在才插入！
 		try {
-			if (!isWeiboExists(EntityTransfer.parseWeiboId(weibo))) {
+			String weiboId = EntityTransfer.parseWeiboId(weibo);
+			if (!isWeiboExists(weiboId)) {
 				Weibo w = EntityTransfer.parseWeibo(weibo);
 				executeSql(EntityManager.createInsertSQL(w));
-				saveFetchIfNeccessory(w.getWeiboId(), FetchType.weibo);
 				saveUserIfNeccessory(weibo.getPublisher());
 			} else {
 				Logger.log("该微博已经存在！");
 			}
+			saveFetchIfNeccessory(weiboId, FetchType.weibo);
 		} catch (Exception e) {
 			Logger.log("保存微博失败！" + e);
 		}
@@ -94,7 +94,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 		try {
 			FetchInfo fi = new FetchInfo(WeiboParser.getQuery(), id, type.name());
 			if (fi.needSave()) {
-				List<Map<String, Object>> records = (List<Map<String, Object>>) executeSql(EntityManager.createSelectSQL(fi));
+				List<Map<String, Object>> records = (List<Map<String, Object>>) executeSql(EntityManager
+						.createSelectSQL(fi));
 				if (records == null || records.isEmpty()) {
 					executeSql(EntityManager.createInsertSQL(fi));
 				}
