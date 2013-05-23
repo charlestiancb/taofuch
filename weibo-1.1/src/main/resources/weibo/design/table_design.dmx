@@ -1486,7 +1486,7 @@ Top=207.00</GraphDesc>
 
 
 <DataModels_item1_item0_item7_item0>
-  <Count>4</Count>
+  <Count>5</Count>
 </DataModels_item1_item0_item7_item0>
 
 
@@ -1564,6 +1564,42 @@ Top=207.00</GraphDesc>
 
 <DataModels_item1_item0_item7_item0_item3>
   <CTVER>43543230</CTVER>
+  <ID>5</ID>
+  <PID>0</PID>
+  <RID>0</RID>
+  <Name>collection_name</Name>
+  <Caption></Caption>
+  <TypeName></TypeName>
+  <Memo>查询词所在集合的名称，如当词存在于文件中，这就是文件名</Memo>
+  <Creator>0</Creator>
+  <CreateDate>2013-05-23 21:41:40</CreateDate>
+  <CreatorName></CreatorName>
+  <Modifier>0</Modifier>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <ModifierName></ModifierName>
+  <VersionNo>0</VersionNo>
+  <HistoryID>0</HistoryID>
+  <LockStamp></LockStamp>
+  <DataLevel>0</DataLevel>
+  <OrderNo>3</OrderNo>
+  <DisplayName>集合的名称</DisplayName>
+  <DataType>1</DataType>
+  <DataTypeName></DataTypeName>
+  <KeyFieldType>0</KeyFieldType>
+  <RelateTable></RelateTable>
+  <RelateField></RelateField>
+  <IndexType>0</IndexType>
+  <Hint></Hint>
+  <DefaultValue></DefaultValue>
+  <Nullable>1</Nullable>
+  <DataLength>500</DataLength>
+  <DataScale>0</DataScale>
+  <GraphDesc></GraphDesc>
+</DataModels_item1_item0_item7_item0_item3>
+
+
+<DataModels_item1_item0_item7_item0_item4>
+  <CTVER>43543230</CTVER>
   <ID>3</ID>
   <PID>0</PID>
   <RID>0</RID>
@@ -1581,7 +1617,7 @@ Top=207.00</GraphDesc>
   <HistoryID>0</HistoryID>
   <LockStamp></LockStamp>
   <DataLevel>0</DataLevel>
-  <OrderNo>3</OrderNo>
+  <OrderNo>4</OrderNo>
   <DisplayName>对应的内容ID</DisplayName>
   <DataType>1</DataType>
   <DataTypeName>VAR_STRING</DataTypeName>
@@ -1605,10 +1641,10 @@ Mod_OP2=0
 Mod_CP=0
 Horz1=0
 Horz2=0</GraphDesc>
-</DataModels_item1_item0_item7_item0_item3>
+</DataModels_item1_item0_item7_item0_item4>
 
 
-<DataModels_item1_item0_item7_item0_item4>
+<DataModels_item1_item0_item7_item0_item5>
   <CTVER>43543230</CTVER>
   <ID>4</ID>
   <PID>0</PID>
@@ -1627,7 +1663,7 @@ Horz2=0</GraphDesc>
   <HistoryID>0</HistoryID>
   <LockStamp></LockStamp>
   <DataLevel>0</DataLevel>
-  <OrderNo>4</OrderNo>
+  <OrderNo>5</OrderNo>
   <DisplayName>具体的相关类型</DisplayName>
   <DataType>1</DataType>
   <DataTypeName>VAR_STRING</DataTypeName>
@@ -1641,7 +1677,7 @@ Horz2=0</GraphDesc>
   <DataLength>100</DataLength>
   <DataScale>0</DataScale>
   <GraphDesc></GraphDesc>
-</DataModels_item1_item0_item7_item0_item4>
+</DataModels_item1_item0_item7_item0_item5>
 
 
 </CTOXML>

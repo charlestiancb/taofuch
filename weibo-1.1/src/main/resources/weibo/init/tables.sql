@@ -44,6 +44,7 @@ DROP TABLE IF EXISTS `fetch_info`;
 CREATE TABLE `fetch_info` (
   `rec_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `query_str` varchar(500) DEFAULT NULL COMMENT '具体的查询词',
+  `collection_name` varchar(500) DEFAULT NULL COMMENT '查询词所在集合的名称，如当词存在于文件中，这就是文件名',
   `relation_id` varchar(200) DEFAULT NULL COMMENT '对应的内容ID，如微博ID。',
   `relation_type` varchar(100) DEFAULT NULL COMMENT '具体的相关类型，如微博或用户等',
   PRIMARY KEY (`rec_id`)
