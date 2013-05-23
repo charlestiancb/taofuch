@@ -10,12 +10,13 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 import com.scoop.crawler.weibo.entity.OneWeiboInfo;
+import com.scoop.crawler.weibo.entity.Query;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.failed.FailedHandler;
 
 public abstract class WeiboParser extends Parser {
 	private int curPage = 1;
-	private static ThreadLocal<String> query = new InheritableThreadLocal<String>();
+	private static ThreadLocal<Query> query = new InheritableThreadLocal<Query>();
 
 	public WeiboParser(DataSource dataSource, FailedHandler handler) {
 		super(dataSource, handler);
@@ -24,10 +25,20 @@ public abstract class WeiboParser extends Parser {
 	/**
 	 * 保存用户查询的具体词语！。
 	 * 
-	 * @param url
+	 * @param queryStr
+	 *            查询内容
+	 * @param colName
+	 *            查询内容所在的集合名称
 	 */
-	public static void saveQuery(String url) {
-		query.set(url);
+	public static void saveQuery(String queryStr, String colName) {
+		query.set(new Query(queryStr, colName));
+	}
+
+	/**
+	 * 清除查询内容
+	 */
+	public static void clearQuery() {
+		query.set(null);
 	}
 
 	/**
@@ -35,7 +46,7 @@ public abstract class WeiboParser extends Parser {
 	 * 
 	 * @return
 	 */
-	public static String getQuery() {
+	public static Query getQuery() {
 		return query.get();
 	}
 
@@ -48,8 +59,7 @@ public abstract class WeiboParser extends Parser {
 	 *            微博的发布时间
 	 * @throws IOException
 	 */
-	protected void parseWeibo(String weiboUrl, String publishTime, DefaultHttpClient client, DataSource dataSource)
-			throws IOException {
+	protected void parseWeibo(String weiboUrl, String publishTime, DefaultHttpClient client, DataSource dataSource) throws IOException {
 		OneWeiboInfo weibo = new OneWeiboInfo(weiboUrl, client);
 		weibo.setHandler(getHandler());
 		if (!weibo.isValid()) {

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
@@ -281,7 +282,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 								if (StringUtils.isBlank(word)) {
 									continue;
 								} else {
-									saveQuery(word);
+									saveQuery(word, FilenameUtils.getBaseName(f.getAbsolutePath()));
 									// 输入到输入框中，然后点击查询，并开始解析！
 									search(driver, word);
 									hasReadLine = lineNum;
@@ -322,7 +323,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 					} catch (Exception e) {
 					}
 				}
-				saveQuery(null);
+				clearQuery();
 			}
 			driver.quit();
 		}

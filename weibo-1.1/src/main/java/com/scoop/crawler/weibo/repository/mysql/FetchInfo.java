@@ -10,6 +10,8 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.scoop.crawler.weibo.entity.Query;
+
 @Entity
 @Table(name = "FETCH_INFO")
 public class FetchInfo implements Serializable {
@@ -21,6 +23,7 @@ public class FetchInfo implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long recId;
 	private String queryStr;
+	private String collectionName;
 	private String relationId;
 	private String relationType;
 
@@ -37,8 +40,11 @@ public class FetchInfo implements Serializable {
 	 * @param relationType
 	 *            保存该抓取信息的功能
 	 */
-	public FetchInfo(String queryStr, String relationId, String relationType) {
-		setQueryStr(queryStr);
+	public FetchInfo(Query query, String relationId, String relationType) {
+		if (query != null) {
+			setQueryStr(query.getQueryStr());
+			setCollectionName(query.getCollectionName());
+		}
 		setRelationId(relationId);
 		setRelationType(relationType);
 	}
@@ -82,5 +88,13 @@ public class FetchInfo implements Serializable {
 	 */
 	public boolean needSave() {
 		return StringUtils.isNotBlank(queryStr);
+	}
+
+	public String getCollectionName() {
+		return collectionName;
+	}
+
+	public void setCollectionName(String collectionName) {
+		this.collectionName = collectionName;
 	}
 }
