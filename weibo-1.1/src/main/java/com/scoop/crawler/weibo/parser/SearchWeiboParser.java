@@ -164,7 +164,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 	 */
 	private void saveNoResultWord() {
 		try {
-			FileUtils.write(new File(FileUtils.getUserDirectory(), "noresultWords.txt"), getQuery()
+			FileUtils.write(new File(FileUtils.getUserDirectory(), "noresultWords.txt"), getQuery().getQueryStr()
 					+ IOUtils.LINE_SEPARATOR, "UTF-8", true);
 		} catch (IOException e) {
 			Logger.log("保存无结果的查询词失败：" + getQuery());
@@ -176,7 +176,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 	 */
 	private void saveNotQueryWord() {
 		try {
-			FileUtils.write(new File(FileUtils.getUserDirectory(), "notQueryWords.txt"), getQuery()
+			FileUtils.write(new File(FileUtils.getUserDirectory(), "notQueryWords.txt"), getQuery().getQueryStr()
 					+ IOUtils.LINE_SEPARATOR, "UTF-8", true);
 		} catch (Exception e) {
 			Logger.log("保存无结果的查询词失败：" + getQuery());

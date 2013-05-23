@@ -30,4 +30,8 @@ public class Query implements Serializable {
 	public void setCollectionName(String collectionName) {
 		this.collectionName = collectionName;
 	}
+
+	public String toString() {
+		return "[" + queryStr + " - " + collectionName + "]";
+	}
 }
