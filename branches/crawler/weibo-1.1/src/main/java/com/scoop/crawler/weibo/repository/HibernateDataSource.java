@@ -103,10 +103,11 @@ public class HibernateDataSource extends DatabaseDataSource {
 			FetchInfo fi = new FetchInfo(WeiboParser.getQuery(), id, weibo.name());
 			if (fi.needSave()) {
 				Session s = getCurrentSession();
-				Object obj = s.createQuery("from FetchInfo where queryStr=? and relationId=? and relationType=?")
+				Object obj = s.createQuery("from FetchInfo where queryStr=? and collectionName=? and relationId=? and relationType=?")
 								.setString(0, fi.getQueryStr())
-								.setString(1, fi.getRelationId())
-								.setString(2, fi.getRelationType())
+								.setString(1, fi.getCollectionName())
+								.setString(2, fi.getRelationId())
+								.setString(3, fi.getRelationType())
 								.uniqueResult();
 				if (obj == null) {
 					Transaction t = s.beginTransaction();
