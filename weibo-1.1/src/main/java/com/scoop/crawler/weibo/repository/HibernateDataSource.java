@@ -105,7 +105,7 @@ public class HibernateDataSource extends DatabaseDataSource {
 				Session s = getCurrentSession();
 				Object obj = s.createQuery("from FetchInfo where queryStr=? and collectionName=? and relationId=? and relationType=?")
 								.setString(0, fi.getQueryStr())
-								.setString(1, fi.getCollectionName())
+								.setString(1, fi.getTopicvector())
 								.setString(2, fi.getRelationId())
 								.setString(3, fi.getRelationType())
 								.uniqueResult();

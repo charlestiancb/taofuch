@@ -1567,7 +1567,7 @@ Top=207.00</GraphDesc>
   <ID>5</ID>
   <PID>0</PID>
   <RID>0</RID>
-  <Name>collection_name</Name>
+  <Name>topicvector</Name>
   <Caption></Caption>
   <TypeName></TypeName>
   <Memo>查询词所在集合的名称，如当词存在于文件中，这就是文件名</Memo>
