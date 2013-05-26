@@ -23,7 +23,7 @@ public class FetchInfo implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long recId;
 	private String queryStr;
-	private String collectionName;
+	private String topicvector;
 	private String relationId;
 	private String relationType;
 
@@ -43,7 +43,7 @@ public class FetchInfo implements Serializable {
 	public FetchInfo(Query query, String relationId, String relationType) {
 		if (query != null) {
 			setQueryStr(query.getQueryStr());
-			setCollectionName(query.getCollectionName());
+			setTopicvector(query.getCollectionName());
 		}
 		setRelationId(relationId);
 		setRelationType(relationType);
@@ -90,11 +90,12 @@ public class FetchInfo implements Serializable {
 		return StringUtils.isNotBlank(queryStr);
 	}
 
-	public String getCollectionName() {
-		return collectionName;
+	public String getTopicvector() {
+		return topicvector;
 	}
 
-	public void setCollectionName(String collectionName) {
-		this.collectionName = collectionName;
+	public void setTopicvector(String topicvector) {
+		this.topicvector = topicvector;
 	}
+
 }
