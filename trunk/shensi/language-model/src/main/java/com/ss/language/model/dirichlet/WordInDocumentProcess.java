@@ -69,7 +69,7 @@ public class WordInDocumentProcess extends PipeNode {
 				}
 			}
 		}
-		System.out.println("---------------完成计算各文档中各个词的tf值-----------");
+		System.out.println("---------------完成计算各文档中各个词的P(w|D)值-----------");
 	}
 
 	/**
