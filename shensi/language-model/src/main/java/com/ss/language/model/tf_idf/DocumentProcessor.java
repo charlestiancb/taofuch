@@ -20,8 +20,6 @@ import com.ss.language.model.data.repo.TfIdfRepository;
 import com.ss.language.model.pipe.PipeNode;
 
 public class DocumentProcessor extends PipeNode {
-	/** 每次处理数据数量 */
-	private static final int perPageRecords = 100;
 	private TfIdfRepository repo;
 
 	public static void main(String[] args) {
@@ -118,19 +116,6 @@ public class DocumentProcessor extends PipeNode {
 		}
 	}
 
-	private long count(String countSql) throws SQLException {
-		Connection conn = DatabaseConfig.openConn();
-		PreparedStatement ps = conn.prepareStatement(countSql);
-		ResultSet rs = ps.executeQuery();
-		long count = 0;
-		while (rs.next()) {
-			count = rs.getLong(1);
-		}
-		rs.close();
-		ps.close();
-		return count;
-	}
-
 	/**
 	 * 计算每个词的IDF值及每篇文档中每个词的tf/idf值。
 	 * 
@@ -140,7 +125,7 @@ public class DocumentProcessor extends PipeNode {
 		System.out.println("---------------正在计算各文档中各个词的idf值与tf*idf值-----------");
 		// idf值=lg(总文档数/含有该词的文档数)
 		long totalDocument = DatabaseConfig.query("select document_title from WORD_TF_IDF group by document_title")
-				.size();
+											.size();
 		long page = totalDocument / perPageRecords;
 		page = totalDocument % perPageRecords > 0 ? page + 1 : page;
 		for (int i = 0; i < page; i++) {

@@ -66,6 +66,11 @@ public class WordIdf implements Serializable {
 		this.df = df;
 	}
 
+	/**
+	 * 该词在所有文档中出现的次数
+	 * 
+	 * @return
+	 */
 	public long getCf() {
 		return cf;
 	}
