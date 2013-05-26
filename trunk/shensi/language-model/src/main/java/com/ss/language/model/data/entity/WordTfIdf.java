@@ -22,6 +22,7 @@ public class WordTfIdf implements Serializable {
 	private Long wordId;
 	private int tf;
 	private Double tfIdf;
+	private Double ptd;
 
 	public WordTfIdf() {
 	}
@@ -70,5 +71,13 @@ public class WordTfIdf implements Serializable {
 
 	public void setDocumentTitle(String documentTitle) {
 		this.documentTitle = documentTitle;
+	}
+
+	public Double getPtd() {
+		return ptd;
+	}
+
+	public void setPtd(Double ptd) {
+		this.ptd = ptd;
 	}
 }

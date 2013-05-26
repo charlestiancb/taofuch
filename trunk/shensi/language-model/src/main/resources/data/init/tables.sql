@@ -30,6 +30,7 @@ CREATE TABLE `word_tf_idf` (
   `word_id` bigint(20) NOT NULL,
   `tf` int(11) NOT NULL COMMENT '该词在该文档中出现的次数',
   `tf_idf` double DEFAULT NULL COMMENT '词的逆文档频率，即：tf*idf',
+  `ptd` double DEFAULT NULL COMMENT '计算P(w|D)的值，其公式为：P(t|d)=(tf(t,d)+uP(t|C))/(tf(t,d)总和+u)',
   PRIMARY KEY (`rec_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='文档中每个词对应的tf和tf/idf值';
 /*!40101 SET character_set_client = @saved_cs_client */;
