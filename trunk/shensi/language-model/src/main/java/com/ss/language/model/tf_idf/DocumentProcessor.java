@@ -89,12 +89,13 @@ public class DocumentProcessor extends PipeNode {
 	/**
 	 * 计算指定文章中每个词的TF值
 	 * 
-	 * @param document
-	 *            文档名称
+	 * @param documentTitle
+	 *            文档名称，对于微博来说，就是weibo_id。
 	 * @param cutWordResult
+	 *            内容分词后的所有词
 	 * @return
 	 */
-	protected void calcTfAndSave(String document, String[] cutWordResult) {
+	protected void calcTfAndSave(String documentTitle, String[] cutWordResult) {
 		if (cutWordResult == null || cutWordResult.length == 0) {
 			return;
 		}
@@ -111,7 +112,7 @@ public class DocumentProcessor extends PipeNode {
 		for (String word : tfOfWord.keySet()) {
 			WordIdf idf = new WordIdf(word, 0D);
 			repo.saveWord(idf);
-			WordTfIdf tfidf = new WordTfIdf(document, idf.getRecId(), tfOfWord.get(word));
+			WordTfIdf tfidf = new WordTfIdf(documentTitle, idf.getRecId(), tfOfWord.get(word));
 			repo.saveWordTf(tfidf);
 		}
 	}
