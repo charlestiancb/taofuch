@@ -13,7 +13,7 @@ import com.ss.language.model.data.DatabaseConfig;
 public class WeiboTfIdfProcessor extends DocumentProcessor {
 
 	/**
-	 * 读取每篇文档，并将每篇文档中的内容进行分词，然后统计出对应的TF值。同时存储词及词的TF值。
+	 * 读取微博信息，并对微博的内容进行分词，然后统计出对应的TF值。同时存储词及词的TF值。
 	 */
 
 	protected void splitWordsAndTf() throws SQLException {
