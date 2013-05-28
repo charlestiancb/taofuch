@@ -15,7 +15,7 @@ import com.ss.language.model.data.DatabaseConfig;
  */
 public abstract class PipeNode {
 	/** 每次处理数据数量 */
-	protected static final int perPageRecords = 100;
+	protected static final int perPageRecords = 50;
 
 	/** 处理入口 */
 	public abstract void process();
