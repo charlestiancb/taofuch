@@ -34,7 +34,7 @@ public class HibernateDataSource extends DatabaseConfig {
 			pro.put(Environment.C3P0_IDLE_TEST_PERIOD, "60");
 			pro.put(Environment.C3P0_ACQUIRE_INCREMENT, "2");
 
-			pro.put(Environment.AUTO_CLOSE_SESSION, "true");
+			pro.put(Environment.AUTO_CLOSE_SESSION, true);
 			// 初始化Hibernate
 			Configuration c = new Configuration();
 			c.setProperties(pro);
