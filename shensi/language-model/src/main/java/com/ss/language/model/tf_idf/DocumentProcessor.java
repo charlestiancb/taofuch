@@ -96,6 +96,7 @@ public class DocumentProcessor extends PipeNode {
 	 * @return
 	 */
 	protected void calcTfAndSave(String documentTitle, String[] cutWordResult) {
+		System.out.println("正在处理：" + documentTitle);
 		if (cutWordResult == null || cutWordResult.length == 0) {
 			return;
 		}
