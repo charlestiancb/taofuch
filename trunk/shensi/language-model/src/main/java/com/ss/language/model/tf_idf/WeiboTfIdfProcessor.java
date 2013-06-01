@@ -41,6 +41,7 @@ public class WeiboTfIdfProcessor extends DocumentProcessor {
 					continue;
 				}
 				calcTfAndSave(rs.getString("Title"), WordSplitor.splitToArr(abstr));
+				System.out.println("当前处理进度：" + ((i + 1) * perPageRecords + tmp) + "/" + count);
 			}
 			rs.close();
 			ps.close();
