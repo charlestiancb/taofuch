@@ -11,7 +11,6 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.cfg.ImprovedNamingStrategy;
-import org.hibernate.service.jdbc.connections.internal.DriverManagerConnectionProviderImpl;
 
 import com.ss.language.model.data.entity.WordIdf;
 import com.ss.language.model.utils.ClassUtils;
@@ -19,12 +18,10 @@ import com.ss.language.model.utils.ClassUtils;
 public class HibernateDataSource extends DatabaseConfig {
 	private static SessionFactory sessionFactory;
 
-	@SuppressWarnings("deprecation")
 	public HibernateDataSource() {
 		if (sessionFactory == null) {
 			// Hibernate的基本配置
 			pro.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
-			pro.put(Environment.CONNECTION_PROVIDER, DriverManagerConnectionProviderImpl.class.getName());
 			pro.put(Environment.POOL_SIZE, 10);
 			pro.put(Environment.AUTO_CLOSE_SESSION, true);
 			// 初始化Hibernate
