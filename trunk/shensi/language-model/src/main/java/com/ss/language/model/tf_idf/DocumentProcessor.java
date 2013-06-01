@@ -136,6 +136,7 @@ public class DocumentProcessor extends PipeNode {
 				break;
 			}
 			for (WordIdf wi : idfs) {
+				System.out.println("正在计算词：" + wi.getWord());
 				// 查询该词在多少文档中存在！
 				long documents = count("select count(1) from WORD_TF_IDF where word_id = " + wi.getRecId());
 				wi.setIdf(Math.log(totalDocument / 1.0 / documents) / Math.log(10));
