@@ -53,7 +53,7 @@ DROP TABLE IF EXISTS `word_idf`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `word_idf` (
   `rec_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `word` varchar(100) COLLATE utf8_bin NOT NULL,
+  `word` varchar(500) COLLATE utf8_bin NOT NULL,
   `df` INT DEFAULT NULL COMMENT '该词出现在多少篇文档中',
   `idf` double DEFAULT NULL COMMENT '该词的逆文档频率，即lg(总文档数/df)',
   `cf` INT DEFAULT NULL COMMENT '该词在所有文档中总共出现的次数',
