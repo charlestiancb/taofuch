@@ -105,6 +105,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 		Element user = doc.getElementById("pl_user_feedlist");
 
 		if ((weibo == null || StringUtils.isEmpty(weibo.text())) && (user == null || StringUtils.isEmpty(user.text()))) {
+			// 如果浏览器方式没有获取到内容，则使用json解析源码的方式进行解析。
 			weibo = null;
 			user = null;
 			html = new StringBuffer();
