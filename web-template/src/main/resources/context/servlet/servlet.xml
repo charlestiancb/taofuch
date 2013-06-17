@@ -38,23 +38,36 @@
 	<!-- View层定义 -->
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<!-- 在没有扩展名时即: "/user/1" 时的默认展现形式 -->
+		<property name="defaultContentType" value="text/html" />
+		<!-- 扩展名至mimeType的映射,即 /user.json => application/json -->
 		<property name="mediaTypes">
 			<map>
 				<entry key="json" value="application/json" />
+				<entry key="xml" value="application/xml" />
 			</map>
 		</property>
 		<property name="defaultViews">
 			<list>
-				<bean
-					class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
+				 <!-- for application/json -->
+                <bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
+                <!-- for application/xml -->
+                <bean class="org.springframework.web.servlet.view.xml.MarshallingView" >
+                    <property name="marshaller">
+                        <bean class="org.springframework.oxm.xstream.XStreamMarshaller"/>
+                    </property>
+                </bean>
 			</list>
 		</property>
+		<!-- 设置为true以忽略对Accept Header的支持 -->
 		<property name="ignoreAcceptHeader" value="true" />
 		<property name="viewResolvers">
 			<list>
+				<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
 				<bean
 					class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-					<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+					<property name="viewClass"
+						value="org.springframework.web.servlet.view.JstlView" />
 					<property name="contentType" value="text/html;charset=UTF-8" />
 					<property name="prefix" value="/WEB-INF/jsp/" />
 					<property name="suffix" value=".jsp" />
