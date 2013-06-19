@@ -15,4 +15,6 @@
 
 	<!-- 加载类的配置 -->
 	<import resource="bean/beans-context.xml" />
+	<!-- 加载权限模块的配置 -->
+	<import resource="servlet/security.xml" />
 </beans>
