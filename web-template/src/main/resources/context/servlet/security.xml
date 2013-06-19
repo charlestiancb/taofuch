@@ -6,6 +6,14 @@
 	<http auto-config="true" create-session="never">
 		<form-login login-page='/admin/login'
 			always-use-default-target="false" default-target-url="/admin/home" />
-		<logout logout-url="/admin/logout" />
+		<logout logout-url="/admin/logout" logout-success-url="/admin/bye" />
 	</http>
+
+	<authentication-manager>
+		<authentication-provider user-service-ref="userDetailsService">
+		</authentication-provider>
+	</authentication-manager>
+
+	<beans:bean id="userDetailsService"
+		class="com.cloudtech.template.web.security.AdminUserService"></beans:bean>
 </beans:beans>
