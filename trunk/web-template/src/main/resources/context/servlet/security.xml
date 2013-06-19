@@ -8,5 +8,4 @@
 			always-use-default-target="false" default-target-url="/admin/home" />
 		<logout logout-url="/admin/logout" />
 	</http>
-	
 </beans:beans>
