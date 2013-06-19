@@ -1,4 +1,4 @@
-package com.cloudtech.template.web.admin.controller;
+package com.cloudtech.template.web.controller.admin;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

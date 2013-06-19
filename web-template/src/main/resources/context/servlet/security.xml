@@ -16,6 +16,6 @@
 		class="com.cloudtech.template.web.security.AdminUserService" />
 		
 		
-	<filter-chain filters=""/>
+	<filter-chain pattern="" filters=""/>
 	
 </beans:beans>
