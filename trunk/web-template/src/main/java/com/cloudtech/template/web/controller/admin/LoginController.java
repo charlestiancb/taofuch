@@ -1,9 +1,8 @@
 package com.cloudtech.template.web.controller.admin;
 
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletResponse;
-
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +24,15 @@ public class LoginController extends BaseController {
 		System.out.println("进入demo页面！");
 	}
 
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public void login(Model model) {
+	@RequestMapping(value = "/login")
+	public void login(HttpServletRequest request, Model model) {
 		System.out.println("进入login页面！");
+		Exception e = (Exception) request.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+		if (e != null) {
+			// 说明是登录的情形！
+			model.addAttribute("errMsg", e.getMessage());
+		}
+		model.addAttribute("j_username", request.getParameter("j_username"));
 	}
 
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
@@ -35,16 +40,8 @@ public class LoginController extends BaseController {
 		System.out.println("进入logout页面！");
 	}
 
-	@RequestMapping(value = "/home", method = RequestMethod.GET)
+	@RequestMapping(value = "/home")
 	public void home(Model model) {
 		System.out.println("登录后进入首页");
-	}
-
-	@RequestMapping(value = "/bye", method = RequestMethod.GET)
-	public void bye(Model model, HttpServletResponse response) throws IOException {
-		System.out.println("进入bye-bye页面！");
-		response.setContentType("text/html; charset=utf-8");
-		response.getWriter().write("<center>感谢您的使用！</center>");
-		response.getWriter().flush();
 	}
 }
