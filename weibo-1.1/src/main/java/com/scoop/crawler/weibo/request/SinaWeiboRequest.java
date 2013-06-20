@@ -166,7 +166,7 @@ public class SinaWeiboRequest {
 				res = client.execute(new HttpGet("http://weibo.com/u/" + userId + ""));
 				String html = EntityUtils.toString(res.getEntity(), "UTF-8");
 				EntityUtils.consumeQuietly(res.getEntity());
-				if (html.indexOf("$CONFIG['oid'] = '" + userId + "';") == -1) {
+				if (html.replaceAll(" ", "").indexOf("$CONFIG['oid']='" + userId + "';") == -1) {
 					// 登录失败，退出操作！
 					Logger.log("浏览器方式登录也失败，只能停止工作了~");
 					System.exit(0);
