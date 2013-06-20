@@ -6,6 +6,7 @@ public class Query implements Serializable {
 	private static final long serialVersionUID = -3680276057161285380L;
 	private String queryStr;
 	private String collectionName;
+	private int currentPage = 0;
 
 	public Query() {
 	}
@@ -33,5 +34,13 @@ public class Query implements Serializable {
 
 	public String toString() {
 		return "[" + queryStr + " - " + collectionName + "]";
+	}
+
+	public int getCurrentPage() {
+		return currentPage;
+	}
+
+	public void setCurrentPage(int currentPage) {
+		this.currentPage = currentPage;
 	}
 }

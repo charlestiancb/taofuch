@@ -26,6 +26,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 
+import com.scoop.crawler.weibo.entity.Query;
 import com.scoop.crawler.weibo.fetch.FetchSinaWeibo;
 import com.scoop.crawler.weibo.repository.DataSource;
 import com.scoop.crawler.weibo.request.ExploreRequest;
@@ -140,6 +141,9 @@ public class SearchWeiboParser extends JsonStyleParser {
 		} else if (user != null) {
 			parseUser(user);
 		}
+		// 记录正在处理的页数
+		Query q = getQuery();
+		q.setCurrentPage(q.getCurrentPage() + 1);
 		// 解析下一页
 		WebElement ele = null;
 		try {
@@ -177,8 +181,10 @@ public class SearchWeiboParser extends JsonStyleParser {
 	 */
 	private void saveNotQueryWord() {
 		try {
-			FileUtils.write(new File(FileUtils.getUserDirectory(), "notQueryWords.txt"), getQuery().getQueryStr()
-					+ IOUtils.LINE_SEPARATOR, "UTF-8", true);
+			if (getQuery().getCurrentPage() == 0) {
+				FileUtils.write(new File(FileUtils.getUserDirectory(), "notQueryWords.txt"), getQuery().getQueryStr()
+						+ IOUtils.LINE_SEPARATOR, "UTF-8", true);
+			}
 		} catch (Exception e) {
 			Logger.log("保存无结果的查询词失败：" + getQuery());
 		}
