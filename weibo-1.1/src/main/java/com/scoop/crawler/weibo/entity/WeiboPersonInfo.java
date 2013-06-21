@@ -163,8 +163,9 @@ public class WeiboPersonInfo extends Info {
 			if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
 				initIfNeccessory();
 				try {
-					String userId = contentHtml.substring(contentHtml.indexOf("$CONFIG['oid'] = '"));
-					userId = userId.substring("$CONFIG['oid'] = '".length());
+					String tmp = contentHtml.replaceAll(" ", "");
+					String userId = tmp.substring(tmp.indexOf("$CONFIG['oid']='"));
+					userId = userId.substring("$CONFIG['oid']='".length());
 					userId = userId.substring(0, userId.indexOf("';"));
 					id = userId;
 				} catch (Exception e) {
@@ -186,10 +187,11 @@ public class WeiboPersonInfo extends Info {
 		}
 		if (StringUtils.isEmpty(name)) {
 			try {
-				int idx = contentHtml.indexOf("$CONFIG['onick'] = '");
+				String tmp = contentHtml.replaceAll(" ", "");
+				int idx = tmp.indexOf("$CONFIG['onick']='");
 				if (idx > -1) {
-					name = contentHtml.substring(idx);
-					name = name.substring("$CONFIG['onick'] = '".length());
+					name = tmp.substring(idx);
+					name = name.substring("$CONFIG['onick']='".length());
 					name = name.substring(0, name.indexOf("';"));
 					return name;
 				}

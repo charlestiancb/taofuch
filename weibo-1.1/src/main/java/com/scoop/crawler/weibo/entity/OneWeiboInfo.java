@@ -223,8 +223,9 @@ public class OneWeiboInfo extends Info {
 		if (publisher == null) {
 			requestIfNeccessory();
 			try {
-				String userId = contentHtml.substring(contentHtml.indexOf("$CONFIG['oid'] = '"));
-				userId = userId.substring("$CONFIG['oid'] = '".length());
+				String tmp = contentHtml.replaceAll(" ", "");
+				String userId = tmp.substring(tmp.indexOf("$CONFIG['oid']='"));
+				userId = userId.substring("$CONFIG['oid']='".length());
 				userId = userId.substring(0, userId.indexOf("';"));
 				publisher = new WeiboPersonInfo("http://weibo.com/" + userId + "/info", client);
 				publisher.setHandler(getHandler());

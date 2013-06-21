@@ -153,7 +153,7 @@ public class ExploreRequest {
 		String html = "";
 		try {
 			html = driver.getPageSource();
-			while (html.indexOf("$CONFIG['islogin'] = '1'") == -1) {
+			while (html.replaceAll(" ", "").indexOf("$CONFIG['islogin']='1'") == -1) {
 				driver.quit();
 				// 如果没有当前人信息，则是没有登录的！
 				WebDriver driverTmp = getDriver(null);
