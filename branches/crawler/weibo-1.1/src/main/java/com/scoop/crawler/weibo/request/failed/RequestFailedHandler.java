@@ -93,10 +93,15 @@ public class RequestFailedHandler extends FailedHandler {
 					break;
 				case COMMENT:
 					WebDriver driver = ExploreRequest.getDriver(null);
-					OneWeiboInfo weibo = new OneWeiboInfo(req.getUrl(), getClient());
-					new CommentParser(getDataSource(), this).fetchWeiboComments(driver,
-																				EntityTransfer.parseWeibo(weibo),
-																				getClient());
+					try {
+						OneWeiboInfo weibo = new OneWeiboInfo(req.getUrl(), getClient());
+						new CommentParser(getDataSource(), this).fetchWeiboComments(driver,
+																					EntityTransfer.parseWeibo(weibo),
+																					getClient());
+					} catch (Exception e) {
+					} finally {
+						driver.quit();
+					}
 					break;
 				case PERSON:
 					WeiboPersonInfo person = new WeiboPersonInfo(req.getUrl(), getClient());
