@@ -92,8 +92,9 @@ public class UserWeiboParser extends JsonStyleParser {
 			return;
 		}
 		// 解析出用户编号！
-		String uid = "$CONFIG['oid'] = '";
-		uid = html.substring(html.indexOf(uid)) + uid.length();
+		String uid = "$CONFIG['oid']='";
+		String tmp = html.toString().replaceAll(" ", "");
+		uid = tmp.substring(tmp.indexOf(uid)) + uid.length();
 		uid = uid.substring(0, uid.indexOf("';"));
 		uid = uid.substring(uid.lastIndexOf("'") + 1);
 		// 将map中的html内容拿出来！

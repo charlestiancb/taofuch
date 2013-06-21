@@ -261,7 +261,7 @@ public class SinaWeiboRequest {
 			// 获取登录过的微博页面
 			String html = EntityUtils.toString(res.getEntity(), "UTF-8");
 			EntityUtils.consumeQuietly(res.getEntity());
-			if (!html.startsWith("{\"") && html.indexOf("$CONFIG['oid'] = '") == -1) {
+			if (!html.startsWith("{\"") && html.replaceAll(" ", "").indexOf("$CONFIG['oid']='") == -1) {
 				// 不是登录状态。
 				Logger.log("现在[" + url + "]是非登录状态，自动重新登录……");
 				client = getHttpClient(LogonInfo.getLogonInfo().getUsername(), LogonInfo.getLogonInfo().getPassword());
