@@ -195,10 +195,9 @@ public class SinaWeiboRequest {
 			setCookieToClient(client, driver);
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			if (driver != null) {
-				driver.quit();
-			}
+		}
+		if (driver != null) {
+			driver.quit();
 		}
 	}
 

@@ -61,15 +61,17 @@ public class RequestFailedHandler extends FailedHandler {
 			}
 			// 处理每条失败的请求！
 			try {
-				if (req == null || req.getRecId() == null) {
-					Logger.log("没有失败的记录，继续……");
-					// 如果没有失败记录，则等待30分钟！
-					Thread.sleep(30 * 60 * 1000);
-				} else {
-					Logger.log("有失败的记录，线程进入激活抓取状态！");
-					fetch(req);
+				while (true) {
+					if (req == null || req.getRecId() == null) {
+						Logger.log("没有失败的记录，继续……");
+						// 如果没有失败记录，则等待30分钟！
+						Thread.sleep(30 * 60 * 1000);
+					} else {
+						Logger.log("有失败的记录，线程进入激活抓取状态！");
+						fetch(req);
+					}
+					req = getDataSource().pop();
 				}
-				req = getDataSource().pop();
 			} catch (Exception e) {
 			}
 		}
