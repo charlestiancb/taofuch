@@ -38,7 +38,7 @@
 		<beans:property name="filterProcessesUrl" value="/admin/logon" />
 	</beans:bean>
 	<beans:bean id="loginLogAuthenticationSuccessHandler"
-		class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+		class="com.cloudtech.template.web.security.SavedRequestAwareAuthenticationSuccessHandler">
 		<beans:property name="defaultTargetUrl" value="/admin/home" />
 	</beans:bean>
 	<beans:bean id="simpleUrlAuthenticationFailureHandler"
@@ -48,7 +48,7 @@
 	</beans:bean>
 	<!-- 未登录的切入点 -->
 	<beans:bean id="authenticationProcessingFilterEntryPoint"
-		class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		class="com.cloudtech.template.web.security.LoginUrlAuthenticationEntryPoint">
 		<beans:property name="loginFormUrl" value="/admin/login"></beans:property>
 	</beans:bean>
 </beans:beans>
