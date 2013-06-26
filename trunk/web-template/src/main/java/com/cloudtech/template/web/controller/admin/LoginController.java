@@ -26,11 +26,12 @@ public class LoginController extends BaseController {
 
 	@RequestMapping(value = "/login")
 	public void login(HttpServletRequest request, Model model) {
-		System.out.println("进入login页面！");
 		Exception e = (Exception) request.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 		if (e != null) {
 			// 说明是登录的情形！
-			model.addAttribute("errMsg", e.getMessage());
+			model.addAttribute("message", e.getMessage());
+		} else {
+			model.addAttribute("message", "请登录！");
 		}
 		model.addAttribute("j_username", request.getParameter("j_username"));
 	}
