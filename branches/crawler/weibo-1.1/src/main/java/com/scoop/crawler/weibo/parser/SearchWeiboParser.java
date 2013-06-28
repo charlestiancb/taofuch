@@ -157,7 +157,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 		if (ele != null && ele.isEnabled()) {
 			ele.click();
 			try {
-				Thread.sleep(5000);// 等待一段时间，让其加载完毕！
+				Thread.sleep(2000);// 等待一段时间，让其加载完毕！
 			} catch (Exception e) {
 			}
 			parseHtmlToWeibo(driver);
