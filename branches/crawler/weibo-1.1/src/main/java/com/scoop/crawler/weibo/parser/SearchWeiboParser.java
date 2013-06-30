@@ -128,6 +128,9 @@ public class SearchWeiboParser extends JsonStyleParser {
 			targetContentList = "{" + targetContentList;// 补齐为JSON格式
 			// 将map中的html内容拿出来！
 			targetContentList = JSONUtils.getSinaHtml(targetContentList);
+			if (StringUtils.isBlank(targetContentList)) {
+				return;
+			}
 			doc = Jsoup.parse(targetContentList);
 			if (weiboStart.equals(hit)) {
 				parseWeibo(doc);
