@@ -121,6 +121,7 @@ public class SearchWeiboParser extends JsonStyleParser {
 			}
 			if (idx == -1) {
 				Logger.log("查询词[" + getQuery() + "]没有查询结果！");
+				saveNoResultWord();
 				return;
 			}
 			String targetContentList = html.substring(idx + hit.length());
@@ -129,6 +130,8 @@ public class SearchWeiboParser extends JsonStyleParser {
 			// 将map中的html内容拿出来！
 			targetContentList = JSONUtils.getSinaHtml(targetContentList);
 			if (StringUtils.isBlank(targetContentList)) {
+				Logger.log("查询词[" + getQuery() + "]没有查询结果！");
+				saveNoResultWord();
 				return;
 			}
 			doc = Jsoup.parse(targetContentList);
