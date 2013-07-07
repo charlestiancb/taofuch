@@ -34,7 +34,7 @@ public class WordOfLdaProcess extends PipeNode {
 		// 先将所有标题汇总，作为文章来看。
 		String createSql = "create table "
 				+ LDADataset.tableName
-				+ "(`rec_id` bigint(20) NOT NULL AUTO_INCREMENT,`document_title` varchar(500) COLLATE utf8_bin NOT NULL)";
+				+ "(`rec_id` bigint(20) NOT NULL AUTO_INCREMENT,`document_title` varchar(500) COLLATE utf8_bin NOT NULL,PRIMARY KEY (`rec_id`))";
 		DatabaseConfig.executeSql(new EntitySql().setSql(createSql).setType(SqlType.UPDATE));
 		String sql = "insert into " + LDADataset.tableName
 				+ "(document_title) select document_title from word_tf_idf group by document_title";
