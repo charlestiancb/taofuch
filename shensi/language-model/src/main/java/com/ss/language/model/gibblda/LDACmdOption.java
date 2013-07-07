@@ -19,9 +19,6 @@ public class LDACmdOption {
 	/** Specify directory，数据结果（模型数据）保存位置 */
 	public String dir = "";
 
-	/** pecify data file，训练数据或原始数据文件名 */
-	public String dfile = "";
-
 	/** Specify the model name，选择使用哪一个迭代的模型结果来进行推断 */
 	public String modelName = "model-final";
 
