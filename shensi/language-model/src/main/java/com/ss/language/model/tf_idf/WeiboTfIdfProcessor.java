@@ -17,12 +17,12 @@ public class WeiboTfIdfProcessor extends DocumentProcessor {
 	 */
 
 	protected void splitWordsAndTf() throws SQLException {
-		long count = count("SELECT count(1) FROM informationscience");
+		long count = count("SELECT count(1) FROM weibo.weibo_info");
 		long page = count / perPageRecords;
 		page = count % perPageRecords > 0 ? page + 1 : page;
 		System.out.println("---------------正在计算各文档中各个词的tf值-----------");
 		for (int i = 0; i < page; i++) {
-			String sql = "SELECT * FROM informationscience limit " + (i * perPageRecords) + "," + perPageRecords;
+			String sql = "SELECT * FROM weibo.weibo_info limit " + (i * perPageRecords) + "," + perPageRecords;
 			Connection conn = DatabaseConfig.openConn();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
@@ -36,11 +36,11 @@ public class WeiboTfIdfProcessor extends DocumentProcessor {
 						e.printStackTrace();
 					}// 等待一下让系统回收
 				}
-				String abstr = rs.getString("Abstract");
+				String abstr = rs.getString("content");
 				if (StringUtils.isBlank(abstr)) {
 					continue;
 				}
-				calcTfAndSave(rs.getString("Title"), WordSplitor.splitToArr(abstr));
+				calcTfAndSave(rs.getString("weibo_id"), WordSplitor.splitToArr(abstr));
 				System.out.println("当前处理进度：" + ((i + 1) * perPageRecords + tmp) + "/" + count);
 			}
 			rs.close();
