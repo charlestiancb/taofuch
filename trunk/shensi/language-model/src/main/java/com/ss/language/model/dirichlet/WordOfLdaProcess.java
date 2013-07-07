@@ -37,7 +37,7 @@ public class WordOfLdaProcess extends PipeNode {
 				+ "(`rec_id` bigint(20) NOT NULL AUTO_INCREMENT,`document_title` varchar(500) COLLATE utf8_bin NOT NULL,PRIMARY KEY (`rec_id`))";
 		DatabaseConfig.executeSql(new EntitySql().setSql(createSql).setType(SqlType.UPDATE));
 		String sql = "insert into " + LDADataset.tableName
-				+ "(document_title) select document_title from word_tf_idf group by document_title";
+				+ "(document_title) select document_title from word_tf_idf group by document_title order by rec_id";
 		DatabaseConfig.executeSql(new EntitySql().setSql(sql).setType(SqlType.UPDATE));
 		// 开始lda计算
 		if (option.est || option.estc) {
