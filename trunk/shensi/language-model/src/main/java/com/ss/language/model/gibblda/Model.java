@@ -66,7 +66,6 @@ public class Model {
 	public String trainlogFile; // training log file
 
 	public String dir;
-	public String dfile;
 	public String modelName;
 	public int modelStatus; // see Constants class for status of model
 	public LDADataset data; // link to a dataset
@@ -125,7 +124,6 @@ public class Model {
 		twordsSuffix = ".twords";
 
 		dir = "./";
-		dfile = "trndocs.dat";
 		modelName = "model-final";
 		modelStatus = Constants.MODEL_STATUS_UNKNOWN;
 
@@ -194,6 +192,7 @@ public class Model {
 		return true;
 	}
 
+	@SuppressWarnings("resource")
 	protected boolean readTAssignFile(String tassignFile) {
 		try {
 			int i, j;
@@ -453,7 +452,6 @@ public class Model {
 		if (dir.endsWith(File.separator))
 			dir = dir.substring(0, dir.length() - 1);
 
-		dfile = option.dfile;
 		twords = option.twords;
 		wordMapFile = option.wordMapFileName;
 
@@ -470,7 +468,7 @@ public class Model {
 		int m, n, k;
 		p = new double[K];
 
-		data = LDADataset.readDataSet(dir + File.separator + dfile);
+		data = LDADataset.readDataSet();
 		if (data == null) {
 			System.out.println("Fail to read training data!\n");
 			return false;
@@ -617,7 +615,7 @@ public class Model {
 		if (!init(option))
 			return false;
 
-		LDADataset dataset = LDADataset.readDataSet(dir + File.separator + dfile, trnModel.data.localDict);
+		LDADataset dataset = LDADataset.readDataSet(trnModel.data.localDict);
 		if (dataset == null) {
 			System.out.println("Fail to read dataset!\n");
 			return false;

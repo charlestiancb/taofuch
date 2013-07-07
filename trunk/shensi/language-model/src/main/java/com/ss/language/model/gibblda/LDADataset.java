@@ -27,15 +27,16 @@
  */
 package com.ss.language.model.gibblda;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import com.ss.language.model.data.DatabaseConfig;
+
 public class LDADataset {
+	public static final String tableName = "temp_title_for_lda";
 	// ---------------------------------------------------------------
 	// Instance Variables
 	// ---------------------------------------------------------------
@@ -104,6 +105,20 @@ public class LDADataset {
 		}
 	}
 
+	public static String removeBomIfNessecery(String line) throws UnsupportedEncodingException {
+		if (line == null) {
+			return line;
+		}
+		byte[] bs = line.getBytes("UTF-8");
+		if (bs.length > 3 && bs[0] == -17 && bs[1] == -69 && bs[2] == -65) {
+			byte[] result = new byte[bs.length - 3];
+			System.arraycopy(bs, 3, result, 0, bs.length - 3);
+			return new String(result, "UTF-8");
+		} else {
+			return line;
+		}
+	}
+
 	/**
 	 * set the document at the index idx if idx is greater than 0 and less than
 	 * M
@@ -165,62 +180,13 @@ public class LDADataset {
 	 * 
 	 * @return dataset if success and null otherwise
 	 */
-	public static LDADataset readDataSet(String filename) {
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));
-
-			LDADataset data = readDataSet(reader);
-
-			reader.close();
-			return data;
-		} catch (Exception e) {
-			System.out.println("Read Dataset Error: " + e.getMessage());
-			throw new IllegalArgumentException(e);
-		}
-	}
-
-	/**
-	 * read a dataset from a file with a preknown vocabulary
-	 * 
-	 * @param filename
-	 *            file from which we read dataset
-	 * @param dict
-	 *            the dictionary
-	 * @return dataset if success and null otherwise
-	 */
-	public static LDADataset readDataSet(String filename, Dictionary dict) {
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));
-			LDADataset data = readDataSet(reader, dict);
-
-			reader.close();
-			return data;
-		} catch (Exception e) {
-			System.out.println("Read Dataset Error: " + e.getMessage());
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	/**
-	 * read a dataset from a stream, create new dictionary
-	 * 
-	 * @return dataset if success and null otherwise
-	 */
-	public static LDADataset readDataSet(BufferedReader reader) {
+	public static LDADataset readDataSet() {
 		try {
 			// read number of document
-			String line;
-			line = reader.readLine();
-			// 去除UTF-8的BOM头
-			line = removeBomIfNessecery(line);
-			int M = Integer.parseInt(line);
+			int M = (int) DatabaseConfig.count("select count(1) from " + tableName);
 
 			LDADataset data = new LDADataset(M);
-			for (int i = 0; i < M; ++i) {
-				line = reader.readLine();
-				data.setDoc(line, i);
-			}
+			readFromDatabase(M, data);
 			return data;
 		} catch (Exception e) {
 			System.out.println("Read Dataset Error: " + e.getMessage());
@@ -229,17 +195,30 @@ public class LDADataset {
 		}
 	}
 
-	public static String removeBomIfNessecery(String line) throws UnsupportedEncodingException {
-		if (line == null) {
-			return line;
-		}
-		byte[] bs = line.getBytes("UTF-8");
-		if (bs.length > 3 && bs[0] == -17 && bs[1] == -69 && bs[2] == -65) {
-			byte[] result = new byte[bs.length - 3];
-			System.arraycopy(bs, 3, result, 0, bs.length - 3);
-			return new String(result, "UTF-8");
-		} else {
-			return line;
+	private static void readFromDatabase(int total, LDADataset data) {
+		for (int i = 0; i < total; ++i) {
+			// 一个文章一个文章地获取
+			String titleSql = "select document_title from " + tableName + " order by rec_id asc limit " + i + "," + 1;
+			List<Map<String, Object>> result = DatabaseConfig.query(titleSql);
+			if (result == null || result.isEmpty()) {
+				break;
+			}
+			for (Map<String, Object> record : result) {
+				String title = (String) record.get("document_title");
+				String contentSql = "select b.word from word_tf_idf a,word_idf b where a.word_id=b.rec_id and a.document_title=? order by a.rec_id";
+				List<Map<String, Object>> contentResult = DatabaseConfig.query(contentSql, title);
+				if (contentResult == null || contentResult.isEmpty()) {
+					break;
+				}
+				StringBuilder sb = new StringBuilder();
+				for (Map<String, Object> word : contentResult) {
+					if (sb.length() > 0) {
+						sb.append(" ");
+					}
+					sb.append(word.get("word"));
+				}
+				data.setDoc(sb.toString(), i);
+			}
 		}
 	}
 
@@ -252,21 +231,14 @@ public class LDADataset {
 	 *            the dictionary
 	 * @return dataset if success and null otherwise
 	 */
-	public static LDADataset readDataSet(BufferedReader reader, Dictionary dict) {
+	public static LDADataset readDataSet(Dictionary dict) {
 		try {
 			// read number of document
-			String line;
-			line = reader.readLine();
-			line = removeBomIfNessecery(line);
-			int M = Integer.parseInt(line);
+			int M = (int) DatabaseConfig.count("select count(1) from " + tableName);
 			System.out.println("NewM:" + M);
 
 			LDADataset data = new LDADataset(M, dict);
-			for (int i = 0; i < M; ++i) {
-				line = reader.readLine();
-
-				data.setDoc(line, i);
-			}
+			readFromDatabase(M, data);
 			return data;
 		} catch (Exception e) {
 			System.out.println("Read Dataset Error: " + e.getMessage());

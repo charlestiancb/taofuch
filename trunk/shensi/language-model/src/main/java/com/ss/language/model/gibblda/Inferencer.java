@@ -28,7 +28,6 @@
 
 package com.ss.language.model.gibblda;
 
-
 public class Inferencer {
 	// Train model
 	public Model trnModel;
@@ -131,7 +130,7 @@ public class Inferencer {
 		computeNewTheta();
 		computeNewPhi();
 		newModel.liter--;
-		newModel.saveModel(newModel.dfile + "." + newModel.modelName);
+		newModel.saveModel("result." + newModel.modelName);
 
 		return newModel;
 	}
