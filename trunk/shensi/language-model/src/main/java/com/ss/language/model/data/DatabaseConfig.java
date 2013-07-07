@@ -44,6 +44,33 @@ public class DatabaseConfig {
 	}
 
 	/**
+	 * 查询给定SQL的记录数。
+	 * 
+	 * @param countSql
+	 * @param args
+	 * @return
+	 * @throws SQLException
+	 */
+	public static long count(String countSql, Object... args) throws SQLException {
+		Connection conn = DatabaseConfig.openConn();
+		PreparedStatement ps = conn.prepareStatement(countSql);
+		if (args != null && args.length > 0) {
+			int i = 1;
+			for (Object arg : args) {
+				ps.setObject(i++, arg);
+			}
+		}
+		ResultSet rs = ps.executeQuery();
+		long count = 0;
+		while (rs.next()) {
+			count = rs.getLong(1);
+		}
+		rs.close();
+		ps.close();
+		return count;
+	}
+
+	/**
 	 * 查询指定的SQL
 	 * 
 	 * @param sql

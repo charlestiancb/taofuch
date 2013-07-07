@@ -12,8 +12,9 @@ public class EntitySql {
 		return sql == null ? "" : sql.trim();
 	}
 
-	public void setSql(String sql) {
+	public EntitySql setSql(String sql) {
 		this.sql = sql;
+		return this;
 	}
 
 	public List<Object> getArgs() {
@@ -23,12 +24,14 @@ public class EntitySql {
 		return args;
 	}
 
-	public void setArgs(List<Object> args) {
+	public EntitySql setArgs(List<Object> args) {
 		this.args = args;
+		return this;
 	}
 
-	public void addArg(Object arg) {
+	public EntitySql addArg(Object arg) {
 		getArgs().add(arg);
+		return this;
 	}
 
 	public String toString() {
@@ -39,8 +42,9 @@ public class EntitySql {
 		return type;
 	}
 
-	public void setType(SqlType type) {
+	public EntitySql setType(SqlType type) {
 		this.type = type;
+		return this;
 	}
 
 	public enum SqlType {
