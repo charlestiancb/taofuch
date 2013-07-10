@@ -14,7 +14,7 @@
          http://www.springframework.org/schema/util
          http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	<!-- 存放需要配置到Spring窗口中的bean。 -->
-	<context:component-scan base-package="com.cloudtech.template.service"/>
+	<context:component-scan base-package="com.cloudtech.template.service,com.cloudtech.template.dao"/>
 
 	<!-- multipart解释器  切勿修改id，因为此bean只用于filter，改名后可能会让spring也用上-->
 	<bean id="multipartBean" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
