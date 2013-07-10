@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/demo")
 public class DemoController extends BaseController {
 	@RequestMapping(value = "/json", method = RequestMethod.GET)
-	public void json(Model model) {
+	public String json(Model model) {
 		model.addAttribute("key", "hello");
+		return "public/error";
 	}
 
 	@RequestMapping(value = "/pic.jpg", method = RequestMethod.GET)
