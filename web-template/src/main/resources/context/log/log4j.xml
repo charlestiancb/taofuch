@@ -17,6 +17,22 @@
 			<appender-ref ref="log_file" />
 	</appender>
 	
+	<appender name="default_file" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="/logs/default_file.log" />
+		<param name="append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<param name="MaxFileSize" value="100MB" />
+		<param name="MaxBackupIndex" value="10" />
+		<param name="ImmediateFlush" value="true"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss SSS} [%t] %-5p %C - %m%n" />
+		</layout>
+	</appender>
+	<appender name="default_syn" class="org.apache.log4j.AsyncAppender">
+			<param name="BufferSize" value="512"/>
+			<appender-ref ref="default_file" />
+	</appender>
+	
 	<appender name="console" class="org.apache.log4j.ConsoleAppender">
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern"
@@ -26,10 +42,10 @@
 	
 	<root>
 		<level value="error" />
-		<appender-ref ref="file_syn" />
+		<appender-ref ref="default_syn" />
 	</root>
-	<logger name="file" additivity="false">
-		<level value="error" />
+	<logger name="log" additivity="false">
+		<level value="debug" />
 		<appender-ref ref="file_syn" />
 		<!-- appender-ref ref="console" / -->
 	</logger>
