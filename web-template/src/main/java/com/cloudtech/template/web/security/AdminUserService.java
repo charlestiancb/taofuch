@@ -12,8 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  */
 public class AdminUserService implements UserDetailsService {
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username)
+			throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
 		System.out.println("进入AdminUserService类中！");
 		return null;

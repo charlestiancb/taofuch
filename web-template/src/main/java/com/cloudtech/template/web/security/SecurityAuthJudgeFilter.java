@@ -24,28 +24,26 @@ public class SecurityAuthJudgeFilter implements Filter {
 		this.loginUrl = loginUrl;
 	}
 
-	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		loginUrl = StringUtils.defaultIfBlank(filterConfig.getInitParameter("login-url"), "");
+		loginUrl = StringUtils.defaultIfBlank(
+				filterConfig.getInitParameter("login-url"), "");
 	}
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-			throws IOException,
-			ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response,
+			FilterChain chain) throws IOException, ServletException {
 		if (SecurityContextHolder.getContext().getAuthentication() == null) {
 			HttpServletResponse res = (HttpServletResponse) response;
 			if (StringUtils.isNotBlank(loginUrl)) {
 				res.sendRedirect(loginUrl);
 				return;
 			} else {
-				res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed!");
+				res.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+						"Authentication Failed!");
 			}
 		}
 		chain.doFilter(request, response);
 	}
 
-	@Override
 	public void destroy() {
 	}
 }
