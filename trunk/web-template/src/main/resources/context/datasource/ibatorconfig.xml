@@ -23,7 +23,7 @@
 			<property name="enableSubPackages" value="false" />
 		</daoGenerator>
 
-		<table tableName="user" enableCountByExample="true"
+		<table tableName="weibo_info" enableCountByExample="true"
 			enableDeleteByExample="true" enableSelectByExample="true"
 			enableUpdateByExample="true">
 		</table>
