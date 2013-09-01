@@ -5,7 +5,7 @@
 		location="D:\maven_repository\mysql\mysql-connector-java\5.1.21\mysql-connector-java-5.1.21.jar" />
 	<ibatorContext id="context1" targetRuntime="Ibatis2Java5">
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://localhost:3306/weibo?useUnicode=true&amp;characterEncoding=UTF-8"
+			connectionURL="jdbc:mysql://localhost:3306/weibo"
 			userId="root" password="root" />
 		<javaModelGenerator targetPackage="com.cloudtech.template.entity"
 			targetProject="D:\dev\workspace\web-template\src\main\java">
