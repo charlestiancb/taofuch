@@ -17,4 +17,6 @@
 	<import resource="bean/beans-context.xml" />
 	<!-- 加载权限模块的配置 -->
 	<import resource="servlet/security.xml" />
+	<!-- 加载权限模块的配置 -->
+	<import resource="datasource/datasource.xml" />
 </beans>
