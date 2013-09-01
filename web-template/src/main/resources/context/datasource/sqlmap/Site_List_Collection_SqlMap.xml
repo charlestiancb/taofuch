@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "file:/home/sql-map-config-xml.dtd">
+<sqlMap namespace="LIST_COLLECTION">
+  <sql id="list_Where_Clause">
+    <iterate conjunction="or" prepend="where" property="oredCriteria" removeFirstPrepend="iterate">
+      <isEqual compareValue="true" property="oredCriteria[].valid">
+        (
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithoutValue">
+          $oredCriteria[].criteriaWithoutValue[]$
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithSingleValue">
+          $oredCriteria[].criteriaWithSingleValue[].condition$
+            #oredCriteria[].criteriaWithSingleValue[].value#
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithLikeValue">
+          $oredCriteria[].criteriaWithLikeValue[].condition$ like
+            <isNotNull property="oredCriteria[].criteriaWithLikeValue[].pre">
+	          $oredCriteria[].criteriaWithLikeValue[].pre$
+	        </isNotNull>
+            #oredCriteria[].criteriaWithLikeValue[].value#
+            <isNotNull property="oredCriteria[].criteriaWithLikeValue[].suf">
+	          $oredCriteria[].criteriaWithLikeValue[].suf$
+	        </isNotNull>
+	        escape '\'
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithListValue">
+          $oredCriteria[].criteriaWithListValue[].condition$
+          <iterate close=")" conjunction="," open="(" property="oredCriteria[].criteriaWithListValue[].values">
+            #oredCriteria[].criteriaWithListValue[].values[]#
+          </iterate>
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithBetweenValue">
+          $oredCriteria[].criteriaWithBetweenValue[].condition0$
+          <isNotNull property="oredCriteria[].criteriaWithBetweenValue[].values[0]">
+          #oredCriteria[].criteriaWithBetweenValue[].values[0]#
+          </isNotNull>
+          $oredCriteria[].criteriaWithBetweenValue[].and$
+          $oredCriteria[].criteriaWithBetweenValue[].condition1$
+          <isNotNull property="oredCriteria[].criteriaWithBetweenValue[].values[1]">
+          #oredCriteria[].criteriaWithBetweenValue[].values[1]#
+          </isNotNull>
+        </iterate>
+        )
+      </isEqual>
+    </iterate>
+  </sql>
+  
+</sqlMap>
