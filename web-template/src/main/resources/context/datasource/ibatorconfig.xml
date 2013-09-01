@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE ibatorConfiguration PUBLIC "-//Apache Software Foundation//DTD Apache iBATIS Ibator Configuration 1.0//EN" "file:/home/sql-map-config.dtd" >
+<ibatorConfiguration>
+	<classPathEntry
+		location="D:\maven_repository\mysql\mysql-connector-java\5.1.21\mysql-connector-java-5.1.21.jar" />
+	<ibatorContext id="context1" targetRuntime="Ibatis2Java5">
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/weibo?useUnicode=true&amp;characterEncoding=UTF-8"
+			userId="root" password="root" />
+		<javaModelGenerator targetPackage="com.cloudtech.template.entity"
+			targetProject="D:\dev\workspace\web-template\src\main\java">
+			<property name="enableSubPackages" value="false" />
+			<property name="trimStrings" value="true" />
+			<property name="remarksReporting" value="true" />
+		</javaModelGenerator>
+		<sqlMapGenerator targetPackage="context.datasource.sqlmap"
+			targetProject="D:\dev\workspace\web-template\src\main\resources">
+			<property name="enableSubPackages" value="false" />
+		</sqlMapGenerator>
+
+		<daoGenerator targetPackage="com.cloudtech.template.dao"
+			targetProject="D:\dev\workspace\web-template\src\main\java" type="SPRING">
+			<property name="enableSubPackages" value="false" />
+		</daoGenerator>
+
+		<table tableName="user" enableCountByExample="true"
+			enableDeleteByExample="true" enableSelectByExample="true"
+			enableUpdateByExample="true">
+		</table>
+
+	</ibatorContext>
+</ibatorConfiguration>
+
+
