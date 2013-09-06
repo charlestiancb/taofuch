@@ -38,7 +38,8 @@ public class ExploreRequest {
 	public static WebDriver ie(String url) {
 		WebDriver driver = null;
 		try {
-			System.setProperty("webdriver.ie.driver", "src/main/resources/driver/IEDriverServer.exe");
+			System.setProperty("webdriver.ie.driver",
+					"src/main/resources/driver/IEDriverServer.exe");
 			driver = new InternetExplorerDriver();
 			return loginAndRequest(driver, url);
 		} catch (Throwable t) {
@@ -50,7 +51,8 @@ public class ExploreRequest {
 	public static WebDriver chrome(String url) {
 		WebDriver driver = null;
 		try {
-			System.setProperty("webdriver.chrome.driver", "src/main/resources/driver/chromedriver.exe");
+			System.setProperty("webdriver.chrome.driver",
+					"src/main/resources/driver/chromedriver.exe");
 			driver = new ChromeDriver();
 			return loginAndRequest(driver, url);
 		} catch (Throwable t) {
@@ -85,28 +87,47 @@ public class ExploreRequest {
 			// driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
 			// driver.manage().timeouts().setScriptTimeout(30,
 			// TimeUnit.SECONDS);
-			driver.get("http://www.weibo.com/");
+			driver.get("http://weibo.com/");
 			// 这次访问肯定需要登录！因此登录之
-			driver.findElement(By.name("username")).sendKeys(LogonInfo.getLogonInfo().getUsername());
-			driver.findElement(By.name("password")).sendKeys(LogonInfo.getLogonInfo().getPassword());
+			driver.findElement(By.name("username")).sendKeys(
+					LogonInfo.getLogonInfo().getUsername());
+			driver.findElement(By.name("password")).sendKeys(
+					LogonInfo.getLogonInfo().getPassword());
 			Thread.sleep(2 * 1000);// 2秒，等待是否有验证码出现。
 			WebElement verifycode = driver.findElement(By.name("verifycode"));
-			if (verifycode != null && verifycode.isDisplayed()) {
+			if (verifycode != null
+					&& verifycode.isDisplayed()
+					&& (StringUtils.isBlank(verifycode.getText()) || verifycode
+							.getText().length() < 5)) {
 				System.out.println("请输入验证码并提交！");
 				Thread.sleep(5 * 1000);// 等待5s
 				verifycode = driver.findElement(By.name("verifycode"));
-				while (verifycode != null && verifycode.isDisplayed()) {
+				while (verifycode != null
+						&& verifycode.isDisplayed()
+						&& (StringUtils.isBlank(verifycode.getText()) || verifycode
+								.getText().length() < 5)) {
 					System.out.println("请输入验证码并提交！");
 					Thread.sleep(5 * 1000);// 等待5s
 					verifycode = driver.findElement(By.name("verifycode"));
 				}
+				if (StringUtils.isNotBlank(verifycode.getText())
+						&& verifycode.getText().length() > 4) {
+					driver.findElement(By.className("W_btn_g")).click();
+				}
 			} else {
 				driver.findElement(By.className("W_btn_g")).click();
 				verifycode = driver.findElement(By.name("verifycode"));
-				while (verifycode != null && verifycode.isDisplayed()) {
-					System.out.println("请输入验证码并提交！");
+				while (verifycode != null
+						&& verifycode.isDisplayed()
+						&& (StringUtils.isBlank(verifycode.getText()) || verifycode
+								.getText().length() < 5)) {
+					System.out.println("请输入验证码，不要提交！程序检测到之后会自动提交！");
 					Thread.sleep(5 * 1000);// 等待5s
 					verifycode = driver.findElement(By.name("verifycode"));
+				}
+				if (StringUtils.isNotBlank(verifycode.getText())
+						&& verifycode.getText().length() > 4) {
+					driver.findElement(By.className("W_btn_g")).click();
 				}
 			}
 			Thread.sleep(5 * 1000);// 等待5s
