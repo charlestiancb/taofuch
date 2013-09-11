@@ -3,29 +3,34 @@
 <ibatorConfiguration>
 	<classPathEntry
 		location="D:\maven_repository\mysql\mysql-connector-java\5.1.21\mysql-connector-java-5.1.21.jar" />
-	<ibatorContext id="context1" targetRuntime="Ibatis2Java5">
+	<ibatorContext id="cxt" targetRuntime="Ibatis2Java5">
+		<ibatorPlugin
+			type="org.apache.ibatis.ibator.plugins.RenameExampleClassPlugin">
+			<property name="searchString" value="Example$" />
+			<property name="replaceString" value="Criteria" />
+		</ibatorPlugin>
+		<commentGenerator>
+			<property name="suppressDate" value="true" />
+		</commentGenerator>
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
 			connectionURL="jdbc:mysql://localhost:3306/weibo?useUnicode=true&amp;characterEncoding=UTF-8"
 			userId="root" password="root" />
 		<javaModelGenerator targetPackage="com.cloudtech.template.entity"
-			targetProject="D:\dev\workspace\web-template\src\main\java">
+			targetProject="web-template">
 			<property name="enableSubPackages" value="false" />
 			<property name="trimStrings" value="true" />
 			<property name="remarksReporting" value="true" />
 		</javaModelGenerator>
 		<sqlMapGenerator targetPackage="context.datasource.sqlmap"
-			targetProject="D:\dev\workspace\web-template\src\main\resources">
+			targetProject="web-template">
 			<property name="enableSubPackages" value="false" />
 		</sqlMapGenerator>
-
 		<daoGenerator targetPackage="com.cloudtech.template.dao"
-			targetProject="D:\dev\workspace\web-template\src\main\java" type="SPRING">
+			targetProject="none" type="SPRING">
 			<property name="enableSubPackages" value="false" />
 		</daoGenerator>
 
-		<table tableName="weibo_info" enableCountByExample="true"
-			enableDeleteByExample="true" enableSelectByExample="true"
-			enableUpdateByExample="true">
+		<table tableName="weibo_info">
 		</table>
 
 	</ibatorContext>
