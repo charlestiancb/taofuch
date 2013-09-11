@@ -8,8 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.cloudtech.template.web.controller.BaseController;
-
 /**
  * 后台管理登录相关的Controller
  * 
@@ -17,8 +15,7 @@ import com.cloudtech.template.web.controller.BaseController;
  * 
  */
 @Controller
-@RequestMapping("/admin")
-public class LoginController extends BaseController {
+public class LoginController extends BaseAdminController {
 	@RequestMapping(value = "/demo", method = RequestMethod.GET)
 	public void demo(Model model) {
 		System.out.println("进入demo页面！");
@@ -26,7 +23,8 @@ public class LoginController extends BaseController {
 
 	@RequestMapping(value = "/login")
 	public void login(HttpServletRequest request, Model model) {
-		Exception e = (Exception) request.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+		Exception e = (Exception) request
+				.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 		if (e != null) {
 			// 说明是登录的情形！
 			model.addAttribute("message", e.getMessage());
