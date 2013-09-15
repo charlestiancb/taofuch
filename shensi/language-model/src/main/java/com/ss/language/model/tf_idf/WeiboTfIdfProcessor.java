@@ -17,12 +17,12 @@ public class WeiboTfIdfProcessor extends DocumentProcessor {
 	 */
 
 	protected void splitWordsAndTf() throws SQLException {
-		long count = count("SELECT count(1) FROM weibo.weibo_info");
+		long count = count("SELECT count(1) FROM fetch_info ,weibo_info WHERE weibo_info.weibo_id =fetch_info.relation_id AND fetch_info.query_str like \"%ontology%\"");
 		long page = count / perPageRecords;
 		page = count % perPageRecords > 0 ? page + 1 : page;
 		System.out.println("---------------正在计算各文档中各个词的tf值-----------");
 		for (int i = 0; i < page; i++) {
-			String sql = "SELECT * FROM weibo.weibo_info limit " + (i * perPageRecords) + "," + perPageRecords;
+			String sql = "SELECT * FROM fetch_info ,weibo_info WHERE weibo_info.weibo_id =fetch_info.relation_id AND fetch_info.query_str like \"%ontology%\" limit " + (i * perPageRecords) + "," + perPageRecords;
 			Connection conn = DatabaseConfig.openConn();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();

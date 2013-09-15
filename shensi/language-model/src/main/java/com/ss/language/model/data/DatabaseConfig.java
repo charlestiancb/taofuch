@@ -32,7 +32,8 @@ public class DatabaseConfig {
 	private static Connection conn;
 	protected static Properties pro = new Properties();
 	static {
-		pro.put(Environment.URL, "jdbc:mysql://localhost:3306/infordb?useUnicode=true&characterEncoding=UTF-8");
+		pro.put(Environment.URL,
+				"jdbc:mysql://localhost:3306/weibo?useUnicode=true&characterEncoding=UTF-8");
 		pro.put(Environment.USER, "root");
 		pro.put(Environment.PASS, "root");
 		pro.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
@@ -51,7 +52,8 @@ public class DatabaseConfig {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static long count(String countSql, Object... args) throws SQLException {
+	public static long count(String countSql, Object... args)
+			throws SQLException {
 		Connection conn = DatabaseConfig.openConn();
 		PreparedStatement ps = conn.prepareStatement(countSql);
 		if (args != null && args.length > 0) {
@@ -186,7 +188,9 @@ public class DatabaseConfig {
 					Object entity = clazz.newInstance();
 					for (String key : r.keySet()) {
 						try {
-							BeanUtils.setProperty(entity, columMapPro.get(key.toLowerCase()), r.get(key));
+							BeanUtils.setProperty(entity,
+									columMapPro.get(key.toLowerCase()),
+									r.get(key));
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -209,7 +213,8 @@ public class DatabaseConfig {
 			if (fs != null && fs.length > 0) {
 				for (Field f : fs) {
 					String modifier = f.toGenericString();
-					if (!modifier.startsWith("private") || modifier.split(" ").length != 3) {
+					if (!modifier.startsWith("private")
+							|| modifier.split(" ").length != 3) {
 						// 不是类似private String xxx这样的定义就认为不合法！
 						continue;
 					} else if (f.getAnnotation(Transient.class) != null) {
@@ -220,7 +225,8 @@ public class DatabaseConfig {
 						if (col != null && StringUtils.isNotBlank(col.name())) {
 							colName = col.name().trim();
 						} else {
-							colName = EntityManager.convertor.classToTableName(f.getName());
+							colName = EntityManager.convertor
+									.classToTableName(f.getName());
 						}
 						result.put(colName.toLowerCase(), f.getName());
 					}
