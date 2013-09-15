@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "file:/home/sql-map-config.dtd">
+<sqlMapConfig>
+	<settings cacheModelsEnabled="false" enhancementEnabled="true"
+		lazyLoadingEnabled="true" errorTracingEnabled="true" maxRequests="512"
+		maxSessions="256" maxTransactions="256" useStatementNamespaces="true"
+		defaultStatementTimeout="60" statementCachingEnabled="true"
+		classInfoCacheEnabled="true" />
+	<sqlMap resource="context/datasource/sqlmap/Site_List_Collection_SqlMap.xml" />
+
+</sqlMapConfig>

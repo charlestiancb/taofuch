@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+	<http pattern="^/admin/login.*" path-type="regex" security="none" />
+	<http access-denied-page="/html/403.html" create-session="never"
+		entry-point-ref="authenticationProcessingFilterEntryPoint">
+		<!-- 退出时的一些配置 -->
+		<logout logout-url="/admin/logout" logout-success-url="/admin/login" />
+		<anonymous enabled="false"/>
+		<remember-me key="XGFLE*J+09ajwezx(sDS)" user-service-ref="userDetailsService" />
+		<!-- 在最后判断是否已经登录，如果没有登录信息，则返回到登录界面！ -->
+		<custom-filter ref="securityAuthJudgeFilter" position="LAST" />
+		<custom-filter ref="loginFilter" position="FORM_LOGIN_FILTER" />
+	</http>
+
+	<!-- 做真正的登录验证的 -->
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="userDetailsService"/>
+	</authentication-manager>
+
+	<beans:bean id="userDetailsService"
+		class="com.cloudtech.site.popocapp.web.security.AdminUserService"></beans:bean>
+
+	<beans:bean id="securityAuthJudgeFilter"
+		class="com.cloudtech.site.popocapp.web.security.SecurityAuthJudgeFilter">
+		<beans:property name="loginUrl" value="/admin/login" />
+	</beans:bean>
+
+	<beans:bean id="loginFilter"
+		class="com.cloudtech.site.popocapp.web.security.LoginFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="authenticationSuccessHandler"
+			ref="loginLogAuthenticationSuccessHandler"/>
+		<beans:property name="authenticationFailureHandler"
+			ref="simpleUrlAuthenticationFailureHandler"/>
+		<beans:property name="filterProcessesUrl" value="/admin/logon" />
+	</beans:bean>
+	<beans:bean id="loginLogAuthenticationSuccessHandler"
+		class="com.cloudtech.site.popocapp.web.security.SavedRequestAwareAuthenticationSuccessHandler">
+		<beans:property name="defaultTargetUrl" value="/admin/home" />
+	</beans:bean>
+	<beans:bean id="simpleUrlAuthenticationFailureHandler"
+		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+		<beans:property name="defaultFailureUrl" value="/admin/login" />
+		<beans:property name="useForward" value="true"/>
+	</beans:bean>
+	<!-- 未登录的切入点 -->
+	<beans:bean id="authenticationProcessingFilterEntryPoint"
+		class="com.cloudtech.site.popocapp.web.security.LoginUrlAuthenticationEntryPoint">
+		<beans:property name="loginFormUrl" value="/admin/login"></beans:property>
+	</beans:bean>
+</beans:beans>
