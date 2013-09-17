@@ -36,7 +36,7 @@ public class HLdaProcessor extends PipeNode {
 			renderToTxt(file, "GBK");
 			// TODO 这里调用HLDA算法，算出结果及文件
 			// 将结果保存到数据库中，每条数据保存示例如下：
-			renderToDb("1770717263_A8a27rLiN", "Topic0,tipic6",
+			renderToDb("1770717263_A8a27rLiN", "topic0,tipic6",
 					"0.42622,0.573", null);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
