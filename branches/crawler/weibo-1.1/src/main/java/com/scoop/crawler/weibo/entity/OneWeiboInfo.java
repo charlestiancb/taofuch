@@ -9,6 +9,7 @@ import org.jsoup.select.Elements;
 
 import com.scoop.crawler.weibo.request.SinaWeiboRequest;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
+import com.scoop.crawler.weibo.util.JSONUtils;
 
 /**
  * 抓取每条微博的详细信息，如评论、转发等。
@@ -56,7 +57,8 @@ public class OneWeiboInfo extends Info {
 		}
 		try {
 			hasInit = true;
-			contentHtml = SinaWeiboRequest.request(client, url, getHandler(), FailedNode.SINGLE_WEIBO);
+			contentHtml = SinaWeiboRequest.request(client, url, getHandler(),
+					FailedNode.SINGLE_WEIBO);
 			parseWeiboDetail();
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -64,8 +66,20 @@ public class OneWeiboInfo extends Info {
 	}
 
 	private void parseWeiboDetail() {
-		String detailStart = "<script>STK && STK.pageletM && STK.pageletM.view({\"pid\":\"pl_content_weiboDetail\",";
-		detail = cut(contentHtml, detailStart);
+		String detailStart = "<script>FM.view({\"ns\":\"pl.content.weiboDetail.index\",";
+		String content = "";
+		int idx = contentHtml.indexOf(detailStart);
+		if (idx == -1) {
+			detailStart = "<script>STK && STK.pageletM && STK.pageletM.view({\"pid\":\"pl_content_weiboDetail\",";
+			idx = contentHtml.indexOf(detailStart);
+		}
+		if (idx > -1) {
+			content = contentHtml.substring(idx + detailStart.length());
+			idx = content.indexOf(detailEnd);
+			content = content.substring(0, idx);
+			content = "{" + content;
+			detail = JSONUtils.getSinaHtml(content);
+		}
 		doc = Jsoup.parse(detail);
 	}
 
@@ -88,7 +102,8 @@ public class OneWeiboInfo extends Info {
 		if (msg == null || "".equals(msg)) {
 			requestIfNeccessory();
 			try {
-				Elements eles = doc.getElementsByClass("WB_text").select("p");
+				Elements eles = doc.getElementsByAttributeValue("node-type",
+						"feed_list_content").select("p");
 				if (eles == null || eles.isEmpty()) {
 					// 兼容未升级的信息
 					eles = doc.getElementsByClass("content").select("p");
@@ -113,13 +128,15 @@ public class OneWeiboInfo extends Info {
 		if (origin == null || "".equals(origin)) {
 			requestIfNeccessory();
 			try {
-				Elements eles = doc.getElementsByAttributeValue("class", "WB_from").select(".S_txt2");
+				Elements eles = doc.getElementsByAttributeValue("class",
+						"WB_from").select(".S_txt2");
 				if (eles != null && eles.size() > 0) {
 					// 找到“来自”那个标签，然后它的下一个元素就是具体的来自！
 					origin = ((Element) eles.get(0).nextSibling()).text();
 				} else {
 					// 兼容未升级的
-					eles = doc.getElementsByAttributeValue("class", "info W_linkb W_textb").select("a");
+					eles = doc.getElementsByAttributeValue("class",
+							"info W_linkb W_textb").select("a");
 					if (eles != null && eles.size() > 0) {
 						// 第4个元素就是来自
 						origin = eles.get(3).text();
@@ -142,18 +159,24 @@ public class OneWeiboInfo extends Info {
 		if (rwNum == null || "".equals(rwNum)) {
 			requestIfNeccessory();
 			try {
-				Elements eles = doc.getElementsByAttributeValue("class", "WB_handle")
-									.first()
-									.getElementsByAttributeValue("node-type", "forward_counter");
+				Elements eles = doc
+						.getElementsByAttributeValue("class", "WB_handle")
+						.first()
+						.getElementsByAttributeValue("node-type",
+								"forward_counter");
 				if (eles == null || eles.isEmpty()) {
 					// 兼容升级以前的
-					eles = doc.getElementsByAttributeValue("class", "tab_c W_textb")
-								.first()
-								.getElementsByAttributeValue("node-type", "forward_counter");
+					eles = doc
+							.getElementsByAttributeValue("class",
+									"tab_c W_textb")
+							.first()
+							.getElementsByAttributeValue("node-type",
+									"forward_counter");
 				}
 				if (eles != null && eles.size() > 0) {
 					rwNum = eles.get(eles.size() - 1).text();
-					rwNum = rwNum.substring(rwNum.indexOf("(") + 1, rwNum.indexOf(")"));
+					rwNum = rwNum.substring(rwNum.indexOf("(") + 1,
+							rwNum.indexOf(")"));
 				} else {
 					rwNum = "0";
 				}
@@ -172,17 +195,24 @@ public class OneWeiboInfo extends Info {
 		if (commentNum == null || "".equals(commentNum)) {
 			requestIfNeccessory();
 			try {
-				Elements eles = doc.getElementsByAttributeValue("class", "WB_handle")
-									.first()
-									.getElementsByAttributeValue("node-type", "comment_counter");
+				Elements eles = doc
+						.getElementsByAttributeValue("class", "WB_handle")
+						.first()
+						.getElementsByAttributeValue("node-type",
+								"comment_counter");
 				if (eles == null || eles.isEmpty()) {
-					eles = doc.getElementsByAttributeValue("class", "tab_c W_textb")
-								.first()
-								.getElementsByAttributeValue("node-type", "comment_counter");
+					eles = doc
+							.getElementsByAttributeValue("class",
+									"tab_c W_textb")
+							.first()
+							.getElementsByAttributeValue("node-type",
+									"comment_counter");
 				}
 				if (eles != null && eles.size() > 0) {
 					commentNum = eles.get(eles.size() - 1).text();
-					commentNum = commentNum.substring(commentNum.indexOf("(") + 1, commentNum.indexOf(")"));
+					commentNum = commentNum.substring(
+							commentNum.indexOf("(") + 1,
+							commentNum.indexOf(")"));
 				} else {
 					commentNum = "0";
 				}
@@ -227,7 +257,8 @@ public class OneWeiboInfo extends Info {
 				String userId = tmp.substring(tmp.indexOf("$CONFIG['oid']='"));
 				userId = userId.substring("$CONFIG['oid']='".length());
 				userId = userId.substring(0, userId.indexOf("';"));
-				publisher = new WeiboPersonInfo("http://weibo.com/" + userId + "/info", client);
+				publisher = new WeiboPersonInfo("http://weibo.com/" + userId
+						+ "/info", client);
 				publisher.setHandler(getHandler());
 				publisher.setId(userId);
 			} catch (Exception e) {
