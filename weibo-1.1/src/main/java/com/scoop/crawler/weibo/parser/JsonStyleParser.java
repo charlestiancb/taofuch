@@ -31,11 +31,13 @@ public abstract class JsonStyleParser extends WeiboParser {
 	 * @return
 	 */
 	protected static String parseMsgUrlFromJSONStyle(Element node) {
-		Elements eles = node.getElementsByAttributeValue("node-type", "feed_list_item_date");
+		Elements eles = node.getElementsByAttributeValue("node-type",
+				"feed_list_item_date");
 		if (eles != null && eles.size() > 0) {
-			String url = eles.get(0).attr("href");
+			String url = eles.get(eles.size() - 1).attr("href");
 			url = url.startsWith("/") ? url : "/" + url;
-			return url.startsWith("/http://weibo.com") ? url.substring(1) : "http://weibo.com" + url;
+			return url.startsWith("/http://weibo.com") ? url.substring(1)
+					: "http://weibo.com" + url;
 		}
 		return "";
 	}

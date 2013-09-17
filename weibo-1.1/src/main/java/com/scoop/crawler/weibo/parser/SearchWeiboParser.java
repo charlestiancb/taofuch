@@ -44,7 +44,8 @@ import com.scoop.crawler.weibo.util.StreamUtils;
  */
 public class SearchWeiboParser extends JsonStyleParser {
 	private String replace = "#REPLACE#";
-	private String common = "<script>STK && STK.pageletM && STK.pageletM.view({\"pid\":\"" + replace + "\",";
+	private String common = "<script>STK && STK.pageletM && STK.pageletM.view({\"pid\":\""
+			+ replace + "\",";
 	private String weiboStart = common.replaceAll(replace, "pl_weibo_feedlist");
 	private String userStart = common.replaceAll(replace, "pl_user_feedlist");
 
@@ -84,7 +85,8 @@ public class SearchWeiboParser extends JsonStyleParser {
 		driver = ExploreRequest.getPageHtml(driver, html);
 		Document doc = Jsoup.parse(html.toString());
 		// 判断是否没有查询结果！
-		Elements noresult = doc.getElementsByAttributeValue("class", "search_noresult");
+		Elements noresult = doc.getElementsByAttributeValue("class",
+				"search_noresult");
 		if (noresult != null && noresult.size() > 0) {
 			Logger.log("查询词[" + getQuery() + "]没有查询结果！");
 			saveNoResultWord();
@@ -105,7 +107,8 @@ public class SearchWeiboParser extends JsonStyleParser {
 		Element weibo = doc.getElementById("pl_weibo_feedlist");
 		Element user = doc.getElementById("pl_user_feedlist");
 
-		if ((weibo == null || StringUtils.isEmpty(weibo.text())) && (user == null || StringUtils.isEmpty(user.text()))) {
+		if ((weibo == null || StringUtils.isEmpty(weibo.text()))
+				&& (user == null || StringUtils.isEmpty(user.text()))) {
 			// 如果浏览器方式没有获取到内容，则使用json解析源码的方式进行解析。
 			weibo = null;
 			user = null;
@@ -125,7 +128,8 @@ public class SearchWeiboParser extends JsonStyleParser {
 				return;
 			}
 			String targetContentList = html.substring(idx + hit.length());
-			targetContentList = targetContentList.substring(0, targetContentList.indexOf(contentEnd));
+			targetContentList = targetContentList.substring(0,
+					targetContentList.indexOf(contentEnd));
 			targetContentList = "{" + targetContentList;// 补齐为JSON格式
 			// 将map中的html内容拿出来！
 			targetContentList = JSONUtils.getSinaHtml(targetContentList);
@@ -153,7 +157,8 @@ public class SearchWeiboParser extends JsonStyleParser {
 		// 解析下一页
 		WebElement ele = null;
 		try {
-			List<WebElement> eles = driver.findElements(By.className("search_page_M"));
+			List<WebElement> eles = driver.findElements(By
+					.className("search_page_M"));
 			if (eles != null && !eles.isEmpty()) {
 				ele = eles.get(0).findElement(By.linkText("下一页"));
 			}
@@ -175,7 +180,8 @@ public class SearchWeiboParser extends JsonStyleParser {
 	 */
 	private void saveNoResultWord() {
 		try {
-			FileUtils.write(new File(FileUtils.getUserDirectory(), "noresultWords.txt"), getQuery().getQueryStr()
+			FileUtils.write(new File(FileUtils.getUserDirectory(),
+					"noresultWords.txt"), getQuery().getQueryStr()
 					+ IOUtils.LINE_SEPARATOR, "UTF-8", true);
 		} catch (IOException e) {
 			Logger.log("保存无结果的查询词失败：" + getQuery());
@@ -188,7 +194,8 @@ public class SearchWeiboParser extends JsonStyleParser {
 	private void saveNotQueryWord() {
 		try {
 			if (getQuery().getCurrentPage() == 0) {
-				FileUtils.write(new File(FileUtils.getUserDirectory(), "notQueryWords.txt"), getQuery().getQueryStr()
+				FileUtils.write(new File(FileUtils.getUserDirectory(),
+						"notQueryWords.txt"), getQuery().getQueryStr()
 						+ IOUtils.LINE_SEPARATOR, "UTF-8", true);
 			}
 		} catch (Exception e) {
@@ -210,10 +217,11 @@ public class SearchWeiboParser extends JsonStyleParser {
 				for (int i = 0; i < eles.size(); i++) {
 					try {
 						// 一条条的微博进行处理，解析每条微博的信息
-						parseWeibo(	StringUtils.trim(parseMsgUrlFromJSONStyle(eles.get(i))),
-									StringUtils.trim(parseMsgPublishTime(eles.get(i))),
-									getClient(),
-									dataSource);
+						parseWeibo(
+								StringUtils.trim(parseMsgUrlFromJSONStyle(eles
+										.get(i))),
+								StringUtils.trim(parseMsgPublishTime(eles
+										.get(i))), getClient(), dataSource);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -235,7 +243,8 @@ public class SearchWeiboParser extends JsonStyleParser {
 				try {
 					String userUrl = eles.get(0).child(0).attr("href");
 					// 解析用户信息。
-					FetchSinaWeibo.fetch(getClient(), dataSource, userUrl, null);
+					FetchSinaWeibo
+							.fetch(getClient(), dataSource, userUrl, null);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -266,13 +275,15 @@ public class SearchWeiboParser extends JsonStyleParser {
 				if (realFile.isFile()) {
 					col.add(realFile);
 				} else if (realFile.isDirectory()) {
-					col = FileUtils.listFiles(realFile, new String[] { "txt" }, true);
+					col = FileUtils.listFiles(realFile, new String[] { "txt" },
+							true);
 				} else {
 					Logger.log("文件[" + file + "]不是一个有效的文件！");
 					continue;
 				}
 				for (File f : col) {
-					Map<String, Integer> process = StreamUtils.read(StreamUtils.WEIBO_SEARCH_SREAM);
+					Map<String, Integer> process = StreamUtils
+							.read(StreamUtils.WEIBO_SEARCH_SREAM);
 					if (process == null) {
 						process = new HashMap<String, Integer>();
 					}
@@ -284,8 +295,11 @@ public class SearchWeiboParser extends JsonStyleParser {
 					int hasReadLine = num == null ? 0 : num;
 					int lineNum = 0;
 					try {
-						BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
-						for (String word = br.readLine(); word != null; word = br.readLine()) {
+						BufferedReader br = new BufferedReader(
+								new InputStreamReader(new FileInputStream(f),
+										"GBK"));
+						for (String word = br.readLine(); word != null; word = br
+								.readLine()) {
 							lineNum++;
 							if (lineNum <= hasReadLine) {
 								// 如果还没有到达指定的读取的地方，表示这一行已经解析过，不需要再解析，继续下一行读取
@@ -295,7 +309,8 @@ public class SearchWeiboParser extends JsonStyleParser {
 								if (StringUtils.isBlank(word)) {
 									continue;
 								} else {
-									saveQuery(word, FilenameUtils.getBaseName(f.getAbsolutePath()));
+									saveQuery(word, FilenameUtils.getBaseName(f
+											.getAbsolutePath()));
 									// 输入到输入框中，然后点击查询，并开始解析！
 									search(driver, word);
 									hasReadLine = lineNum;
@@ -317,11 +332,13 @@ public class SearchWeiboParser extends JsonStyleParser {
 									}
 								}
 							} catch (Throwable t) {
-								Logger.log("当前文件[" + f + "]中的词[" + word + "]出现问题，继续下一个词语搜索！" + t);
+								Logger.log("当前文件[" + f + "]中的词[" + word
+										+ "]出现问题，继续下一个词语搜索！" + t);
 								saveNotQueryWord();
 							}
 							process.put(f.toString(), hasReadLine);
-							StreamUtils.write(StreamUtils.WEIBO_SEARCH_SREAM, process);
+							StreamUtils.write(StreamUtils.WEIBO_SEARCH_SREAM,
+									process);
 						}
 						br.close();
 					} catch (Throwable t) {
@@ -332,7 +349,8 @@ public class SearchWeiboParser extends JsonStyleParser {
 						Logger.log("当前文件[" + f + "]已经处理完毕！");
 						FileUtils.forceDelete(f);
 						process.put(f.toString(), -1);// -1表示整个文件已经读取完毕！
-						StreamUtils.write(StreamUtils.WEIBO_SEARCH_SREAM, process);
+						StreamUtils.write(StreamUtils.WEIBO_SEARCH_SREAM,
+								process);
 					} catch (Exception e) {
 					}
 				}
@@ -350,9 +368,11 @@ public class SearchWeiboParser extends JsonStyleParser {
 	 * @throws InterruptedException
 	 * @throws UnsupportedEncodingException
 	 */
-	private void search(WebDriver driver, String word) throws InterruptedException, UnsupportedEncodingException {
+	private void search(WebDriver driver, String word)
+			throws InterruptedException, UnsupportedEncodingException {
 		// 使用链接跳转方式抓取！
-		driver.navigate().to("http://s.weibo.com/weibo/" + URLEncoder.encode(word, "UTF-8"));
+		driver.navigate().to(
+				"http://s.weibo.com/weibo/" + URLEncoder.encode(word, "UTF-8"));
 		Thread.sleep(3000);
 
 		// // 使用界面输入方式抓取！

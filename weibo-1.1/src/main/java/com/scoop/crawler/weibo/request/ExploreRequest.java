@@ -93,44 +93,15 @@ public class ExploreRequest {
 					LogonInfo.getLogonInfo().getUsername());
 			driver.findElement(By.name("password")).sendKeys(
 					LogonInfo.getLogonInfo().getPassword());
-			Thread.sleep(2 * 1000);// 2秒，等待是否有验证码出现。
+			Thread.sleep(1 * 1000);// 2秒，等待是否有验证码出现。
 			WebElement verifycode = driver.findElement(By.name("verifycode"));
-			if (verifycode != null
-					&& verifycode.isDisplayed()
-					&& (StringUtils.isBlank(verifycode.getText()) || verifycode
-							.getText().length() < 5)) {
-				System.out.println("请输入验证码并提交！");
-				Thread.sleep(5 * 1000);// 等待5s
-				verifycode = driver.findElement(By.name("verifycode"));
-				while (verifycode != null
-						&& verifycode.isDisplayed()
-						&& (StringUtils.isBlank(verifycode.getText()) || verifycode
-								.getText().length() < 5)) {
-					System.out.println("请输入验证码并提交！");
-					Thread.sleep(5 * 1000);// 等待5s
-					verifycode = driver.findElement(By.name("verifycode"));
-				}
-				if (StringUtils.isNotBlank(verifycode.getText())
-						&& verifycode.getText().length() > 4) {
-					driver.findElement(By.className("W_btn_g")).click();
-				}
-			} else {
-				driver.findElement(By.className("W_btn_g")).click();
-				verifycode = driver.findElement(By.name("verifycode"));
-				while (verifycode != null
-						&& verifycode.isDisplayed()
-						&& (StringUtils.isBlank(verifycode.getText()) || verifycode
-								.getText().length() < 5)) {
-					System.out.println("请输入验证码，不要提交！程序检测到之后会自动提交！");
-					Thread.sleep(5 * 1000);// 等待5s
-					verifycode = driver.findElement(By.name("verifycode"));
-				}
-				if (StringUtils.isNotBlank(verifycode.getText())
-						&& verifycode.getText().length() > 4) {
-					driver.findElement(By.className("W_btn_g")).click();
-				}
+			if (verifycode != null && verifycode.isDisplayed()) {
+				waitForInput(driver, url, verifycode);
 			}
-			Thread.sleep(5 * 1000);// 等待5s
+			driver.findElement(By.className("W_btn_g")).click();
+			verifycode = driver.findElement(By.name("verifycode"));
+			waitForInput(driver, url, verifycode);
+			// Thread.sleep(5 * 1000);// 等待5s
 			if (StringUtils.isNotBlank(url) && driver != null) {
 				// 解析页面
 				driver.navigate().to(url);// 打开指定页面
@@ -146,6 +117,24 @@ public class ExploreRequest {
 			driver.quit();
 		}
 		return null;
+	}
+
+	private static void waitForInput(WebDriver driver, String url,
+			WebElement verifycode) throws InterruptedException {
+		try {
+			if (driver.getPageSource().indexOf("$CONFIG['islogin'] = '1';") == -1) {
+				// 未登录状态
+				System.out.println("请输入验证码，但不要提交！");
+				Thread.sleep(10 * 1000);// 等待5s
+				// 假如输入之后
+				driver.findElement(By.className("W_btn_g")).click();
+				Thread.sleep(3 * 1000L);
+				if (driver.getPageSource().indexOf("$CONFIG['islogin'] = '1';") == -1) {
+					loginAndRequest(driver, url);
+				}
+			}
+		} catch (Exception e) {
+		}
 	}
 
 	/**
