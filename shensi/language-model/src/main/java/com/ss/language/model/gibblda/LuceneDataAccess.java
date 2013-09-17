@@ -83,13 +83,15 @@ public class LuceneDataAccess {
 		try {
 			init();
 			if (iw == null) {
-				iw = new IndexWriter(mmapDir, new IndexWriterConfig(Version.LUCENE_36, null));
+				iw = new IndexWriter(mmapDir, new IndexWriterConfig(
+						Version.LUCENE_36, null));
 			}
 			org.apache.lucene.document.Document doc = new org.apache.lucene.document.Document();
 			doc.add(new Field(KEY, key, Store.YES, Index.NOT_ANALYZED));
 			doc.add(new Field(VALUE, value, Store.YES, Index.NOT_ANALYZED));
 			System.err.println("存储：" + key + "=" + value);
 			iw.addDocument(doc);
+			iw.commit();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
