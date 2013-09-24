@@ -163,7 +163,6 @@ public class DatabaseConfig {
 				}
 				return result;
 			}
-			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
