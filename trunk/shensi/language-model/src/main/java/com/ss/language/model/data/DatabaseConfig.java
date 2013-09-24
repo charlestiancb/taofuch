@@ -104,10 +104,16 @@ public class DatabaseConfig {
 				result.add(record);
 			}
 			return result;
-		} catch (SQLException e) {
+		} catch (Throwable e) {
+			System.err.println(sql + " " + args[0]);
 			e.printStackTrace();
 		} finally {
-
+			try {
+				rs.close();
+				ps.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return new ArrayList<Map<String, Object>>();
 	}
@@ -157,6 +163,7 @@ public class DatabaseConfig {
 				}
 				return result;
 			}
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

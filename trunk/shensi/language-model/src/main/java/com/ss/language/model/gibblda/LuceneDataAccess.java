@@ -1,22 +1,11 @@
 package com.ss.language.model.gibblda;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Field.Index;
-import org.apache.lucene.document.Field.Store;
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
+import com.ss.language.model.data.DatabaseConfig;
+import com.ss.language.model.data.EntitySql;
+import com.ss.language.model.data.EntitySql.SqlType;
 
 /**
  * 使用Lucence存取数据。
@@ -25,12 +14,11 @@ import org.apache.lucene.util.Version;
  * 
  */
 public class LuceneDataAccess {
-	private static FSDirectory mmapDir;
-	private static IndexWriter iw;
-	private static IndexSearcher is;
-
-	private static final String KEY = "key";
-	private static final String VALUE = "value";
+	private static boolean hasInit = false;
+	private static String tb = "tmp_key_value_tb4lda";
+	static {
+		init();
+	}
 
 	/**
 	 * 初始化Lucene的一些设置
@@ -38,39 +26,25 @@ public class LuceneDataAccess {
 	 * @param option
 	 */
 	private static void init() {
-		if (mmapDir != null) {
+		if (hasInit) {
 			// 如果已经初始化过，则不进行
 			return;
 		}
-		LDACmdOption option = LDACmdOption.curOption.get();
-		// 新建临时文件夹，如果已经存在，删除之！如果删除失败，即退出！
-		File dir = new File(option.dir, "lucene-tmp");
-		if (dir.isDirectory()) {
-			try {
-				FileUtils.deleteDirectory(dir);
-				FileUtils.forceMkdir(dir);
-			} catch (IOException e) {
-				throw new IllegalAccessError("初始化文件系统失败！" + e);
-			}
-		}
-		try {
-			// 初始化Lucene
-			mmapDir = FSDirectory.open(dir);
-		} catch (IOException e) {
-			throw new IllegalAccessError("初始化Lucene失败！" + e);
-		}
-	}
-
-	private static void releaseIw() {
-		if (iw != null) {
-			try {
-				iw.commit();
-				// iw.close();
-				// iw = null;
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		// 删除、创建临时表
+		String sql = "DROP TABLE IF EXISTS `" + tb + "`";
+		EntitySql sqlObj = new EntitySql();
+		sqlObj.setSql(sql);
+		sqlObj.setType(SqlType.INSERT);
+		DatabaseConfig.executeSql(sqlObj);
+		//
+		sql = "CREATE TABLE `" + tb + "` (`k` varchar(255) NOT NULL,"
+				+ "  `v` text DEFAULT NULL," + "  PRIMARY KEY (`k`),"
+				+ "  FULLTEXT (`v`)"
+				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin";
+		sqlObj.setSql(sql);
+		DatabaseConfig.executeSql(sqlObj);
+		//
+		hasInit = true;
 	}
 
 	/**
@@ -81,35 +55,38 @@ public class LuceneDataAccess {
 	 */
 	public static void save(String key, String value) {
 		try {
-			init();
-			if (iw == null) {
-				iw = new IndexWriter(mmapDir, new IndexWriterConfig(
-						Version.LUCENE_36, null));
+			// 先确定是否存在，然后更新或保存。
+			String v = findValueByKey(key);
+			String sql = null;
+			EntitySql sqlObj = new EntitySql();
+			if (v == null) {
+				// 添加
+				sql = "insert into " + tb + "(k,v) values(?,?)";
+				sqlObj.setSql(sql);
+				sqlObj.setType(SqlType.INSERT);
+				sqlObj.addArg(key).addArg(value);
+				DatabaseConfig.executeSql(sqlObj);
+			} else {
+				// 修改
+				sql = "update " + tb + " set v=? where k=?";
+				sqlObj.setSql(sql);
+				sqlObj.setType(SqlType.UPDATE);
+				sqlObj.addArg(value).addArg(key);
+				DatabaseConfig.executeSql(sqlObj);
 			}
-			org.apache.lucene.document.Document doc = new org.apache.lucene.document.Document();
-			doc.add(new Field(KEY, key, Store.YES, Index.NOT_ANALYZED));
-			doc.add(new Field(VALUE, value, Store.YES, Index.NOT_ANALYZED));
-			System.err.println("存储：" + key + "=" + value);
-			iw.addDocument(doc);
-			iw.commit();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public static String findValueByKey(String key) {
 		try {
-			initSearch();
-			Term t = new Term(KEY, key);
-			TermQuery query = new TermQuery(t);
-			query.setBoost(1);
-			TopDocs hits = is.search(query, 1);
-			if (hits.totalHits > 0) {
-				int docId = hits.scoreDocs[0].doc;
-				org.apache.lucene.document.Document doc = is.doc(docId);
-				return doc.get(VALUE);
+			String sql = "select v from " + tb + " where k=?";
+			List<Map<String, Object>> values = DatabaseConfig.query(sql, key);
+			if (values != null && values.size() > 0) {
+				Map<String, Object> v = values.get(0);
+				return (String) v.values().iterator().next();
 			}
-			releaseIs();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -118,32 +95,14 @@ public class LuceneDataAccess {
 
 	public static String findKeyByValue(String value) {
 		try {
-			initSearch();
-			Term t = new Term(VALUE, value);
-			TermQuery query = new TermQuery(t);
-			query.setBoost(1);
-			TopDocs hits = is.search(query, 1);
-			if (hits.totalHits > 0) {
-				int docId = hits.scoreDocs[0].doc;
-				org.apache.lucene.document.Document doc = is.doc(docId);
-				return doc.get(KEY);
+			String sql = "select k from " + tb + " where v=?";
+			List<Map<String, Object>> values = DatabaseConfig.query(sql, value);
+			if (values != null && values.size() > 0) {
+				Map<String, Object> v = values.get(0);
+				return (String) v.values().iterator().next();
 			}
-			releaseIs();
 		} catch (Exception e) {
 		}
 		return null;
-	}
-
-	private static void releaseIs() throws IOException {
-		is.close();
-		is = null;
-	}
-
-	private static void initSearch() throws CorruptIndexException, IOException {
-		releaseIw();
-		init();
-		if (is == null) {
-			is = new IndexSearcher(IndexReader.open(mmapDir));
-		}
 	}
 }

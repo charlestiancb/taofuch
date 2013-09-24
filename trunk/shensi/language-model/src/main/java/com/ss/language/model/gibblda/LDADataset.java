@@ -27,11 +27,19 @@
  */
 package com.ss.language.model.gibblda;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import com.ss.language.model.data.DatabaseConfig;
 
@@ -105,7 +113,8 @@ public class LDADataset {
 		}
 	}
 
-	public static String removeBomIfNessecery(String line) throws UnsupportedEncodingException {
+	public static String removeBomIfNessecery(String line)
+			throws UnsupportedEncodingException {
 		if (line == null) {
 			return line;
 		}
@@ -183,7 +192,8 @@ public class LDADataset {
 	public static LDADataset readDataSet() {
 		try {
 			// read number of document
-			int M = (int) DatabaseConfig.count("select count(1) from " + tableName);
+			int M = (int) DatabaseConfig.count("select count(1) from "
+					+ tableName);
 
 			LDADataset data = new LDADataset(M);
 			readFromDatabase(M, data);
@@ -195,10 +205,25 @@ public class LDADataset {
 		}
 	}
 
-	private static void readFromDatabase(int total, LDADataset data) {
+	private static void readFromDatabase(int total, LDADataset data)
+			throws IOException {
+		// 生成一个文章id对应的文件。
+		File docIdxFile = new File(LDACmdOption.curOption.get().dir,
+				LDACmdOption.curOption.get().docIdFile);
+		if (docIdxFile.isFile()) {
+			FileUtils.forceDelete(docIdxFile);
+		}
+		if (!docIdxFile.getParentFile().isDirectory()) {
+			FileUtils.forceMkdir(docIdxFile.getParentFile());
+		}
+		docIdxFile.createNewFile();
+		BufferedWriter br = new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream(docIdxFile),
+				LDACmdOption.curOption.get().fileEncoding));
 		for (int i = 0; i < total; ++i) {
 			// 一个文章一个文章地获取
-			String titleSql = "select document_title from " + tableName + " order by rec_id asc limit " + i + "," + 1;
+			String titleSql = "select document_title from " + tableName
+					+ " order by rec_id asc limit " + i + "," + 1;
 			List<Map<String, Object>> result = DatabaseConfig.query(titleSql);
 			if (result == null || result.isEmpty()) {
 				break;
@@ -206,7 +231,8 @@ public class LDADataset {
 			for (Map<String, Object> record : result) {
 				String title = (String) record.get("document_title");
 				String contentSql = "select b.word from word_tf_idf a,word_idf b where a.word_id=b.rec_id and a.document_title=? order by a.rec_id";
-				List<Map<String, Object>> contentResult = DatabaseConfig.query(contentSql, title);
+				List<Map<String, Object>> contentResult = DatabaseConfig.query(
+						contentSql, title);
 				if (contentResult == null || contentResult.isEmpty()) {
 					break;
 				}
@@ -218,8 +244,11 @@ public class LDADataset {
 					sb.append(word.get("word"));
 				}
 				data.setDoc(sb.toString(), i);
+				br.write(title + IOUtils.LINE_SEPARATOR);
 			}
 		}
+		br.flush();
+		br.close();
 	}
 
 	/**
@@ -234,7 +263,8 @@ public class LDADataset {
 	public static LDADataset readDataSet(Dictionary dict) {
 		try {
 			// read number of document
-			int M = (int) DatabaseConfig.count("select count(1) from " + tableName);
+			int M = (int) DatabaseConfig.count("select count(1) from "
+					+ tableName);
 			System.out.println("NewM:" + M);
 
 			LDADataset data = new LDADataset(M, dict);

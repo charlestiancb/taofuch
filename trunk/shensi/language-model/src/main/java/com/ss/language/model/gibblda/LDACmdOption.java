@@ -52,5 +52,9 @@ public class LDACmdOption {
 	/** Specify the wordmap file，生成的副产品的文件名 */
 	public String wordMapFileName = "wordmap.txt";
 	/** 每篇文章中各个词的出现次数 */
-	public String eachwords = "eachwords.txt";
+	public String eachwords = "doc_eachwords.txt";
+	/** 每篇文章的顺序及id */
+	public String docIdFile = "doc_ids.txt";
+	/** 读写文件的编码 */
+	public String fileEncoding = "UTF-8";
 }
