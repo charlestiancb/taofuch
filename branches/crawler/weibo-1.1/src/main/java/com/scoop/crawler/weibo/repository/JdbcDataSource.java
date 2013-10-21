@@ -56,7 +56,9 @@ public class JdbcDataSource extends DatabaseDataSource {
 	private void connect() {
 		try {
 			Class.forName(pro.getProperty(Environment.DRIVER));
-			conn = DriverManager.getConnection(pro.getProperty(Environment.URL), pro.getProperty(Environment.USER),
+			conn = DriverManager.getConnection(
+					pro.getProperty(Environment.URL),
+					pro.getProperty(Environment.USER),
 					pro.getProperty(Environment.PASS));
 			conn.setAutoCommit(true);
 		} catch (Exception e) {
@@ -92,7 +94,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 	@SuppressWarnings("unchecked")
 	private void saveFetchIfNeccessory(String id, FetchType type) {
 		try {
-			FetchInfo fi = new FetchInfo(WeiboParser.getQuery(), id, type.name());
+			FetchInfo fi = new FetchInfo(WeiboParser.getQuery(), id,
+					type.name());
 			if (fi.needSave()) {
 				List<Map<String, Object>> records = (List<Map<String, Object>>) executeSql(EntityManager
 						.createSelectSQL(fi));
@@ -116,7 +119,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 		// 保存微博评论信息，先判断存不存在，如果不存在才插入！
 		try {
 			if (!isCommentExists(comment.getId())) {
-				executeSql(EntityManager.createInsertSQL(EntityTransfer.parseComment(comment)));
+				executeSql(EntityManager.createInsertSQL(EntityTransfer
+						.parseComment(comment)));
 				savePerson(comment.getPerson());
 			} else {
 				Logger.log("该评论已经存在！");
@@ -147,7 +151,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 				} catch (Exception e) {
 				}
 				saveUserIfNeccessory(fansUser);
-				Logger.log("保存用户信息[" + fansUser.getId() + ":" + fansUser.getName() + "]成功！");
+				Logger.log("保存用户信息[" + fansUser.getId() + ":"
+						+ fansUser.getName() + "]成功！");
 			}
 		}
 	}
@@ -159,7 +164,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 	 */
 	public void saveFollows(String userId, List<WeiboPersonInfo> follows) {
 		userId = StringUtils.trim(userId);
-		if (StringUtils.isNotEmpty(userId) && follows != null && follows.size() > 0) {
+		if (StringUtils.isNotEmpty(userId) && follows != null
+				&& follows.size() > 0) {
 			for (WeiboPersonInfo followUser : follows) {
 				try {
 					Follow f = new Follow();
@@ -169,7 +175,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 				} catch (Exception e) {
 				}
 				saveUserIfNeccessory(followUser);
-				Logger.log("保存用户信息[" + followUser.getId() + ":" + followUser.getName() + "]成功！");
+				Logger.log("保存用户信息[" + followUser.getId() + ":"
+						+ followUser.getName() + "]成功！");
 			}
 		}
 	}
@@ -181,9 +188,11 @@ public class JdbcDataSource extends DatabaseDataSource {
 	 */
 	protected void saveUserIfNeccessory(WeiboPersonInfo person) {
 		try {
-			if (StringUtils.isNotBlank(person.getId()) && !isUserExists(person.getId())) {
+			if (StringUtils.isNotBlank(person.getId())
+					&& !isUserExists(person.getId())) {
 				// 如果用户不存在，则保存！
-				executeSql(EntityManager.createInsertSQL(EntityTransfer.parseUser(person)));
+				executeSql(EntityManager.createInsertSQL(EntityTransfer
+						.parseUser(person)));
 			} else {
 				Logger.log("该用户[" + person.getId() + "]已经存在！");
 			}
@@ -265,7 +274,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 	@SuppressWarnings("unchecked")
 	private boolean hasRecord(Object w) {
 		boolean r;
-		List<Map<String, Object>> rs = (List<Map<String, Object>>) executeSql(EntityManager.createSelectSQL(w));
+		List<Map<String, Object>> rs = (List<Map<String, Object>>) executeSql(EntityManager
+				.createSelectSQL(w));
 		r = rs != null && rs.size() > 0;
 		return r;
 	}
@@ -313,7 +323,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 		new JdbcDataSource().executeSql(EntityManager.createInsertSQL(weibo));
 		User u = new User();
 		u.setUserId("1729014640");
-		new JdbcDataSource().query(EntityManager.createSelectSQL(u), u.getClass());
+		new JdbcDataSource().query(EntityManager.createSelectSQL(u),
+				u.getClass());
 	}
 
 	public void saveFailedRequest(FailedRequest request) {
@@ -342,7 +353,7 @@ public class JdbcDataSource extends DatabaseDataSource {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> List<T> query(EntitySql sql, Class<T> clazz) {
+	public <T> List<T> query(EntitySql sql, Class<T> clazz) {
 		if (sql == null || clazz == null) {
 			return null;
 		}
@@ -355,7 +366,9 @@ public class JdbcDataSource extends DatabaseDataSource {
 					Object entity = clazz.newInstance();
 					for (String key : r.keySet()) {
 						try {
-							BeanUtils.setProperty(entity, columMapPro.get(key.toLowerCase()), r.get(key));
+							BeanUtils.setProperty(entity,
+									columMapPro.get(key.toLowerCase()),
+									r.get(key));
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -378,7 +391,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 			if (fs != null && fs.length > 0) {
 				for (Field f : fs) {
 					String modifier = f.toGenericString();
-					if (!modifier.startsWith("private") || modifier.split(" ").length != 3) {
+					if (!modifier.startsWith("private")
+							|| modifier.split(" ").length != 3) {
 						// 不是类似private String xxx这样的定义就认为不合法！
 						continue;
 					} else if (f.getAnnotation(Transient.class) != null) {
@@ -389,7 +403,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 						if (col != null && StringUtils.isNotBlank(col.name())) {
 							colName = col.name().trim();
 						} else {
-							colName = EntityManager.convertor.classToTableName(f.getName());
+							colName = EntityManager.convertor
+									.classToTableName(f.getName());
 						}
 						result.put(colName.toLowerCase(), f.getName());
 					}
@@ -448,7 +463,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 
 	@SuppressWarnings("unchecked")
 	public void saveFans(Fans fans) {
-		List<Map<String, Object>> result = (List<Map<String, Object>>) executeSql(EntityManager.createSelectSQL(fans));
+		List<Map<String, Object>> result = (List<Map<String, Object>>) executeSql(EntityManager
+				.createSelectSQL(fans));
 		if (result == null || result.isEmpty()) {
 			executeSql(EntityManager.createInsertSQL(fans));
 		}
@@ -456,7 +472,8 @@ public class JdbcDataSource extends DatabaseDataSource {
 
 	@SuppressWarnings("unchecked")
 	public void saveFollows(Follow follow) {
-		List<Map<String, Object>> result = (List<Map<String, Object>>) executeSql(EntityManager.createSelectSQL(follow));
+		List<Map<String, Object>> result = (List<Map<String, Object>>) executeSql(EntityManager
+				.createSelectSQL(follow));
 		if (result == null || result.isEmpty()) {
 			executeSql(EntityManager.createInsertSQL(follow));
 		}
