@@ -1,8 +1,11 @@
 package com.scoop.crawler.weibo.repository.mysql;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.scoop.crawler.weibo.entity.OneWeiboInfo;
 import com.scoop.crawler.weibo.entity.WeiboComment;
 import com.scoop.crawler.weibo.entity.WeiboPersonInfo;
+import com.scoop.crawler.weibo.util.Logger;
 
 /**
  * 实体类之间的转换！
@@ -31,7 +34,12 @@ public class EntityTransfer {
 	public static User parseUser(WeiboPersonInfo person) {
 		User user = new User();
 		user.setUserId(person.getId());
-		user.setName(person.getName());
+		String name = person.getName();
+		if (StringUtils.isBlank(name)) {
+			Logger.log("该用户[" + person.getId() + "]信息不全，拒绝保存！");
+			throw new RuntimeException();
+		}
+		user.setName(name);
 		user.setUrl(person.getUrl());
 		user.setAddr(person.getAddr());
 		user.setBirthday(person.getBirthday());

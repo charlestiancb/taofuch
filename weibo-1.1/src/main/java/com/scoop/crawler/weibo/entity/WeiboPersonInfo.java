@@ -94,48 +94,36 @@ public class WeiboPersonInfo extends Info {
 	}
 
 	private void getContentHtml() {
-		contentHtml = SinaWeiboRequest.request(client, url, getHandler(), FailedNode.PERSON);
+		contentHtml = SinaWeiboRequest.request(client, url, getHandler(),
+				FailedNode.PERSON);
 		if (contentHtml.indexOf("页面加载中，请稍候……</div>") != -1) {
 			String TMP = "<iframe onload=\"clearLoading()\" src=\"";
 			// 如果页面中有动态加载页，则取之，并加载！
-			String _url = contentHtml.substring(contentHtml.indexOf(TMP) + TMP.length());
+			String _url = contentHtml.substring(contentHtml.indexOf(TMP)
+					+ TMP.length());
 			_url = _url.substring(0, _url.indexOf("\""));
-			contentHtml = SinaWeiboRequest.request(client, _url, getHandler(), FailedNode.PERSON);
+			contentHtml = SinaWeiboRequest.request(client, _url, getHandler(),
+					FailedNode.PERSON);
 		}
 		collectInfos();
 	}
 
 	private void collectInfos() {
-		Document docInfo = parseToDoc(contentHtml, "plc_main");
-		Elements eles = docInfo.getElementsByTag("div");
-		if (eles != null && eles.size() > 0) {
-			for (int i = 0; i < eles.size(); i++) {
-				// 获取需要解析的元素，并一个个地解析
-				Document tmp = parseToDoc(contentHtml, eles.get(i).attr("id"));
-				if (tmp == null) {
-					continue;
-				}
-				Elements tmpInfo = tmp.getElementsByAttributeValue("class", "infoblock");
-				if (tmpInfo != null && tmpInfo.size() > 0) {
-					if (tmpInfo != null && tmpInfo.size() > 0) {
-						tmpInfo = tmpInfo.select(".pf_item");
-						if (tmpInfo != null && tmpInfo.size() > 0) {
-							if (personInfo == null) {
-								personInfo = tmpInfo;// 每一项信息
-							} else {
-								personInfo.addAll(tmpInfo);
-							}
-						}
-					}
-				}
-			}
-		}
+		Document docInfo = parseToDoc(contentHtml, "",
+				"Pl_Official_LeftInfo__14");
+		personInfo = docInfo.getElementsByClass("pf_item");
 	}
 
 	private void parseStatisticInfo() {
-		doc_stat = parseToDoc(contentHtml, "pl_profile_photo");
+		doc_stat = parseToDoc(contentHtml, "pl.header.head.index",
+				"pl_profile_photo");
 		if (doc_stat == null) {
-			doc_stat = parseToDoc(contentHtml, "pl_content_litePersonInfo");
+			doc_stat = parseToDoc(contentHtml, "pl.header.head.index",
+					"pl_content_litePersonInfo");
+		}
+		if (doc_stat == null) {
+			doc_stat = parseToDoc(contentHtml, "pl.header.head.index",
+					"Pl_Official_Header__1");
 		}
 	}
 
@@ -146,9 +134,11 @@ public class WeiboPersonInfo extends Info {
 		}
 		if (id == null || "".equals(id)) {
 			String userUrlPreffix = "http://weibo.com/";
-			if (StringUtils.isNotBlank(getUrl()) && getUrl().trim().toLowerCase().startsWith(userUrlPreffix)) {
+			if (StringUtils.isNotBlank(getUrl())
+					&& getUrl().trim().toLowerCase().startsWith(userUrlPreffix)) {
 				// 如果是以带有id的链接，则直接解析。
-				id = getUrl().trim().toLowerCase().substring(userUrlPreffix.length());
+				id = getUrl().trim().toLowerCase()
+						.substring(userUrlPreffix.length());
 				int idx = id.indexOf("/");
 				if (idx != -1) {
 					id = id.substring(0, idx);
@@ -164,7 +154,8 @@ public class WeiboPersonInfo extends Info {
 				initIfNeccessory();
 				try {
 					String tmp = contentHtml.replaceAll(" ", "");
-					String userId = tmp.substring(tmp.indexOf("$CONFIG['oid']='"));
+					String userId = tmp.substring(tmp
+							.indexOf("$CONFIG['oid']='"));
 					userId = userId.substring("$CONFIG['oid']='".length());
 					userId = userId.substring(0, userId.indexOf("';"));
 					id = userId;
@@ -296,7 +287,8 @@ public class WeiboPersonInfo extends Info {
 	private String parseStatisticInfo(String text) {
 		String tmp = "0";
 		try {
-			Elements eles = doc_stat.getElementsByClass("user_atten").select("li");
+			Elements eles = doc_stat.getElementsByClass("user_atten").select(
+					"li");
 			// 从后往前找，这样避免转发的微博信息
 			for (int i = eles.size() - 1; i >= 0; i--) {
 				Element e = eles.get(i);
@@ -320,8 +312,9 @@ public class WeiboPersonInfo extends Info {
 		return tmp;
 	}
 
-	private Document parseToDoc(String html, String contentPart) {
-		String detailStart = "<script>STK && STK.pageletM && STK.pageletM.view({\"pid\":\"" + contentPart + "\",";
+	private Document parseToDoc(String html, String ns, String domid) {
+		String detailStart = "<script>FM.view({\"ns\":\"" + ns
+				+ "\",\"domid\":\"" + domid + "\",";
 		String tmp = cut(html, detailStart);
 		return StringUtils.isBlank(tmp) ? null : Jsoup.parse(tmp);
 	}
@@ -354,11 +347,15 @@ public class WeiboPersonInfo extends Info {
 		if (personInfo != null && personInfo.size() > 0) {
 			for (int i = 0; i < personInfo.size(); i++) {
 				Element e = personInfo.get(i);
-				Elements _tmpLabel = e.getElementsByAttributeValue("class", "label S_txt2");
-				if (_tmpLabel != null && _tmpLabel.size() > 0
-						&& StringUtils.trimToEmpty(_tmpLabel.text()).equals(label)) {
+				Elements _tmpLabel = e.getElementsByAttributeValue("class",
+						"label S_txt2");
+				if (_tmpLabel != null
+						&& _tmpLabel.size() > 0
+						&& StringUtils.trimToEmpty(_tmpLabel.text()).equals(
+								label)) {
 					// 如果有值，则表示找到对应的信息。返回该值！
-					return StringUtils.trim(e.getElementsByAttributeValue("class", "con").text());
+					return StringUtils.trim(e.getElementsByAttributeValue(
+							"class", "con").text());
 				}
 			}
 		}
@@ -405,16 +402,21 @@ public class WeiboPersonInfo extends Info {
 	 * @param url
 	 * @param list
 	 */
-	private void parseRelation(String url, FailedNode node, List<WeiboPersonInfo> list) {
+	private void parseRelation(String url, FailedNode node,
+			List<WeiboPersonInfo> list) {
 		try {
-			String text = SinaWeiboRequest.request(client, url, getHandler(), node);
+			String text = SinaWeiboRequest.request(client, url, getHandler(),
+					node);
 			Document doc = null;
 			if (FailedNode.FANS.compareTo(node) == 0) {
-				doc = parseToDoc(text, "pl_relation_hisFans");
+				doc = parseToDoc(text, "pl.content.followTab.index",
+						"Pl_Official_LeftHisRelation__16");
 			} else {
-				doc = parseToDoc(text, "pl_relation_hisFollow");
+				doc = parseToDoc(text, "pl.content.followTab.index",
+						"Pl_Official_LeftHisRelation__16");
 			}
-			Elements eles = doc.getElementsByAttributeValue("node-type", "userListBox");
+			Elements eles = doc.getElementsByAttributeValue("node-type",
+					"userListBox");
 			if (eles.isEmpty()) {
 				return;
 			}
@@ -426,12 +428,14 @@ public class WeiboPersonInfo extends Info {
 			while (es.hasNext()) {
 				String userId = es.next().attr("action-data");
 				userId = userId.substring("uid=".length(), userId.indexOf("&"));
-				WeiboPersonInfo person = new WeiboPersonInfo("http://weibo.com/" + userId + "/info", client);
+				WeiboPersonInfo person = new WeiboPersonInfo(
+						"http://weibo.com/" + userId + "/info", client);
 				person.setId(userId);
 				person.setHandler(getHandler());
 				list.add(person);
 			}
-			eles = doc.getElementsByAttributeValue("class", "W_pages W_pages_comment").select(".W_btn_a");
+			eles = doc.getElementsByAttributeValue("class",
+					"W_pages W_pages_comment").select(".W_btn_a");
 			if (eles.size() > 0) {
 				// 如果有下一页，则读取下一页的内容
 				Element e = eles.last();
