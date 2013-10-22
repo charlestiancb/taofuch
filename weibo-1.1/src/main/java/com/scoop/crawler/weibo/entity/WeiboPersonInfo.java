@@ -22,7 +22,8 @@ import com.scoop.crawler.weibo.util.Logger;
  * 
  */
 public class WeiboPersonInfo extends Info {
-	private Document doc_stat;
+	private Document doc_stat;// 统计类的信息，如微博数、关注数等。
+	private Document docHeader;// 头部区域
 	/** 用户的每个字段的内容 */
 	private Elements personInfo;
 	// ========下面是微博中解析出来的各项内容！===============//
@@ -87,10 +88,16 @@ public class WeiboPersonInfo extends Info {
 		try {
 			hasInit = true;
 			getContentHtml();
+			parseHeaderInfo();
 			parseStatisticInfo();
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	private void parseHeaderInfo() {
+		docHeader = parseToDoc(contentHtml, "pl.header.head.index",
+				"Pl_Core_Header__1");
 	}
 
 	private void getContentHtml() {
@@ -111,7 +118,11 @@ public class WeiboPersonInfo extends Info {
 	private void collectInfos() {
 		Document docInfo = parseToDoc(contentHtml, "",
 				"Pl_Official_LeftInfo__14");
-		personInfo = docInfo.getElementsByClass("pf_item");
+		if (docInfo == null) {
+			personInfo = Jsoup.parse("").select("body");
+		} else {
+			personInfo = docInfo.getElementsByClass("pf_item");
+		}
 	}
 
 	private void parseStatisticInfo() {
@@ -223,7 +234,18 @@ public class WeiboPersonInfo extends Info {
 	}
 
 	public String getIntroduce() {
-		return introduce = setFieldValue(introduce, "简介");
+		introduce = setFieldValue(introduce, "简介");
+		if (StringUtils.isBlank(introduce)) {
+			try {
+				Elements es = docHeader.getElementsByAttributeValue("class",
+						"username");
+				introduce = es.get(0).nextElementSibling().text();
+				introduce = introduce.isEmpty() ? " " : introduce;
+			} catch (Exception e) {
+				introduce = " ";
+			}
+		}
+		return introduce;
 	}
 
 	public String getTagInfo() {

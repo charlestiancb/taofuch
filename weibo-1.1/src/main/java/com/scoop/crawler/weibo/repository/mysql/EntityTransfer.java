@@ -35,7 +35,7 @@ public class EntityTransfer {
 		User user = new User();
 		user.setUserId(person.getId());
 		String name = person.getName();
-		if (StringUtils.isBlank(name)) {
+		if (StringUtils.isEmpty(name)) {
 			Logger.log("该用户[" + person.getId() + "]信息不全，拒绝保存！");
 			throw new RuntimeException();
 		}
