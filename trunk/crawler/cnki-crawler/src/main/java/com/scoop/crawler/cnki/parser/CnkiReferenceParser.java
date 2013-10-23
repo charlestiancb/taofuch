@@ -26,14 +26,14 @@ import com.scoop.crawler.cnki.request.Http;
  */
 public class CnkiReferenceParser {
 	private static final String pre = "','";
-	private static final String start = pre + "frame/list.aspx?filename=";
-	private static final String end = "reftype=";
-	private static final String split = "(\\. )|(\\. )";
+	private static final String start = pre + "frame/list.aspx?";
+	private static final String end = "&reftype=";
+	private static final String split = "\\.";
 
 	public static void main(String[] args) {
 
-		String citationurl = "http://www.cnki.net/kcms/detail/detail.aspx?dbCode=cjfd&QueryID=34&CurRec=2&filename=ZGTS200506003&dbname=CJFD0305";
-		CnkiReferenceParser.parseReference(citationurl);
+		String citationurl = "http://www.cnki.net/kcms/detail/detail.aspx?dbCode=cjfd&QueryID=4&CurRec=10&filename=TSQB201020011&dbname=CJFD0910&v=MjA0ODVSWVM2VDU5U256anJCWXplckk9T2xtekc3TzVIS2ZFcDR0RVp1OFBmUTVXeg==";
+		System.out.println(CnkiReferenceParser.parseReference(citationurl));
 	}
 
 	public static List<RefStatistic> parseReference(Document page) {
@@ -42,13 +42,16 @@ public class CnkiReferenceParser {
 			String tmp = page.data();
 			int idx = tmp.indexOf(start);
 			if (idx == -1) {
+				System.err.println("请求文章信息失败！"
+						+ page.getElementsByAttributeValue("class", "sorry")
+								.html());
 				return result;
 			}
 			List<Reference> references = new ArrayList<Reference>();
 			LinkedHashMap<Integer, RefStatistic> stats = new LinkedHashMap<Integer, RefStatistic>();
 			String listUrl = tmp.substring(idx + pre.length());
 			listUrl = listUrl.substring(0, listUrl.indexOf(end) + end.length());
-			listUrl = "http://www.cnki.net/kcms/detail/" + listUrl + "3&page=1&CurDBCode=" + getCurDbCode(listUrl);
+			listUrl = "http://www.cnki.net/kcms/detail/" + listUrl + "1&page=1";// 指定抓取的reftype=1，便于解析
 			parsePaging(listUrl, references);
 			Collections.sort(references);
 			for (Reference r : references) {
@@ -85,8 +88,9 @@ public class CnkiReferenceParser {
 			return result;
 		}
 		try {
-			return parseReference(Jsoup.connect(artifactUrl).timeout(30000).get());
-		} catch (IOException e) {
+			return parseReference(Jsoup.parse(Http.getPageContent(artifactUrl,
+					"UTF-8")));
+		} catch (Exception e) {
 			return result;
 		}
 	}
@@ -97,13 +101,21 @@ public class CnkiReferenceParser {
 	 * @param listUrl
 	 * @throws IOException
 	 */
-	private static void parsePaging(String listUrl, List<Reference> references) throws IOException {
+	private static void parsePaging(String listUrl, List<Reference> references)
+			throws IOException {
 		if (StringUtil.isBlank(listUrl)) {
 			return;
+		}
+		try {
+			Thread.sleep(2000L);// 等待两秒，模拟人点击
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
 		}
 		Document doc = Jsoup.parse(Http.getPageContent(listUrl, "UTF-8"));
 		Elements es = doc.getElementsByClass("content").select("li");
 		if (es.isEmpty()) {
+			System.err.println(references.isEmpty() ? "请求引用文献失败！" : ""
+					+ doc.getElementsByAttributeValue("class", "sorry").html());
 			return;
 		}
 		Iterator<Element> el = es.iterator();
@@ -119,27 +131,51 @@ public class CnkiReferenceParser {
 			}
 		}
 		// 解析下一页的内容
-		String page = listUrl.substring(listUrl.indexOf("&page="));
-		page = page.substring(page.indexOf("=") + 1);
-		page = page.substring(0, page.indexOf("&"));
-		String[] paths = listUrl.split("&page=" + page);
-		page = String.valueOf(Integer.parseInt(page) + 1);
-		listUrl = paths[0] + "&page=" + page + paths[1];
-		parsePaging(listUrl, references);
+		int idx = listUrl.indexOf("&page=");
+		if (idx > -1) {
+			String page = listUrl.substring(idx);
+			page = page.substring(page.indexOf("=") + 1);
+			// page = page.substring(0, page.indexOf("&"));
+			String[] paths = listUrl.split("&page=" + page);
+			page = String.valueOf(Integer.parseInt(page) + 1);
+			listUrl = paths[0] + "&page=" + page
+					+ (paths.length < 2 ? "" : paths[1]);
+			parsePaging(listUrl, references);
+		}
 	}
 
+	/**
+	 * 将每个li里面的内容解析成对应的字段信息
+	 * 
+	 * @param e
+	 * @return
+	 */
 	private static Reference getRefInfo(Element e) {
 		String content = e.text();
-		String[] es = content.split(split);
+		String[] es = content.split(split);// 以“. ”切割内容。
 		if (es.length < 4) {
 			return null;
 		}
 		Reference r = new Reference();
-		r.setAuthor(getAuthor(StringUtils.trimToEmpty(es[0])));
-		r.setInstitution(StringUtils.trimToEmpty(es[2]));
-		r.setTitle(StringUtils.trimToEmpty(es[1]));
-		r.setYear(getYear(es[3]));
-		r.setYearAdd(getYearAdd(es[3]));
+		r.setAuthor(getAuthor(trim(es[0])));// 第一部分是作者
+		r.setYear(getYear(trim(es[es.length - 1])));// 第后部分是出版年份
+		r.setYearAdd(getYearAdd(trim(es[es.length - 1])));
+		String tmp = e.html().replace(StringUtils.trim(es[0]), "")
+				.replace(StringUtils.trim(es[es.length - 1]), "");
+		Element artifact = Jsoup.parse(tmp).select("a").first();
+		String next = artifact.nextSibling().toString().toString();// 文章后面的一个内容
+		String title = artifact.text() + (next.startsWith("[") ? next : "");
+		tmp = tmp.replace(artifact.html(), "");
+		if (next.startsWith("[")) {
+			tmp = tmp.replace(next, "");
+		}
+		String institution = Jsoup.parse(tmp).text();
+		institution = institution.startsWith(".") ? institution.substring(1)
+				: institution;
+		institution = institution.endsWith(".") ? institution.substring(0,
+				institution.length() - 1) : institution;
+		r.setInstitution(trim(institution));
+		r.setTitle(trim(title));
 		return r;
 	}
 
@@ -152,6 +188,12 @@ public class CnkiReferenceParser {
 		return author;
 	}
 
+	/**
+	 * 将类似“2008(04)”这样的解析成“04”。
+	 * 
+	 * @param str
+	 * @return
+	 */
 	private static String getYearAdd(String str) {
 		int idx = str.indexOf("(");
 		if (idx == -1) {
@@ -165,19 +207,34 @@ public class CnkiReferenceParser {
 		return tmp.substring(0, idx).trim();
 	}
 
+	/**
+	 * 将类似“2008(04)”这样的解析成“2008”。
+	 * 
+	 * @param str
+	 * @return
+	 */
 	private static int getYear(String str) {
 		int idx = str.indexOf("(");
 		if (idx == -1) {
-			return Integer.parseInt(StringUtils.trimToEmpty(str));
+			return (StringUtils.isBlank(str) || !StringUtils.isNumeric(str)) ? 0
+					: Integer.parseInt(StringUtils.trimToEmpty(str));
 		}
 		String tmp = StringUtils.trimToEmpty(str.substring(0, idx));
 		return Integer.parseInt(tmp);
 	}
 
-	private static String getCurDbCode(String listUrl) {
-		int flag = listUrl.indexOf("dbcode=");
-		String tmp = listUrl.substring(flag);
-		tmp = tmp.substring(0, tmp.indexOf("&"));
-		return tmp.substring(tmp.indexOf("=") + 1);
+	private static String trim(String str) {
+		str = StringUtils.trim(str);
+		if (StringUtils.isBlank(str)) {
+			return str;
+		} else {
+			while (str.startsWith("　")) {
+				str = str.substring(1);
+			}
+			while (str.endsWith("　")) {
+				str = str.substring(0, str.length() - 1);
+			}
+			return str;
+		}
 	}
 }
