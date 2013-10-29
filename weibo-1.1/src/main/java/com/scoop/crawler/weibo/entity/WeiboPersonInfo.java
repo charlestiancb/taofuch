@@ -429,13 +429,15 @@ public class WeiboPersonInfo extends Info {
 		try {
 			String text = SinaWeiboRequest.request(client, url, getHandler(),
 					node);
-			Document doc = null;
-			if (FailedNode.FANS.compareTo(node) == 0) {
+			Document doc = parseToDoc(text, "pl.content.followTab.index",
+					"Pl_Official_LeftHisRelation__18");
+			if (doc == null) {
 				doc = parseToDoc(text, "pl.content.followTab.index",
-						"Pl_Official_LeftHisRelation__18");
-			} else {
-				doc = parseToDoc(text, "pl.content.followTab.index",
-						"Pl_Official_LeftHisRelation__18");
+						"Pl_Official_LeftHisRelation__16");
+			}
+			if (doc == null) {
+				System.err.println("没有发现用户的" + node + "信息！");
+				return;
 			}
 			Elements eles = doc.getElementsByAttributeValue("node-type",
 					"userListBox");
