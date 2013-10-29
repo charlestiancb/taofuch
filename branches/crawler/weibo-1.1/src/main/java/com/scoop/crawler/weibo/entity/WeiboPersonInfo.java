@@ -432,10 +432,10 @@ public class WeiboPersonInfo extends Info {
 			Document doc = null;
 			if (FailedNode.FANS.compareTo(node) == 0) {
 				doc = parseToDoc(text, "pl.content.followTab.index",
-						"Pl_Official_LeftHisRelation__16");
+						"Pl_Official_LeftHisRelation__18");
 			} else {
 				doc = parseToDoc(text, "pl.content.followTab.index",
-						"Pl_Official_LeftHisRelation__16");
+						"Pl_Official_LeftHisRelation__18");
 			}
 			Elements eles = doc.getElementsByAttributeValue("node-type",
 					"userListBox");
