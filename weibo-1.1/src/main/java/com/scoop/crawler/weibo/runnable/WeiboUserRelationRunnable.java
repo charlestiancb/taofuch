@@ -20,22 +20,27 @@ public class WeiboUserRelationRunnable extends Thread implements Runnable {
 	protected DataSource dataSource;
 	protected FailedHandler handler;
 
-	public WeiboUserRelationRunnable(DataSource dataSource, FailedHandler handler) {
+	public WeiboUserRelationRunnable(DataSource dataSource,
+			FailedHandler handler) {
 		this.dataSource = dataSource;
 		this.handler = handler;
 	}
 
 	public void run() {
-		FansParserHttpclient fansp = new FansParserHttpclient(dataSource, handler);
-		FollowParserHttpclient followP = new FollowParserHttpclient(dataSource, handler);
+		FansParserHttpclient fansp = new FansParserHttpclient(dataSource,
+				handler);
+		FollowParserHttpclient followP = new FollowParserHttpclient(dataSource,
+				handler);
 		Logger.log("开始解析所有用户粉丝与关注信息……");
 		try {
 			// 循环获取用户信息
-			for (User u = dataSource.getOneUnfetchedUser(); u != null; u = dataSource.getOneUnfetchedUser()) {
+			for (User u = dataSource.getOneUnfetchedUser(); u != null; u = dataSource
+					.getOneUnfetchedUser()) {
 				try {
 					DefaultHttpClient client = ThreadUtils.allocateHttpClient();
 					fansp.fetchFans(u, null, client);
 					followP.fetchFollows(u, null, client);
+					Thread.sleep(ThreadUtils.nextSleepInterval());
 				} catch (Exception e) {
 					System.err.println("解析用户信息[" + u + "]出错！");
 					e.printStackTrace();

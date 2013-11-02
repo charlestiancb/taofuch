@@ -13,7 +13,9 @@ import org.jsoup.select.Elements;
 
 import com.scoop.crawler.weibo.request.SinaWeiboRequest;
 import com.scoop.crawler.weibo.request.failed.FailedNode;
+import com.scoop.crawler.weibo.util.JSONUtils;
 import com.scoop.crawler.weibo.util.Logger;
+import com.scoop.crawler.weibo.util.ThreadUtils;
 
 /**
  * 抓取每个微博个人首页的详细信息，如姓名、所在地等。。
@@ -429,12 +431,19 @@ public class WeiboPersonInfo extends Info {
 		try {
 			String text = SinaWeiboRequest.request(client, url, getHandler(),
 					node);
-			Document doc = parseToDoc(text, "pl.content.followTab.index",
-					"Pl_Official_LeftHisRelation__18");
-			if (doc == null) {
-				doc = parseToDoc(text, "pl.content.followTab.index",
-						"Pl_Official_LeftHisRelation__16");
+			String detailStart = "<script>FM.view({\"ns\":\"pl.content.followTab.index\",\"domid\":\"Pl_Official_LeftHisRelation__";
+			String content = "";
+			int idx = text.indexOf(detailStart);
+			if (idx > -1) {
+				content = text.substring(idx + detailStart.length());
+				idx = content.indexOf(detailEnd);
+				content = content.substring(0, idx);
+				content = StringUtils.isBlank(content) ? null : content
+						.substring(content.indexOf("\",") + 2);
+				content = "{" + content;
+				content = JSONUtils.getSinaHtml(content);
 			}
+			Document doc = content == null ? null : Jsoup.parse(content);
 			if (doc == null) {
 				System.err.println("没有发现用户的" + node + "信息！");
 				return;
@@ -458,15 +467,15 @@ public class WeiboPersonInfo extends Info {
 				person.setHandler(getHandler());
 				list.add(person);
 			}
-			eles = doc.getElementsByAttributeValue("class",
-					"W_pages W_pages_comment").select(".W_btn_a");
+			eles = doc.getElementsByAttributeValue("node-type", "pageList")
+					.select("a");
 			if (eles.size() > 0) {
 				// 如果有下一页，则读取下一页的内容
 				Element e = eles.last();
 				if ("下一页".equals(e.text())) {
 					try {
 						// 每页之间停顿1秒，为了不被新浪屏蔽。
-						Thread.sleep(1000);
+						Thread.sleep(ThreadUtils.nextSleepInterval());
 					} catch (Exception e1) {
 					}
 					String _url = e.attr("href");
