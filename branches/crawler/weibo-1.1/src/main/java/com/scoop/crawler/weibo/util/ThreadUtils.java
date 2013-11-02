@@ -3,6 +3,7 @@ package com.scoop.crawler.weibo.util;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.lang.math.RandomUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.scoop.crawler.weibo.entity.LogonInfo;
@@ -74,7 +75,8 @@ public class ThreadUtils {
 	public static DefaultHttpClient allocateHttpClient() {
 		if (client == null || shouldLogAgain()) {
 			LogonInfo log = LogonInfo.getLogonInfo();
-			client = SinaWeiboRequest.getHttpClient(log.getUsername(), log.getPassword());
+			client = SinaWeiboRequest.getHttpClient(log.getUsername(),
+					log.getPassword());
 		}
 		return client;
 	}
@@ -90,5 +92,9 @@ public class ThreadUtils {
 
 	public static void setClient(DefaultHttpClient client) {
 		ThreadUtils.client = client;
+	}
+
+	public static long nextSleepInterval() {
+		return (10 + RandomUtils.nextInt(10)) * 100L;
 	}
 }
