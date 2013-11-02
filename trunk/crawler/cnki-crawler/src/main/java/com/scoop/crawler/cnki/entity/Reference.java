@@ -1,12 +1,26 @@
 package com.scoop.crawler.cnki.entity;
 
+import org.apache.commons.lang.StringUtils;
+
 public class Reference implements Comparable<Reference> {
+	private String relationId;
 	private int year;
 	// 年份后面的补充信�?
 	private String yearAdd;
 	private String author;
 	private String title;
 	private String institution;
+
+	/** 获取各个字段的名称 */
+	public static String[] getPropNames() {
+		return new String[] { "主文章序号", "文章标题", "作者", "期刊名称", "年份", "期数" };
+	}
+
+	/** 获取各个字段的值 */
+	public String[] getPropValues() {
+		return new String[] { relationId, title, author, institution,
+				String.valueOf(year), yearAdd };
+	}
 
 	public int getYear() {
 		return year;
@@ -45,11 +59,13 @@ public class Reference implements Comparable<Reference> {
 	}
 
 	public void setInstitution(String institution) {
-		this.institution = institution;
+		this.institution = StringUtils.defaultIfBlank(institution, "")
+				.replaceAll(" ", " ");
 	}
 
 	public String toString() {
-		return author + ". " + title + " " + institution + " " + year + "(" + yearAdd + ")";
+		return author + ". " + title + " " + institution + " " + year + "("
+				+ yearAdd + ")";
 	}
 
 	public int compareTo(Reference o) {
@@ -58,5 +74,13 @@ public class Reference implements Comparable<Reference> {
 		} else {
 			return o.getYear() > getYear() ? 1 : -1;
 		}
+	}
+
+	public String getRelationId() {
+		return relationId;
+	}
+
+	public void setRelationId(String relationId) {
+		this.relationId = relationId;
 	}
 }
