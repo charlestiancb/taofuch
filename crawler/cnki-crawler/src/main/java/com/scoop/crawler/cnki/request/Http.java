@@ -131,4 +131,8 @@ public class Http {
 		}
 		hasProcProxy = true;
 	}
+
+	public static void setRefer(String url) {
+		client.getParams().setParameter("Referer", url);
+	}
 }
