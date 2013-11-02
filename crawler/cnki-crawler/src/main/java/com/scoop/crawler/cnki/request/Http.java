@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.lang.math.RandomUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -33,8 +34,9 @@ public class Http {
 	public static String getPageContent(String url, String defaultEncode) {
 		if (System.currentTimeMillis() - preTime > 10 * 60 * 1000) {
 			try {
-				System.out.println("为了防止cnki屏蔽，等待10分钟再继续抓取……");
-				Thread.sleep(10 * 60 * 1000);// 等待10分钟
+				int interval = RandomUtils.nextInt(5);
+				System.out.println("为了防止cnki屏蔽，等待" + interval + "分钟之内再继续抓取……");
+				Thread.sleep(interval * 60 * 1000);// 等待10分钟
 				client = new DefaultHttpClient();
 			} catch (InterruptedException e) {
 			}

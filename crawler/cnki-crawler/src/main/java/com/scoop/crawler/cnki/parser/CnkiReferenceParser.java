@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.RandomUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
@@ -25,9 +26,8 @@ import com.scoop.crawler.cnki.request.Http;
  * 
  */
 public class CnkiReferenceParser {
-	private static final String pre = "','";
-	private static final String start = pre + "frame/list.aspx?";
-	private static final String end = "&reftype=";
+	private static final String start = "RegisterStartLoad('";
+	private static final String end = "','divResult');";
 	private static final String split = "\\.";
 
 	public static void main(String[] args) {
@@ -49,9 +49,9 @@ public class CnkiReferenceParser {
 			}
 			List<Reference> references = new ArrayList<Reference>();
 			LinkedHashMap<Integer, RefStatistic> stats = new LinkedHashMap<Integer, RefStatistic>();
-			String listUrl = tmp.substring(idx + pre.length());
-			listUrl = listUrl.substring(0, listUrl.indexOf(end) + end.length());
-			listUrl = "http://www.cnki.net/kcms/detail/" + listUrl + "1&page=1";// 指定抓取的reftype=1，便于解析
+			String listUrl = tmp.substring(idx + start.length());
+			listUrl = listUrl.substring(0, listUrl.indexOf(end));
+			listUrl = "http://www.cnki.net/kcms/detail/" + listUrl + "&page=1";// 默认从第一页开始获取
 			parsePaging(listUrl, references);
 			Collections.sort(references);
 			for (Reference r : references) {
@@ -107,7 +107,7 @@ public class CnkiReferenceParser {
 			return;
 		}
 		try {
-			Thread.sleep(2000L);// 等待两秒，模拟人点击
+			Thread.sleep((10 + RandomUtils.nextInt(10)) * 100L);// 等待两秒，模拟人点击
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
