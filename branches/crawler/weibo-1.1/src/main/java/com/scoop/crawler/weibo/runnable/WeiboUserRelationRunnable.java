@@ -37,6 +37,7 @@ public class WeiboUserRelationRunnable extends Thread implements Runnable {
 			for (User u = dataSource.getOneUnfetchedUser(); u != null; u = dataSource
 					.getOneUnfetchedUser()) {
 				try {
+					Thread.sleep(ThreadUtils.nextSleepInterval());
 					DefaultHttpClient client = ThreadUtils.allocateHttpClient();
 					fansp.fetchFans(u, null, client);
 					followP.fetchFollows(u, null, client);

@@ -481,6 +481,7 @@ public class WeiboPersonInfo extends Info {
 					String _url = e.attr("href");
 					_url = _url.startsWith("/") ? "http://weibo.com" + _url
 							: url.substring(0, url.lastIndexOf("/") + 1) + _url;
+					Thread.sleep(ThreadUtils.nextSleepInterval());
 					parseRelation(_url, node, list);
 				}
 			}
