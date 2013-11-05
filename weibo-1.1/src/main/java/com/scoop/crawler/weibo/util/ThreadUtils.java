@@ -82,8 +82,8 @@ public class ThreadUtils {
 	}
 
 	private static boolean shouldLogAgain() {
-		// 12小时就要重新登录一次
-		boolean need = System.currentTimeMillis() - preTime > 12 * 3600 * 1000;
+		// 一段时间就要重新登录一次
+		boolean need = System.currentTimeMillis() - preTime > 1 * 3600 * 1000;
 		if (need) {
 			preTime = System.currentTimeMillis();
 		}
