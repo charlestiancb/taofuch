@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.openqa.selenium.By;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -42,6 +43,15 @@ public class CnkiArticleSearchParser {
 	 */
 	public static void fetchFirstPageUrl(String refContent, int fromYear,
 			int endYear) {
+		openResultPage(refContent, fromYear, endYear);
+		export = new CsvExport(exportDir, "GBK");
+		fetchSearchList(refContent, fromYear, endYear);
+		export.close();
+		driver.quit();
+	}
+
+	private static void openResultPage(String refContent, int fromYear,
+			int endYear) {
 		String searchDataUrl = "http://epub.cnki.net/KNS/request/SearchHandler.ashx?action=&NaviCode=*&ua=1.21&PageName=ASP.brief_result_aspx&DbPrefix=CRLD&DbCatalog=%e4%b8%ad%e5%9b%bd%e5%bc%95%e6%96%87%e6%95%b0%e6%8d%ae%e5%ba%93&ConfigFile=CRLD.xml&db_opt=%E4%B8%AD%E5%9B%BD%E5%BC%95%E6%96%87%E6%95%B0%E6%8D%AE%E5%BA%93&db_value=%E4%B8%AD%E5%9B%BD%E5%BC%95%E6%96%87%E6%95%B0%E6%8D%AE%E5%BA%93&base_special1=%25&magazine_special1=%25&year_from="
 				+ fromYear
 				+ "&year_to="
@@ -56,19 +66,33 @@ public class CnkiArticleSearchParser {
 				+ "&t="
 				+ new Date().getTime() + "&keyValue=&S=1";
 		driver.get(dataListurl);
-		export = new CsvExport(exportDir, "GBK");
-		fetchSearchList();
-		export.close();
-		driver.quit();
 	}
 
-	public static void fetchSearchList() {
-		WebElement table = driver.findElement(By
-				.cssSelector(".GridTableContent"));
-		if (table == null) {
-			return;
+	public static void fetchSearchList(String refContent, int fromYear,
+			int endYear) {
+		List<WebElement> trs = null;
+		try {
+			WebElement table = driver.findElement(By
+					.cssSelector(".GridTableContent"));
+			if (table == null) {
+				return;
+			}
+			trs = table.findElements(By.tagName("tr"));
+		} catch (Exception e) {
+			driver.navigate().refresh();
+			String html = driver.getPageSource();
+			if (html.startsWith("<html xmlns=\"http://www.w3.org/1999/xhtml\"><head></head><body><p><label>验证码：</label><input type=\"text\" name=\"CheckCode\" id=\"CheckCode\" /><input type=\"button\" onclick=\"javascript:CheckCodeSubmit()\" value=\"提交\" /></p><p>")) {
+				System.err.println("需要输入验证码！请输入并提交！");
+				try {
+					Thread.sleep(30000L);// 等待用户30秒钟
+				} catch (InterruptedException e1) {
+				}
+				fetchSearchList(refContent, fromYear, endYear);
+			} else {
+				throw new RuntimeException("页面有问题，页面内容为：\n"
+						+ driver.getPageSource());
+			}
 		}
-		List<WebElement> trs = table.findElements(By.tagName("tr"));
 		if (trs != null && trs.size() > 1) {
 			for (int i = 1; i < trs.size(); i++) {// 从第二开始，因为第一行是标题
 				List<WebElement> tds = trs.get(i)
@@ -97,16 +121,31 @@ public class CnkiArticleSearchParser {
 		}
 		// 获取下一页链接
 		try {
-			WebElement pages = driver.findElement(By
-					.cssSelector(".pageBar_bottom"));
-			WebElement nextPage = pages.findElement(By.linkText("下一页"));
-			nextPage.click();
-			Thread.sleep(3 * 1000);
-			fetchSearchList();
+			gotoNextPage(refContent, fromYear, endYear);
+		} catch (UnhandledAlertException e) {
+			driver.switchTo().alert().accept();// 弹出框点击下一页
+			String targetUrl = driver.getCurrentUrl();
+			driver.quit();
+			openResultPage(refContent, fromYear, endYear);
+			driver.get(targetUrl);
+			gotoNextPage(refContent, fromYear, endYear);
 		} catch (Exception e) {
 			System.out.println("没有下一页了，已经解析完成！");
 			e.printStackTrace();
 		}
+	}
+
+	private static void gotoNextPage(String refContent, int fromYear,
+			int endYear) {
+		WebElement pages = driver
+				.findElement(By.cssSelector(".pageBar_bottom"));
+		WebElement nextPage = pages.findElement(By.linkText("下一页"));
+		nextPage.click();
+		try {
+			Thread.sleep(3 * 1000);
+		} catch (InterruptedException e) {
+		}
+		fetchSearchList(refContent, fromYear, endYear);
 	}
 
 }
