@@ -33,7 +33,7 @@ public class DatabaseConfig {
 	protected static Properties pro = new Properties();
 	static {
 		pro.put(Environment.URL,
-				"jdbc:mysql://localhost:3306/weibo?useUnicode=true&characterEncoding=UTF-8");
+				"jdbc:mysql://localhost:3306/infordb?useUnicode=true&characterEncoding=UTF-8");
 		pro.put(Environment.USER, "root");
 		pro.put(Environment.PASS, "root");
 		pro.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
