@@ -24,7 +24,7 @@ public class SaveResultProcessor extends PipeNode {
 		String suffix = PipeManager.getCurrentQueryWord().getTableSuffix();
 		String backupSql = "DROP TABLE IF EXISTS word_idf" + "_" + suffix;
 		DatabaseConfig.executeSql(new EntitySql().setSql(backupSql).setType(SqlType.UPDATE));
-		backupSql = "ALTER TABLE word_tf_idf RENAME TO word_idf" + "_" + suffix;
+		backupSql = "ALTER TABLE word_idf RENAME TO word_idf" + "_" + suffix;
 		DatabaseConfig.executeSql(new EntitySql().setSql(backupSql).setType(SqlType.UPDATE));
 		// 保存word_tf_idf
 		backupSql = "DROP TABLE IF EXISTS word_tf_idf" + "_" + suffix;
