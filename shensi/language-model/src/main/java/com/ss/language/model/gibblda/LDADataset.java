@@ -222,7 +222,7 @@ public class LDADataset {
 				LDACmdOption.curOption.get().fileEncoding));
 		for (int i = 0; i < total; ++i) {
 			// 一个文章一个文章地获取
-			String titleSql = "select document_title from " + tableName
+			String titleSql = "select document_content from " + tableName
 					+ " order by rec_id asc limit " + i + "," + 1;
 			List<Map<String, Object>> result = DatabaseConfig.query(titleSql);
 			if (result == null || result.isEmpty()) {

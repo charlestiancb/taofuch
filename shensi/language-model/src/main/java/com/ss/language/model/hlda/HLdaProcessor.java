@@ -95,7 +95,7 @@ public class HLdaProcessor extends PipeNode {
 			int perpage = 50;
 			for (int i = 0; i < total; i = i + perpage) {
 				// 一个文章一个文章地获取
-				String titleSql = "select document_title from "
+				String titleSql = "select document_content from "
 						+ LDADataset.tableName + " order by rec_id asc limit "
 						+ i + "," + perpage;
 				List<Map<String, Object>> result = DatabaseConfig

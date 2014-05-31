@@ -45,6 +45,27 @@ public class DocumentProcessor extends PipeNode {
 	 * 创建所需要的表
 	 */
 	private void createTables() {
+		String sql;
+		EntitySql sqlObj = createWordTfIdfTable();
+		//
+		sql = "DROP TABLE IF EXISTS `word_idf`";
+		sqlObj.setSql(sql);
+		DatabaseConfig.executeSql(sqlObj);
+		//
+		sql = "CREATE TABLE `word_idf` ("
+				+ "  `rec_id` bigint(20) NOT NULL AUTO_INCREMENT,"
+				+ "  `word` varchar(255) COLLATE utf8_bin NOT NULL,"
+				+ "  `df` INT DEFAULT NULL COMMENT '该词出现在多少篇文档中',"
+				+ "  `idf` double DEFAULT NULL COMMENT '该词的逆文档频率，即lg(总文档数/df)',"
+				+ "  `cf` INT DEFAULT NULL COMMENT '该词在所有文档中总共出现的次数',"
+				+ "  PRIMARY KEY (`rec_id`),"
+				+ "  UNIQUE KEY `word_UNIQUE` (`word`)"
+				+ ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='单个词表及其idf值'";
+		sqlObj.setSql(sql);
+		DatabaseConfig.executeSql(sqlObj);
+	}
+
+	public static EntitySql createWordTfIdfTable() {
 		String sql = "DROP TABLE IF EXISTS `word_tf_idf`";
 		EntitySql sqlObj = new EntitySql();
 		sqlObj.setSql(sql);
@@ -62,22 +83,7 @@ public class DocumentProcessor extends PipeNode {
 				+ ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='文档中每个词对应的tf和tf/idf值'";
 		sqlObj.setSql(sql);
 		DatabaseConfig.executeSql(sqlObj);
-		//
-		sql = "DROP TABLE IF EXISTS `word_idf`";
-		sqlObj.setSql(sql);
-		DatabaseConfig.executeSql(sqlObj);
-		//
-		sql = "CREATE TABLE `word_idf` ("
-				+ "  `rec_id` bigint(20) NOT NULL AUTO_INCREMENT,"
-				+ "  `word` varchar(255) COLLATE utf8_bin NOT NULL,"
-				+ "  `df` INT DEFAULT NULL COMMENT '该词出现在多少篇文档中',"
-				+ "  `idf` double DEFAULT NULL COMMENT '该词的逆文档频率，即lg(总文档数/df)',"
-				+ "  `cf` INT DEFAULT NULL COMMENT '该词在所有文档中总共出现的次数',"
-				+ "  PRIMARY KEY (`rec_id`),"
-				+ "  UNIQUE KEY `word_UNIQUE` (`word`)"
-				+ ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='单个词表及其idf值'";
-		sqlObj.setSql(sql);
-		DatabaseConfig.executeSql(sqlObj);
+		return sqlObj;
 	}
 
 	private void clearDatas() {

@@ -70,9 +70,10 @@ public class Estimator {
 	 */
 	private void writeEachwordsEachWord(Document[] docs) {
 		if (docs != null && docs.length > 0) {
+			BufferedReader br = null;
 			try {
-				BufferedReader br = new BufferedReader(new InputStreamReader(	new FileInputStream(trnModel.data.localDict.getWordIdsFile()),
-																				"UTF-8"));
+				br = new BufferedReader(new InputStreamReader(new FileInputStream(
+						trnModel.data.localDict.getWordIdsFile()), "UTF-8"));
 				for (String wordId = br.readLine(); wordId != null; wordId = br.readLine()) {
 					wordId = wordId == null ? "" : wordId.trim();
 					if (wordId.isEmpty()) {
@@ -102,14 +103,19 @@ public class Estimator {
 						File file = new File(option.dir + File.separator + option.wordMapFileName + "-statistic.txt");
 						sb.insert(0, "[");
 						sb.insert(sb.length() - 1, "]");
-						FileUtils.write(file,
-										sb.subSequence(0, sb.length() - 1) + IOUtils.LINE_SEPARATOR,
-										"UTF-8",
-										true);
+						FileUtils.write(file, sb.subSequence(0, sb.length() - 1) + IOUtils.LINE_SEPARATOR, "UTF-8",
+								true);
 					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+			} finally {
+				if (br != null) {
+					try {
+						br.close();
+					} catch (Exception e) {
+					}
+				}
 			}
 		}
 	}
@@ -162,8 +168,9 @@ public class Estimator {
 		// remove z_i from the count variable
 		int topic = trnModel.z[m].get(n);
 		int w = trnModel.data.docs[m].getWord(n);
-
-		trnModel.nw[w][topic] -= 1;
+		if (w < trnModel.V) {
+			trnModel.nw[w][topic] -= 1;
+		}
 		trnModel.nd[m][topic] -= 1;
 		trnModel.nwsum[topic] -= 1;
 		trnModel.ndsum[m] -= 1;
@@ -173,8 +180,10 @@ public class Estimator {
 
 		// do multinominal sampling via cumulative method
 		for (int k = 0; k < trnModel.K; k++) {
-			trnModel.p[k] = (trnModel.nw[w][k] + trnModel.beta) / (trnModel.nwsum[k] + Vbeta)
-					* (trnModel.nd[m][k] + trnModel.alpha) / (trnModel.ndsum[m] + Kalpha);
+			if (w < trnModel.V) {
+				trnModel.p[k] = (trnModel.nw[w][k] + trnModel.beta) / (trnModel.nwsum[k] + Vbeta)
+						* (trnModel.nd[m][k] + trnModel.alpha) / (trnModel.ndsum[m] + Kalpha);
+			}
 		}
 
 		// cumulate multinomial parameters
@@ -191,7 +200,9 @@ public class Estimator {
 		}
 
 		// add newly estimated z_i to count variables
-		trnModel.nw[w][topic] += 1;
+		if (w < trnModel.V) {
+			trnModel.nw[w][topic] += 1;
+		}
 		trnModel.nd[m][topic] += 1;
 		trnModel.nwsum[topic] += 1;
 		trnModel.ndsum[m] += 1;
@@ -211,8 +222,10 @@ public class Estimator {
 	public void computePhi() {
 		for (int k = 0; k < trnModel.K; k++) {
 			for (int w = 0; w < trnModel.V; w++) {
-				trnModel.phi.save(k, w, (trnModel.nw[w][k] + trnModel.beta)
-						/ (trnModel.nwsum[k] + trnModel.V * trnModel.beta));
+				if (w < trnModel.V) {
+					trnModel.phi.save(k, w, (trnModel.nw[w][k] + trnModel.beta)
+							/ (trnModel.nwsum[k] + trnModel.V * trnModel.beta));
+				}
 			}
 		}
 	}

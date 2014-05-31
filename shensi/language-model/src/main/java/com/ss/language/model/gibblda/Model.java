@@ -508,7 +508,10 @@ public class Model {
 				z[m].add(topic);
 
 				// number of instances of word assigned to topic j
-				nw[data.docs[m].getWord(n)][topic] += 1;
+				int tmp = data.docs[m].getWord(n);
+				if (tmp < V) {
+					nw[tmp][topic] += 1;
+				}
 				// number of words in document i assigned to topic j
 				nd[m][topic] += 1;
 				// total number of words assigned to topic j
