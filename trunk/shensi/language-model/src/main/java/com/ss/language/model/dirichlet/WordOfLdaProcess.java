@@ -24,25 +24,23 @@ public class WordOfLdaProcess extends PipeNode {
 		option.dir = "E:\\tmp\\topic model\\result";
 		option.est = true;
 		option.inf = false;
+		LDACmdOption.curOption.set(null);
 		estimate(option);
 	}
 
 	public void estimate(LDACmdOption option) {
 		// 先将存在的表删除
-		String delSql = "drop table " + LDADataset.tableName;
-		DatabaseConfig.executeSql(new EntitySql().setSql(delSql).setType(
-				SqlType.DELETE));
+		String delSql = "DROP TABLE IF EXISTS " + LDADataset.tableName;
+		DatabaseConfig.executeSql(new EntitySql().setSql(delSql).setType(SqlType.DELETE));
 		// 先将所有标题汇总，作为文章来看。
 		String createSql = "create table "
 				+ LDADataset.tableName
-				+ "(`rec_id` bigint(20) NOT NULL AUTO_INCREMENT,`document_title` varchar(500) COLLATE utf8_bin NOT NULL,PRIMARY KEY (`rec_id`))";
-		DatabaseConfig.executeSql(new EntitySql().setSql(createSql).setType(
-				SqlType.UPDATE));
+				+ "(`rec_id` bigint(20) NOT NULL AUTO_INCREMENT,`document_title` varchar(500) COLLATE utf8_bin NOT NULL,`document_content` text COLLATE utf8_bin NOT NULL,PRIMARY KEY (`rec_id`))";
+		DatabaseConfig.executeSql(new EntitySql().setSql(createSql).setType(SqlType.UPDATE));
 		String sql = "insert into "
 				+ LDADataset.tableName
-				+ "(document_title) select document_title from word_tf_idf group by document_title order by rec_id";
-		DatabaseConfig.executeSql(new EntitySql().setSql(sql).setType(
-				SqlType.UPDATE));
+				+ "(document_title,document_content) select document_title,document_title from word_tf_idf order by rec_id";
+		DatabaseConfig.executeSql(new EntitySql().setSql(sql).setType(SqlType.UPDATE));
 		// 开始lda计算
 		if (option.est || option.estc) {
 			Estimator estimator = new Estimator(option);
@@ -54,11 +52,9 @@ public class WordOfLdaProcess extends PipeNode {
 
 			for (int i = 0; i < newModel.phi.getxLen(); ++i) {
 				// phi: K * V
-				System.out
-						.println("-----------------------\ntopic" + i + " : ");
+				System.out.println("-----------------------\ntopic" + i + " : ");
 				for (int j = 0; j < 10; ++j) {
-					System.out.println(inferencer.globalDict.getWord(j) + "\t"
-							+ newModel.phi.fetch(i, j));
+					System.out.println(inferencer.globalDict.getWord(j) + "\t" + newModel.phi.fetch(i, j));
 				}
 			}
 		}
