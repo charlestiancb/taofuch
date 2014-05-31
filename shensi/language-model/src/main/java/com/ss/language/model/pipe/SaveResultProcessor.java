@@ -3,6 +3,7 @@ package com.ss.language.model.pipe;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.ss.language.model.data.DatabaseConfig;
@@ -37,7 +38,11 @@ public class SaveResultProcessor extends PipeNode {
 			File resultDir = new File(option.dir.trim());
 			if (resultDir.isDirectory()) {
 				try {
-					resultDir.renameTo(new File(resultDir.getCanonicalPath() + "_" + suffix));
+					File dir = new File(resultDir.getCanonicalPath() + "_" + suffix);
+					if (dir.isDirectory()) {
+						FileUtils.deleteDirectory(dir);
+					}
+					resultDir.renameTo(dir);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
