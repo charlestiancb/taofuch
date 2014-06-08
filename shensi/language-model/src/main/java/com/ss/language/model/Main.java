@@ -22,6 +22,6 @@ public class Main {
 		PipeManager.regist(new SaveResultProcessor());// 保存每个词的计算结果，便于最后的联合统计
 
 		// 开始运行！
-		PipeManager.clearAndstart(new QueryWord("本体", 0.6), new QueryWord("语义", 0.4));
+		PipeManager.clearAndstart("weibo", new QueryWord("本体", 0.6), new QueryWord("语义", 0.4));
 	}
 }

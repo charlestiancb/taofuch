@@ -10,6 +10,7 @@ import com.ss.language.model.data.DatabaseConfig;
 import com.ss.language.model.data.EntitySql;
 import com.ss.language.model.data.EntitySql.SqlType;
 import com.ss.language.model.gibblda.LDACmdOption;
+import com.ss.language.model.gibblda.LDADataset;
 
 /**
  * 保存每个词的计算结果，便于最后的联合统计
@@ -18,11 +19,13 @@ import com.ss.language.model.gibblda.LDACmdOption;
  * 
  */
 public class SaveResultProcessor extends PipeNode {
+	public static String specialSuffix = "";
 
 	@Override
 	public void process() {
 		// 保存word_idf
 		String suffix = PipeManager.getCurrentQueryWord().getTableSuffix();
+		suffix += "_" + specialSuffix;
 		String backupSql = "DROP TABLE IF EXISTS word_idf" + "_" + suffix;
 		DatabaseConfig.executeSql(new EntitySql().setSql(backupSql).setType(SqlType.UPDATE));
 		backupSql = "ALTER TABLE word_idf RENAME TO word_idf" + "_" + suffix;
@@ -31,6 +34,11 @@ public class SaveResultProcessor extends PipeNode {
 		backupSql = "DROP TABLE IF EXISTS word_tf_idf" + "_" + suffix;
 		DatabaseConfig.executeSql(new EntitySql().setSql(backupSql).setType(SqlType.UPDATE));
 		backupSql = "ALTER TABLE word_tf_idf RENAME TO word_tf_idf" + "_" + suffix;
+		DatabaseConfig.executeSql(new EntitySql().setSql(backupSql).setType(SqlType.UPDATE));
+		// 保存LDADataset.tableName
+		backupSql = "DROP TABLE IF EXISTS " + LDADataset.tableName + "_" + suffix;
+		DatabaseConfig.executeSql(new EntitySql().setSql(backupSql).setType(SqlType.UPDATE));
+		backupSql = "ALTER TABLE word_tf_idf RENAME TO " + LDADataset.tableName + "_" + suffix;
 		DatabaseConfig.executeSql(new EntitySql().setSql(backupSql).setType(SqlType.UPDATE));
 		// 保存文件
 		LDACmdOption option = LDACmdOption.curOption.get();

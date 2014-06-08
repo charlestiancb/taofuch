@@ -17,6 +17,7 @@ import com.ss.language.model.data.EntitySql.SqlType;
 import com.ss.language.model.data.entity.WordIdf;
 import com.ss.language.model.data.entity.WordTfIdf;
 import com.ss.language.model.data.repo.TfIdfRepository;
+import com.ss.language.model.gibblda.LDADataset;
 import com.ss.language.model.pipe.PipeNode;
 
 public class DocumentProcessor extends PipeNode {
@@ -52,13 +53,10 @@ public class DocumentProcessor extends PipeNode {
 		sqlObj.setSql(sql);
 		DatabaseConfig.executeSql(sqlObj);
 		//
-		sql = "CREATE TABLE `word_idf` ("
-				+ "  `rec_id` bigint(20) NOT NULL AUTO_INCREMENT,"
-				+ "  `word` varchar(255) COLLATE utf8_bin NOT NULL,"
-				+ "  `df` INT DEFAULT NULL COMMENT '该词出现在多少篇文档中',"
+		sql = "CREATE TABLE `word_idf` (" + "  `rec_id` bigint(20) NOT NULL AUTO_INCREMENT,"
+				+ "  `word` varchar(255) COLLATE utf8_bin NOT NULL," + "  `df` INT DEFAULT NULL COMMENT '该词出现在多少篇文档中',"
 				+ "  `idf` double DEFAULT NULL COMMENT '该词的逆文档频率，即lg(总文档数/df)',"
-				+ "  `cf` INT DEFAULT NULL COMMENT '该词在所有文档中总共出现的次数',"
-				+ "  PRIMARY KEY (`rec_id`),"
+				+ "  `cf` INT DEFAULT NULL COMMENT '该词在所有文档中总共出现的次数'," + "  PRIMARY KEY (`rec_id`),"
 				+ "  UNIQUE KEY `word_UNIQUE` (`word`)"
 				+ ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='单个词表及其idf值'";
 		sqlObj.setSql(sql);
@@ -72,10 +70,8 @@ public class DocumentProcessor extends PipeNode {
 		sqlObj.setType(SqlType.INSERT);
 		DatabaseConfig.executeSql(sqlObj);
 		//
-		sql = "CREATE TABLE `word_tf_idf` ("
-				+ "  `rec_id` bigint(20) NOT NULL AUTO_INCREMENT,"
-				+ "  `document_title` varchar(500) COLLATE utf8_bin NOT NULL,"
-				+ "  `word_id` bigint(20) NOT NULL,"
+		sql = "CREATE TABLE `word_tf_idf` (" + "  `rec_id` bigint(20) NOT NULL AUTO_INCREMENT,"
+				+ "  `document_title` varchar(500) COLLATE utf8_bin NOT NULL," + "  `word_id` bigint(20) NOT NULL,"
 				+ "  `tf` int(11) NOT NULL COMMENT '该词在该文档中出现的次数',"
 				+ "  `tf_idf` double DEFAULT NULL COMMENT '词的逆文档频率，即：tf*idf',"
 				+ "  `ptd` double DEFAULT NULL COMMENT '计算P(w|D)的值，其公式为：P(t|d)=(tf(t,d)+uP(t|C))/(tf(t,d)总和+u)',"
@@ -106,8 +102,7 @@ public class DocumentProcessor extends PipeNode {
 		page = count % perPageRecords > 0 ? page + 1 : page;
 		System.out.println("---------------正在计算各文档中各个词的tf值-----------");
 		for (int i = 0; i < page; i++) {
-			String sql = "SELECT * FROM informationscience limit "
-					+ (i * perPageRecords) + "," + perPageRecords;
+			String sql = "SELECT * FROM informationscience limit " + (i * perPageRecords) + "," + perPageRecords;
 			Connection conn = DatabaseConfig.openConn();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
@@ -125,15 +120,42 @@ public class DocumentProcessor extends PipeNode {
 				if (StringUtils.isBlank(abstr)) {
 					continue;
 				}
-				calcTfAndSave(rs.getString("Title"),
-						WordSplitor.splitToArr(abstr));
-				System.out.println("当前处理进度：" + ((i + 1) * perPageRecords + tmp)
-						+ "/" + count);
+				calcTfAndSave(rs.getString("Title"), WordSplitor.splitToArr(abstr));
+				System.out.println("当前处理进度：" + ((i + 1) * perPageRecords + tmp) + "/" + count);
 			}
 			rs.close();
 			ps.close();
 		}
 		System.out.println("---------------完成计算各文档中各个词的tf值-----------");
+	}
+
+	/**
+	 * 保存内容
+	 * 
+	 * @param titleOrId
+	 * @param content
+	 */
+	protected void prepareSaveTitleAndContent() {
+		// 先将存在的表删除
+		String delSql = "DROP TABLE IF EXISTS " + LDADataset.tableName;
+		DatabaseConfig.executeSql(new EntitySql().setSql(delSql).setType(SqlType.DELETE));
+		// 先将所有标题汇总，作为文章来看。
+		String createSql = "create table "
+				+ LDADataset.tableName
+				+ "(`rec_id` bigint(20) NOT NULL AUTO_INCREMENT,`document_title` varchar(500) COLLATE utf8_bin NOT NULL,`document_content` text COLLATE utf8_bin NOT NULL,PRIMARY KEY (`rec_id`))";
+		DatabaseConfig.executeSql(new EntitySql().setSql(createSql).setType(SqlType.UPDATE));
+	}
+
+	/**
+	 * 保存内容
+	 * 
+	 * @param titleOrId
+	 * @param content
+	 */
+	protected void saveTitleAndContent(String titleOrId, String content) {
+		String sql = "insert into " + LDADataset.tableName + "(document_title,document_content) values (?,?)";
+		DatabaseConfig
+				.executeSql(new EntitySql().setSql(sql).addArg(titleOrId).addArg(content).setType(SqlType.INSERT));
 	}
 
 	/**
@@ -163,8 +185,7 @@ public class DocumentProcessor extends PipeNode {
 		for (String word : tfOfWord.keySet()) {
 			WordIdf idf = new WordIdf(word, 0D);
 			repo.saveWord(idf);
-			WordTfIdf tfidf = new WordTfIdf(documentTitle, idf.getRecId(),
-					tfOfWord.get(word));
+			WordTfIdf tfidf = new WordTfIdf(documentTitle, idf.getRecId(), tfOfWord.get(word));
 			repo.saveWordTf(tfidf);
 		}
 	}
@@ -175,40 +196,32 @@ public class DocumentProcessor extends PipeNode {
 	 * @throws SQLException
 	 */
 	protected void calcIdfAndTfidf() throws SQLException {
-		System.out
-				.println("---------------正在计算各文档中各个词的idf值与tf*idf值-----------");
+		System.out.println("---------------正在计算各文档中各个词的idf值与tf*idf值-----------");
 		// idf值=lg(总文档数/含有该词的文档数)
-		long totalDocument = DatabaseConfig
-				.query("select document_title from WORD_TF_IDF group by document_title")
+		long totalDocument = DatabaseConfig.query("select document_title from WORD_TF_IDF group by document_title")
 				.size();
 		long page = totalDocument / perPageRecords;
 		page = totalDocument % perPageRecords > 0 ? page + 1 : page;
 		for (int i = 0; i < page; i++) {
-			List<WordIdf> idfs = repo.list(WordIdf.class, i * perPageRecords,
-					perPageRecords);
+			List<WordIdf> idfs = repo.list(WordIdf.class, i * perPageRecords, perPageRecords);
 			if (idfs == null || idfs.isEmpty()) {
 				break;
 			}
 			for (WordIdf wi : idfs) {
 				System.out.println("正在计算词：" + wi.getWord());
 				// 查询该词在多少文档中存在！
-				long documents = count("select count(1) from WORD_TF_IDF where word_id = "
-						+ wi.getRecId());
-				wi.setIdf(Math.log(totalDocument / 1.0 / documents)
-						/ Math.log(10));
+				long documents = count("select count(1) from WORD_TF_IDF where word_id = " + wi.getRecId());
+				wi.setIdf(Math.log(totalDocument / 1.0 / documents) / Math.log(10));
 				wi.setDf(documents);
-				wi.setCf(count("select sum(tf) from WORD_TF_IDF where word_id ="
-						+ wi.getRecId()));
+				wi.setCf(count("select sum(tf) from WORD_TF_IDF where word_id =" + wi.getRecId()));
 				repo.merge(wi);
 				// 计算tf/idf值，其值为：每个文档中，每个词的tf*idf
 				EntitySql sqlObj = new EntitySql();
-				sqlObj.setSql("update WORD_TF_IDF set tf_idf = tf*"
-						+ wi.getIdf() + " where word_id = " + wi.getRecId());
+				sqlObj.setSql("update WORD_TF_IDF set tf_idf = tf*" + wi.getIdf() + " where word_id = " + wi.getRecId());
 				sqlObj.setType(SqlType.UPDATE);
 				DatabaseConfig.executeSql(sqlObj);
 			}
 		}
-		System.out
-				.println("---------------完成计算各文档中各个词的idf值与tf*idf值-----------");
+		System.out.println("---------------完成计算各文档中各个词的idf值与tf*idf值-----------");
 	}
 }
