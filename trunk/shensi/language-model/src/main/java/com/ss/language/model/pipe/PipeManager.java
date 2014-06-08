@@ -44,9 +44,15 @@ public class PipeManager {
 
 	/**
 	 * 开始运行管道中的各个节点。注意：如果运行中途出现问题而停止，下次再运行这个方法时，会从头开始处理！
+	 * 
+	 * @param special
+	 *            指定特定的后缀
+	 * @param query
+	 *            指定的查询词
 	 */
-	public static void clearAndstart(QueryWord... query) {
+	public static void clearAndstart(String special, QueryWord... query) {
 		if (query != null && query.length > 0) {
+			SaveResultProcessor.specialSuffix = StringUtils.trimToEmpty(special);
 			List<QueryWord> qws = new ArrayList<QueryWord>();
 			for (QueryWord q : query) {
 				if (q != null && StringUtils.isNotBlank(q.getWord())) {

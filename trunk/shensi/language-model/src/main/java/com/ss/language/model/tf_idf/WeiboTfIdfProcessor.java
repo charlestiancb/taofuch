@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.lang.StringUtils;
-import org.wltea.analyzer.split.WordSplitor;
 
 import com.ss.language.model.data.DatabaseConfig;
 import com.ss.language.model.pipe.PipeManager;
@@ -19,16 +18,44 @@ public class WeiboTfIdfProcessor extends DocumentProcessor {
 
 	protected void splitWordsAndTf() throws SQLException {
 		String word = PipeManager.getCurrentQueryWord().getWord();
-		long count = count("SELECT count(1) FROM fetch_info ,weibo_info WHERE weibo_info.weibo_id =fetch_info.relation_id AND fetch_info.query_str like \"%"
-				+ word + "%\"");
+		String sql = "SELECT" + //
+				"cloudcomputing_cleared.weibo_id," + //
+				"cloudcomputing_cleared.content," + //
+				"cloudcomputing_cleared.content_tag," + //
+				"cloudcomputing_cleared.content_pure," + //
+				"cloudcomputing_cleared.forword_num," + //
+				"cloudcomputing_cleared.comment_num," + //
+				"cloudcomputing_cleared.temporaltoken," + //
+				"cloudcomputing_cleared.publish_time" + //
+				"FROM" + //
+				"cloudcomputing_cleared" + //
+				"WHERE" + //
+				"cloudcomputing_cleared.content_pure LIKE  '%" + word + "%'" + //
+				"union all" + //
+				"SELECT" + //
+				"dataming_cleared.weibo_id," + //
+				"dataming_cleared.content," + //
+				"dataming_cleared.content_tag," + //
+				"dataming_cleared.content_pure," + //
+				"dataming_cleared.forword_num," + //
+				"dataming_cleared.comment_num," + //
+				"dataming_cleared.temporaltoken," + //
+				"dataming_cleared.publish_time" + //
+				"FROM" + //
+				"dataming_cleared_cleared" + //
+				"WHERE" + //
+				"dataming_cleared_cleared.content_pure LIKE  '%" + word + "%'";
+		long count = count("SELECT count(1) FROM (" + sql + ") t");
 		long page = count / perPageRecords;
 		page = count % perPageRecords > 0 ? page + 1 : page;
 		System.out.println("---------------正在计算各文档中各个词的tf值-----------");
+		prepareSaveTitleAndContent();
 		for (int i = 0; i < page; i++) {
-			String sql = "SELECT * FROM fetch_info ,weibo_info WHERE weibo_info.weibo_id =fetch_info.relation_id AND fetch_info.query_str like \"%"
-					+ word + "%\" limit " + (i * perPageRecords) + "," + perPageRecords;
+			String sqlTmp = "SELECT * FROM (" + sql
+					+ ") t order by publish_time asc,forword_num asc,temporaltoken asc limit " + (i * perPageRecords)
+					+ "," + perPageRecords;
 			Connection conn = DatabaseConfig.openConn();
-			PreparedStatement ps = conn.prepareStatement(sql);
+			PreparedStatement ps = conn.prepareStatement(sqlTmp);
 			ResultSet rs = ps.executeQuery();
 			int tmp = 0;
 			while (rs.next()) {
@@ -40,11 +67,14 @@ public class WeiboTfIdfProcessor extends DocumentProcessor {
 						e.printStackTrace();
 					}// 等待一下让系统回收
 				}
-				String abstr = rs.getString("content");
+				String abstr = StringUtils.trimToEmpty(rs.getString("content_tag"));
+				abstr += " " + StringUtils.trimToEmpty(rs.getString("content_pure"));
+				abstr += " " + StringUtils.trimToEmpty(rs.getString("temporaltoken"));
 				if (StringUtils.isBlank(abstr)) {
 					continue;
 				}
-				calcTfAndSave(rs.getString("weibo_id"), WordSplitor.splitToArr(abstr));
+				saveTitleAndContent(rs.getString("weibo_id"), abstr);
+				calcTfAndSave(rs.getString("weibo_id"), abstr.split(" "));
 				System.out.println("当前处理进度：" + ((i + 1) * perPageRecords + tmp) + "/" + count);
 			}
 			rs.close();
