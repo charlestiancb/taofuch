@@ -59,7 +59,7 @@ public class Dictionary {
 		init(LDACmdOption.curOption.get());
 	}
 
-	protected int nextWordId() {
+	public int nextWordId() {
 		synchronized (WORD_LOCK) {
 			return WORD_ID++;
 		}
@@ -194,8 +194,8 @@ public class Dictionary {
 	 */
 	public boolean writeWordMap(String wordMapFile) {
 		try {
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(	new FileOutputStream(wordMapFile),
-																				"UTF-8"));
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(wordMapFile),
+					"UTF-8"));
 			// write number of words
 			writer.write(wordSize() + IOUtils.LINE_SEPARATOR);
 			// write word to id
@@ -206,6 +206,7 @@ public class Dictionary {
 				writer.write(key + " " + value + IOUtils.LINE_SEPARATOR);
 			}
 			writer.close();
+			br.close();
 			return true;
 		} catch (Exception e) {
 			System.out.println("Error while writing word map " + e.getMessage());
