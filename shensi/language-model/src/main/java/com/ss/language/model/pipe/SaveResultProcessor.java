@@ -38,7 +38,7 @@ public class SaveResultProcessor extends PipeNode {
 		// 保存LDADataset.tableName
 		backupSql = "DROP TABLE IF EXISTS " + LDADataset.tableName + "_" + suffix;
 		DatabaseConfig.executeSql(new EntitySql().setSql(backupSql).setType(SqlType.UPDATE));
-		backupSql = "ALTER TABLE word_tf_idf RENAME TO " + LDADataset.tableName + "_" + suffix;
+		backupSql = "ALTER TABLE " + LDADataset.tableName + " RENAME TO " + LDADataset.tableName + "_" + suffix;
 		DatabaseConfig.executeSql(new EntitySql().setSql(backupSql).setType(SqlType.UPDATE));
 		// 保存文件
 		LDACmdOption option = LDACmdOption.curOption.get();
