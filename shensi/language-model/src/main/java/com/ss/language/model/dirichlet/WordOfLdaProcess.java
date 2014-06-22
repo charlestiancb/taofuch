@@ -21,7 +21,9 @@ public class WordOfLdaProcess extends PipeNode {
 		option.est = true;
 		option.inf = false;
 		LDACmdOption.curOption.set(null);
+		System.out.println("开始LDA计算……");
 		estimate(option);
+		System.out.println("完成LDA计算");
 	}
 
 	public void estimate(LDACmdOption option) {

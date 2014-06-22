@@ -141,7 +141,6 @@ public class DatabaseConfig {
 			switch (sqlObj.getType()) {
 			case INSERT:
 			case DELETE:
-				return ps.execute();
 			case UPDATE:
 				return ps.executeUpdate();
 			case SELECT:
