@@ -113,8 +113,7 @@ public class LDADataset {
 		}
 	}
 
-	public static String removeBomIfNessecery(String line)
-			throws UnsupportedEncodingException {
+	public static String removeBomIfNessecery(String line) throws UnsupportedEncodingException {
 		if (line == null) {
 			return line;
 		}
@@ -192,11 +191,14 @@ public class LDADataset {
 	public static LDADataset readDataSet() {
 		try {
 			// read number of document
-			int M = (int) DatabaseConfig.count("select count(1) from "
-					+ tableName);
+			System.out.println("开始读取数据总数……");
+			int M = (int) DatabaseConfig.count("select count(1) from " + tableName);
+			System.out.println("读取数据总数为" + M);
 
 			LDADataset data = new LDADataset(M);
+			System.out.println("读取文本内容……");
 			readFromDatabase(M, data);
+			System.out.println("文本内容读取完毕");
 			return data;
 		} catch (Exception e) {
 			System.out.println("Read Dataset Error: " + e.getMessage());
@@ -205,11 +207,9 @@ public class LDADataset {
 		}
 	}
 
-	private static void readFromDatabase(int total, LDADataset data)
-			throws IOException {
+	private static void readFromDatabase(int total, LDADataset data) throws IOException {
 		// 生成一个文章id对应的文件。
-		File docIdxFile = new File(LDACmdOption.curOption.get().dir,
-				LDACmdOption.curOption.get().docIdFile);
+		File docIdxFile = new File(LDACmdOption.curOption.get().dir, LDACmdOption.curOption.get().docIdFile);
 		if (docIdxFile.isFile()) {
 			FileUtils.forceDelete(docIdxFile);
 		}
@@ -217,33 +217,28 @@ public class LDADataset {
 			FileUtils.forceMkdir(docIdxFile.getParentFile());
 		}
 		docIdxFile.createNewFile();
-		BufferedWriter br = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(docIdxFile),
+		BufferedWriter br = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(docIdxFile),
 				LDACmdOption.curOption.get().fileEncoding));
-		for (int i = 0; i < total; ++i) {
+		int perPage = 100;
+		int totalPage = (total / perPage) + (total % perPage == 0 ? 0 : 1);
+		int index = -1;
+		for (int curPage = 0; curPage < totalPage; ++curPage) {
 			// 一个文章一个文章地获取
-			String titleSql = "select document_content from " + tableName
-					+ " order by rec_id asc limit " + i + "," + 1;
+			String titleSql = "select document_title,document_content from " + tableName
+					+ " order by rec_id asc limit " + (curPage * perPage) + "," + perPage;
 			List<Map<String, Object>> result = DatabaseConfig.query(titleSql);
 			if (result == null || result.isEmpty()) {
 				break;
 			}
 			for (Map<String, Object> record : result) {
 				String title = (String) record.get("document_title");
-				String contentSql = "select b.word from word_tf_idf a,word_idf b where a.word_id=b.rec_id and a.document_title=? order by a.rec_id";
-				List<Map<String, Object>> contentResult = DatabaseConfig.query(
-						contentSql, title);
-				if (contentResult == null || contentResult.isEmpty()) {
-					break;
+				String content = (String) record.get("document_content");
+				if (content == null || content.trim().isEmpty()) {
+					continue;
 				}
-				StringBuilder sb = new StringBuilder();
-				for (Map<String, Object> word : contentResult) {
-					if (sb.length() > 0) {
-						sb.append(" ");
-					}
-					sb.append(word.get("word"));
-				}
-				data.setDoc(sb.toString(), i);
+				++index;
+				System.out.println("当前正在读取第" + (curPage + 1) + "页，总共第" + (index + 1) + "条/共" + total + "条");
+				data.setDoc(content, index);
 				br.write(title + IOUtils.LINE_SEPARATOR);
 			}
 		}
@@ -263,8 +258,7 @@ public class LDADataset {
 	public static LDADataset readDataSet(Dictionary dict) {
 		try {
 			// read number of document
-			int M = (int) DatabaseConfig.count("select count(1) from "
-					+ tableName);
+			int M = (int) DatabaseConfig.count("select count(1) from " + tableName);
 			System.out.println("NewM:" + M);
 
 			LDADataset data = new LDADataset(M, dict);
