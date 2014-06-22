@@ -11,6 +11,7 @@ import java.text.DecimalFormat;
 public class FlatNumberDictionary {
 	private static DecimalFormat df = new DecimalFormat("0.000");
 	private String instanceName;
+	private MysqlDataAccess dataAccess;
 	private int xLen = 0;
 	private int yLen = 0;
 
@@ -31,6 +32,7 @@ public class FlatNumberDictionary {
 		this.instanceName = instanceName;
 		this.xLen = xLen;
 		this.yLen = yLen;
+		dataAccess = MysqlDataAccess.getInstance(this.instanceName);
 	}
 
 	/**
@@ -47,7 +49,7 @@ public class FlatNumberDictionary {
 			// 将小数点保留到后三位即可！
 			value = df.format(value);
 		}
-		LuceneDataAccess.save(instanceName + "_" + x + "_" + y, String.valueOf(value));
+		dataAccess.save(x + "_" + y, String.valueOf(value));
 	}
 
 	/**
@@ -60,7 +62,7 @@ public class FlatNumberDictionary {
 	 * @return
 	 */
 	public String fetch(int x, int y) {
-		return LuceneDataAccess.findValueByKey(instanceName + "_" + x + "_" + y);
+		return dataAccess.findValueByKey(x + "_" + y);
 	}
 
 	/**
