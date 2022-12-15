@@ -6,7 +6,7 @@
 	<version>1.0.0</version>
 	<packaging>war</packaging>
 	<properties>
-		<spring.version>3.0.6.RELEASE</spring.version>
+		<spring.version>5.2.20.RELEASE</spring.version>
 		<!-- Spring Security与Spring有版本上的依赖，所以请保持它与依赖的Spring的版本一致 -->
 		<spring.security.version>3.1.0.RELEASE</spring.security.version>
 	</properties>
